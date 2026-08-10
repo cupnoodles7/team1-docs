@@ -1,0 +1,266 @@
+Flow as of now:
+
+```java
+YOUR FLOW
+
+User opens app
+       │
+       ▼
+JWT token check          ← your Auth Service
+       │
+       ▼
+License + Entitlement    ← your two microservices
+check passes
+       │
+       ▼
+Pre-signed S3 URL        ← time-limited, expires in 15 mins
+returned to app
+       │
+       ▼
+App downloads EPUB       ← stored locally
+       │
+       ▼
+Readium Reader           ← just renders it, knows nothing
+renders the EPUB           about subscriptions or licenses
+       │
+       ▼
+User reads offline       ← app checks local license JSON
+                           on every open
+                           is today before endDate? → open
+                           is today after endDate?  → block
+```
+
+What PalaceProject does:
+
+```java
+USER
+  ↓
+PALACE MOBILE APP        → UI, Search, Bookshelf, Download Manager, Session
+  ↓ (1) GET /opds        → gets the catalog (just metadata, no loan yet)
+  ↓ (2) POST /borrow     → actually requests the book
+
+PUBLISHER BACKEND        → Books, Users, Loans, Concurrency, Subscription Logic
+  ↓ (3) POST /generate-license
+
+READIUM LCP SERVER       → Encrypts the EPUB, creates the .lcp license file
+  ↓ (4) Downloads both
+
+READIUM READER (SDK)     → Validates .lcp, decrypts EPUB, renders, offline reading
+  ↓ GET /status
+
+LICENSE STATUS (LSD)     → Real-time: Active / Returned / Revoked / Expired
+```
+
+| Step | What happens |
+| --- | --- |
+| 1 | Publisher exposes an OPDS catalog — metadata only (title, author, cover, borrow URL). **No loan, no license yet.** |
+| 2 | Palace app fetches `GET /opds` and displays the books |
+| 3 | User taps Borrow → app calls `POST /borrow` with userId + bookId |
+| 4 | Publisher backend validates: checks concurrency, subscription, checkout limit, user permissions |
+| 5 | Publisher calls `POST /generate-license` on the LCP Server → LCP encrypts the EPUB and creates an `.lcp` license file |
+| 6 | Palace downloads **two separate files**: `AI.epub` + `AI.lcp` — both stored locally on device |
+| 7 | Readium Reader opens the book: validates signature → decrypts EPUB → renders HTML |
+| 8 | Once downloaded, EPUB + license are on device — no internet needed to read |
+| 9 | License expiry check: `GET /status` → LSD Server replies ACTIVE / RETURNED / REVOKED / EXPIRED |
+
+#### OPDS + Content
+
+Content Type : EPUB + Books
+
+1. displaying all OPDS, later compatible w analytics part to flag unsubscribed books to generate revenue *(mention the latter for business perspective)*
+2. OPDS catalog is not generated live on every request. Instead:
+    - A **scheduled job** (Lambda or a cron) periodically calls T&F's internal catalog API
+    - It builds the OPDS feed JSON
+    - It stores that static JSON file in an **S3 bucket**
+    - The mobile app fetches from S3 — fast, cheap, no database hit per request
+3. filter in catalogue to filter by publisher, access, preview only
+4. **Open Access as a differentiator via OPDS:**
+    
+    OA content has no license requirement. In your OPDS feed, OA items should have no borrow link — just a direct download/read link. The fact that OPDS can clearly surface OA content without any auth friction is presented as a genuine differentiator.
+    
+5. **cookies** and **pre-signed URLs** — some content may be served via time-limited URLs rather than streaming through your API, which is a common and smart pattern for large files like EPUBs
+6. ISBN, DOI, and getFTR — Content Identity
+    - **DOI** (Digital Object Identifier) answers: which publisher does this content belong to? Every T&F book and journal article has a DOI. It's the canonical, globally unique ID.
+    - **ISBN** is the book-specific identifier — used alongside DOI for book licenses.
+    - **getFTR** — this is "Get Full Text Research," a service that helps discovery tools (like university library portals) find the right platform to serve an article. When a user clicks an article link in their library catalog, getFTR routes them to T&F (or whoever has the full text). For your app, getFTR is relevant because it's the existing mechanism that resolves a DOI to a content URL — you might be able to hook into this rather than building your own DOI resolver.
+7. Content types (PDF, EPUB, video) will be handled by a common interface, with separate implementations per type. Adding a new content type in future will not require changes to existing screens or download logic.
+8. OPDS License Fields
+
+| Field | Meaning |
+| --- | --- |
+| `checkouts` | Lifetime borrow limit (e.g., max 5 borrows ever) |
+| `concurrency` | Max simultaneous users (the "seats" number) |
+| `length` | Loan duration (e.g., 21 days) |
+| `expires` | Exact expiry date/time |
+| `format` | EPUB / PDF / LCP / etc. |
+| `devices` | Device limit per user |
+| `copy` | Can user copy text? |
+| `print` | Can user print? |
+| `tts` | Text-to-speech allowed? |
+
+#### License and Entitlement
+
+1. Valid Flow: User opens book → App calls Content API → Content API calls License Service AND Entitlement Service → both pass → Content API returns the file → App renders content”
+
+```java
+Mobile App
+    │
+    ▼
+API Gateway ──── Auth Service ──── Users DB
+    │
+    ├──→ Content API ──────────────────────── S3 (EPUBs + OPDS feed)
+    │         │
+    │         ├──→ License Service ─────────── Licenses DB (MongoDB)
+    │         │
+    │         └──→ Entitlement Service ──────── Bundles DB (MongoDB/Neo4j)
+    │
+    └──→ Notification Service ─────────────── (license expiry alerts)
+```
+
+```java
+User opens book
+       │
+       ▼
+  Content API          ← the orchestrator, calls both
+    │        │
+    ▼        ▼
+License    Entitlement
+Service    Service
+    │        │
+    ▼        ▼
+Is today   Is this book
+between    in their
+start/end? package?
+    │        │
+    └───┬────┘
+        ▼
+   Both pass?
+   → Return content
+     (S3 URL or file)
+```
+
+1. the license API is called at **open time**, not at download time. The file may be on your device already — but every time you open it, it checks the license. This is how expiry enforcement works offline — the license itself contains the end date, so the app can check it without a network call.
+2. Mock License Generator
+
+
+
+
+#### Auth:
+
+1. IAM
+
+T&F's internal system for managing who can access what. For an institution to use your app, you create a **service account** in IAM. This service account has credentials your backend uses to call T&F's content API on behalf of the institution's users.
+    
+    **For the app itself — two token types:**
+    
+    Roughly:
+    
+    - **User token** — proves who the person is (their identity)
+    - **Access token** — proves what they're allowed to do (their entitlement)
+    
+    ```java
+    1. User signs in
+            │
+            ▼
+    Identity Provider / IDAM
+    (Authentication)
+            │
+            ▼
+    JWT Access Token issued
+            │
+            ▼
+    User requests "Mining Handbook.epub"
+            │
+            ▼
+    Backend validates the JWT
+            │
+            ▼
+    Backend checks subscription and entitlements
+    (Authorization)
+            │
+            ▼
+    Backend uses its Service Account (created in IDAM)
+    to call the internal Content API
+            │
+            ▼
+    Content API confirms the institution has access
+            │
+            ▼
+    Backend generates a pre-signed URL
+            │
+            ▼
+    User downloads the EPUB directly from cloud storage
+    ```
+    
+2. re-login period
+3. brief mention of IP based login
+
+Miscellaneous/Questions:
+
+1. downloading + login → requires internet access
+reading → internet not needed
+2. reading progress, bookmarks and highlights - is this needed as of now? (covered by Readium)
+3. is the architecture/system design (following design patterns) something that needs to be addressed at the moment?
+4. Is the following what we’ll be going with for content rendering?
+“Phase 1 uses a lightweight EPUB renderer (epub.js via WebView) to validate the end-to-end flow. Phase 2 evaluates Readium SDK for production-grade reading experience including accessibility, highlights, and bookmarks”
+    
+    !Screenshot 2026-07-12 at 3.49.50 AM.png
+    
+5. will the downloaded EPUB sits on device unencrypted? 
+no, we'll store the keys in keystore on device and decrypt as we view it each time
+6. Notifications?
+
+Mobile Module:
+
+1. Downloaded content, license metadata, and reading position are stored locally on device. The catalog is cached for offline browsing
+
+```java
+Backend responsibility          Mobile responsibility
+───────────────────────         ─────────────────────
+Serve the file (S3/URL)    →    Download it
+Store license metadata     →    Cache it locally
+OPDS feed in S3            →    Cache the catalog
+                                Track what's downloaded
+                                Manage storage quota
+```
+
+Infra:
+
+1. Infrastructure
+    - **VPC, subnets, security groups** — proper AWS networking isolation between services
+    - **Lambda** — serverless functions for things like the OPDS scheduler, notification triggers
+    - **Blue-green deployment** — two identical production environments, traffic switches between them during deploys so there's zero downtime
+
+Consider later:
+
+1. **User Tracking** 
+2. **Chapter wise split**
+3. **DRM**
+4. **The hard problem they flagged: (Wrong problem)**
+
+> "N number of publishers, same bundle, say one bundle expires — how to separate the bundles for their license to provide response fast?"
+> 
+
+If a user has access to a bundle that contains T&F books AND another publisher's books, and the T&F part of that bundle expires, you need to be able to instantly know which content is now blocked without re-checking everything. This is where **Neo4j (graph database)** comes in — because the relationship between users, bundles, licenses, publishers, and individual content items is a graph problem, not a table problem. A graph DB can traverse "this user → has bundle → contains publisher → contains these 3,000 titles" extremely fast, much faster than SQL joins.
+
+Features:
+
+Microservices:
+
+1. EUREKA SERVER
+2. API GATEWAY
+3. CONFIG SERVER
+4. AUTH service
+5. License Service
+6. University
+7. Entitlement
+8. Catalog
+9. Content API
+
+Databases:
+
+1. User :
+2. University:
+3. Entitlement:
+4. Catalog:
+5. License

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T&F Reader — Design System & Screen Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #00A19D;
+    --primary-dark: #008B87;
+    --dark-navy: #1A3A5C;
+    --dark-navy-deep: #132D47;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B7280;
+    --surface: #F8F9FA;
+    --white: #FFFFFF;
+    --border: #E5E7EB;
+    --accent-amber: #F59E0B;
+    --success: #10B981;
+    --error: #EF4444;
+    --offline: #374151;
+    --elite-purple: #7C3AED;
+    --subscription-blue: #2563EB;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #F0F2F5; color: var(--text-primary); }
+
+  /* Navigation */
+  .nav { position: sticky; top: 0; z-index: 100; background: var(--dark-navy); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-md); }
+  .nav-brand { color: white; font-weight: 700; font-size: 18px; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: white; }
+
+  /* Layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px 32px; }
+  .page-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 48px; }
+
+  /* Sections */
+  .section { margin-bottom: 64px; }
+  .section-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--primary); display: inline-block; }
+
+  /* Design System Grid */
+  .ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .ds-card { background: var(--white); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+  .ds-card h3 { font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+
+  /* Color Swatches */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .color-swatch { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+  .color-swatch .swatch-color { height: 64px; }
+  .color-swatch .swatch-info { padding: 8px 10px; font-size: 12px; }
+  .color-swatch .swatch-name { font-weight: 600; color: var(--text-primary); }
+  .color-swatch .swatch-hex { color: var(--text-secondary); font-family: monospace; }
+
+  /* Typography */
+  .type-row { display: flex; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .type-label { width: 120px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; flex-shrink: 0; }
+  .type-sample { font-size: 24px; font-weight: 700; }
+
+  /* Buttons */
+  .button-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-danger { background: white; color: var(--error); border: 1.5px solid var(--error); }
+  .btn-dark { background: var(--dark-navy); color: white; }
+
+  /* Screen Gallery */
+  .screen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 32px; }
+  .screen-card { background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); transition: transform 0.2s, box-shadow 0.2s; }
+  .screen-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .screen-card img { width: 100%; height: auto; display: block; }
+  .screen-card .screen-info { padding: 16px; border-top: 1px solid var(--border); }
+  .screen-card .screen-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .screen-card .screen-desc { font-size: 13px; color: var(--text-secondary); }
+  .screen-card .screen-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+  .tag-priority { background: #FEF3C7; color: #92400E; }
+  .tag-supporting { background: #E0E7FF; color: #3730A3; }
+  .tag-state { background: #FCE7F3; color: #9D174D; }
+  .tag-stale { background: #FEE2E2; color: #991B1B; }
+
+  /* Component Specs */
+  .spec-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .spec-table th { text-align: left; padding: 12px 16px; background: var(--surface); font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); border-bottom: 2px solid var(--border); }
+  .spec-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .spec-table td:first-child { font-weight: 600; }
+
+  /* Footer */
+  .footer { background: var(--dark-navy); color: white; padding: 32px; text-align: center; margin-top: 64px; }
+  .footer p { font-size: 14px; opacity: 0.7; }
+
+  /* Flow Diagram */
+  .flow-container { background: var(--white); border-radius: var(--radius-md); padding: 32px; border: 1px solid var(--border); margin: 24px 0; }
+  .flow-step { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+  .flow-step .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .flow-step .step-text { font-size: 14px; }
+  .flow-arrow { margin-left: 14px; color: var(--text-secondary); font-size: 18px; }
+
+
+  /* ===== Live mockups (v0.2) ===== */
+  .mock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 40px; }
+  .mock-wrap { display: flex; flex-direction: column; align-items: center; }
+  .phone { width: 320px; background: #fff; border: 11px solid #14141F; border-radius: 40px;
+           overflow: hidden; box-shadow: var(--shadow-lg); position: relative; }
+  .ph-status { background: var(--dark-navy); color: #fff; font-size: 11px; font-weight: 600;
+               padding: 9px 18px 5px; display: flex; justify-content: space-between; }
+  .ph-bar { background: var(--dark-navy); color: #fff; padding: 9px 16px 13px; display: flex;
+            align-items: center; justify-content: space-between; font-size: 15px; font-weight: 700; }
+  .ph-body { height: 505px; overflow-y: auto; background: #fff; }
+  .ph-body::-webkit-scrollbar { width: 0; }
+  .ph-tabs { display: flex; background: var(--dark-navy); padding: 0 10px; gap: 4px; }
+  .ph-tab { flex: 1; text-align: center; padding: 9px 4px 8px; font-size: 11.5px; font-weight: 600;
+            color: rgba(255,255,255,.62); border-bottom: 3px solid transparent; cursor: pointer; }
+  .ph-tab.on { color: #fff; border-bottom-color: var(--primary); }
+  .ph-sec { font-size: 13px; font-weight: 700; padding: 14px 14px 8px; }
+  .ph-chips { display: flex; gap: 6px; padding: 0 14px 12px; overflow-x: auto; }
+  .ph-chip { border: 1px solid var(--primary); color: var(--primary); border-radius: 20px;
+             padding: 4px 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+  .ph-chip.on { background: var(--primary); color: #fff; }
+  .ph-feat { display: flex; gap: 10px; padding: 0 14px 6px; overflow-x: auto; }
+  .ph-fcard { min-width: 132px; border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
+  .ph-cover { height: 74px; border-radius: 5px; margin-bottom: 7px; }
+  .ph-ftitle { font-size: 11px; font-weight: 700; line-height: 1.32; margin-bottom: 3px; }
+  .ph-fmeta { font-size: 9.5px; color: var(--text-secondary); margin-bottom: 7px; }
+  .ph-row { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .ph-thumb { width: 46px; height: 60px; border-radius: 4px; flex-shrink: 0; }
+  .ph-rtitle { font-size: 12px; font-weight: 600; line-height: 1.35; }
+  .ph-rmeta { font-size: 10px; color: var(--text-secondary); margin: 3px 0 5px; }
+  .ph-btn { border: none; border-radius: 6px; padding: 6px 0; width: 100%; font-size: 11px;
+            font-weight: 700; font-family: inherit; cursor: pointer; }
+  .ph-btn.pri { background: var(--primary); color: #fff; }
+  .ph-btn.sec { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
+  .ph-btn.sub { background: var(--subscription-blue); color: #fff; }
+  .ph-btn.gate { background: var(--dark-navy); color: #fff; }
+  .ph-btn.off { background: #F3F4F6; color: #9CA3AF; }
+  .ph-btn.brw { background: var(--accent-amber); color: #fff; }
+  .ph-btn.wait { background: #FEF3C7; color: #92400E; border: 1.5px solid var(--accent-amber); }
+  .ph-nav { display: flex; border-top: 1px solid var(--border); background: #fff; }
+  .ph-nav div { flex: 1; text-align: center; padding: 8px 0 9px; font-size: 9px;
+                color: var(--text-secondary); }
+  .ph-nav div.on { color: var(--primary); font-weight: 700; }
+  .ph-nav span { display: block; font-size: 15px; margin-bottom: 1px; }
+  .mock-cap { margin-top: 14px; text-align: center; max-width: 320px; }
+  .mock-cap b { font-size: 13.5px; display: block; margin-bottom: 4px; }
+  .mock-cap span { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+          border-radius: 12px; font-size: 9.5px; font-weight: 700; }
+  .p-oa { background: #D1FAE5; color: #065F46; }
+  .p-sub { background: #DBEAFE; color: #1E40AF; }
+  .p-el { background: #EDE9FE; color: #5B21B6; }
+  .p-lock { background: #FEE2E2; color: #991B1B; }
+  .act-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+             border-bottom: 1px solid var(--border); }
+  .act-ctx { flex: 1; }
+  .act-ctx b { font-size: 11.5px; display: block; }
+  .act-ctx i { font-size: 10px; color: var(--text-secondary); font-style: normal; }
+  .act-btns { display: flex; gap: 5px; flex-shrink: 0; }
+  .act-btns .ph-btn { width: auto; padding: 5px 10px; }
+  .stale { background: #FEF3C7; border-left: 4px solid var(--accent-amber);
+           padding: 14px 16px; border-radius: var(--radius-sm); font-size: 13px;
+           line-height: 1.6; margin-bottom: 24px; }
+
+  /* Badge Examples */
+  .badge-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-oa { background: #D1FAE5; color: #065F46; }
+  .badge-sub { background: #DBEAFE; color: #1E40AF; }
+  .badge-elite { background: #EDE9FE; color: #5B21B6; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">T&F Reader — Design System</div>
+  <div class="nav-links">
+    <a href="#design-system">Design System</a>
+    <a href="#screens">Screens</a>
+    <a href="#components">Components</a>
+    <a href="#mockups">Mockups v0.2</a>
+    <a href="#flow">User Flow</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">T&F Reader — Design Specification</h1>
+  <p class="page-subtitle">Unified Taylor & Francis reader app · React Native · Platform-neutral · v0.2 — revised, see notes below</p>
+
+  <!-- DESIGN SYSTEM -->
+  <section class="section" id="design-system">
+    <h2 class="section-title">Design System</h2>
+
+    <div class="ds-grid">
+      <!-- Colors -->
+      <div class="ds-card" style="grid-column: span 2;">
+        <h3>Color Palette</h3>
+        <div class="color-grid">
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#1A3A5C"></div>
+            <div class="swatch-info"><div class="swatch-name">Dark Navy</div><div class="swatch-hex">#1A3A5C</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#00A19D"></div>
+            <div class="swatch-info"><div class="swatch-name">Primary Teal</div><div class="swatch-hex">#00A19D</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#1A1A2E"></div>
+            <div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#1A1A2E</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#6B7280"></div>
+            <div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#6B7280</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#E5E7EB"></div>
+            <div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex">#E5E7EB</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#F8F9FA"></div>
+            <div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#F8F9FA</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#10B981"></div>
+            <div class="swatch-info"><div class="swatch-name">Success / OA</div><div class="swatch-hex">#10B981</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#2563EB"></div>
+            <div class="swatch-info"><div class="swatch-name">Subscription</div><div class="swatch-hex">#2563EB</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#7C3AED"></div>
+            <div class="swatch-info"><div class="swatch-name">Elite</div><div class="swatch-hex">#7C3AED</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#F59E0B"></div>
+            <div class="swatch-info"><div class="swatch-name">Amber / Wait</div><div class="swatch-hex">#F59E0B</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#EF4444"></div>
+            <div class="swatch-info"><div class="swatch-name">Error / Lock</div><div class="swatch-hex">#EF4444</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="swatch-color" style="background:#374151"></div>
+            <div class="swatch-info"><div class="swatch-name">Offline</div><div class="swatch-hex">#374151</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div class="ds-card" style="grid-column: span 2;">
+        <h3>Typography Scale (Inter)</h3>
+        <div class="type-row"><span class="type-label">Display</span><span class="type-sample" style="font-size:28px;font-weight:700">Page Title</span></div>
+        <div class="type-row"><span class="type-label">H1</span><span class="type-sample" style="font-size:22px;font-weight:700">Section Header</span></div>
+        <div class="type-row"><span class="type-label">H2</span><span class="type-sample" style="font-size:18px;font-weight:600">Card Title</span></div>
+        <div class="type-row"><span class="type-label">Body</span><span class="type-sample" style="font-size:15px;font-weight:400">Body text content</span></div>
+        <div class="type-row"><span class="type-label">Caption</span><span class="type-sample" style="font-size:13px;font-weight:400">Metadata, captions</span></div>
+        <div class="type-row"><span class="type-label">Button</span><span class="type-sample" style="font-size:15px;font-weight:600">Button Text</span></div>
+        <div class="type-row"><span class="type-label">Small</span><span class="type-sample" style="font-size:12px;font-weight:500">Labels & badges</span></div>
+      </div>
+
+      <!-- Spacing -->
+      <div class="ds-card">
+        <h3>Spacing Scale</h3>
+        <table class="spec-table">
+          <tr><td>4px</td><td>xs</td><td>Tight gaps</td></tr>
+          <tr><td>8px</td><td>sm</td><td>Icon padding</td></tr>
+          <tr><td>12px</td><td>md</td><td>Card inner padding</td></tr>
+          <tr><td>16px</td><td>lg</td><td>Section spacing</td></tr>
+          <tr><td>24px</td><td>xl</td><td>Major section gaps</td></tr>
+          <tr><td>32px</td><td>2xl</td><td>Page margins</td></tr>
+        </table>
+      </div>
+
+      <!-- Border Radius -->
+      <div class="ds-card">
+        <h3>Border Radius</h3>
+        <table class="spec-table">
+          <tr><td>4px</td><td>Small</td><td>Badges, chips</td></tr>
+          <tr><td>8px</td><td>Medium</td><td>Buttons, inputs</td></tr>
+          <tr><td>12px</td><td>Large</td><td>Cards, sheets</td></tr>
+          <tr><td>16px</td><td>X-Large</td><td>Bottom sheets, modals</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="section" id="components">
+    <h2 class="section-title">Component Library</h2>
+
+    <div class="ds-grid">
+      <div class="ds-card">
+        <h3>Buttons</h3>
+        <div class="button-row" style="margin-bottom:12px">
+          <button class="btn btn-primary">Read</button>
+          <button class="btn btn-secondary">Download</button>
+        </div>
+        <div class="button-row" style="margin-bottom:12px">
+          <button class="btn btn-dark">Sign In</button>
+          <button class="btn btn-danger">Sign Out</button>
+        </div>
+        <div class="button-row">
+          <button class="btn btn-primary" style="width:100%">Full-width Primary</button>
+        </div>
+      </div>
+
+      <div class="ds-card">
+        <h3>Access Tier Badges</h3>
+        <div class="badge-row">
+          <span class="badge badge-oa">🔓 Open Access</span>
+          <span class="badge badge-sub">🔒 Subscription</span>
+          <span class="badge badge-elite">👑 Elite</span>
+        </div>
+        <table class="spec-table" style="margin-top:16px">
+          <tr><th>State</th><th>Color</th><th>Actions</th></tr>
+          <tr><td>available</td><td style="color:var(--success)">●</td><td>Read + Download</td></tr>
+          <tr><td>requires_signin</td><td style="color:var(--subscription-blue)">●</td><td>Sign in</td></tr>
+          <tr><td>not_entitled</td><td style="color:var(--error)">●</td><td>Locked</td></tr>
+          <tr><td>no_seats</td><td style="color:var(--accent-amber)">●</td><td>Waitlist</td></tr>
+        </table>
+      </div>
+
+      <div class="ds-card">
+        <h3>Bottom Navigation</h3>
+        <div style="display:flex;justify-content:space-around;padding:8px 0;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:12px">
+          <div style="text-align:center;color:var(--primary);font-size:11px;font-weight:600">
+            <div style="font-size:20px">📚</div>Catalogue
+          </div>
+          <div style="text-align:center;color:var(--text-secondary);font-size:11px">
+            <div style="font-size:20px">🔍</div>Search
+          </div>
+          <div style="text-align:center;color:var(--text-secondary);font-size:11px">
+            <div style="font-size:20px">📥</div>Library
+          </div>
+          <div style="text-align:center;color:var(--text-secondary);font-size:11px">
+            <div style="font-size:20px">👤</div>Profile
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-card">
+        <h3>Skeleton Loader</h3>
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:8px">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:48px;height:48px;background:#E5E7EB;border-radius:8px;flex-shrink:0"></div>
+            <div style="flex:1">
+              <div style="height:12px;background:#E5E7EB;border-radius:4px;width:80%;margin-bottom:8px"></div>
+              <div style="height:10px;background:#F3F4F6;border-radius:4px;width:50%"></div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-secondary);margin-top:8px">Use for all loading states. No spinners.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER FLOW -->
+  <section class="section" id="flow">
+    <h2 class="section-title">Core User Flow</h2>
+    <div class="flow-container">
+      <div class="flow-step"><span class="step-num">1</span><span class="step-text"><strong>Open app</strong> → Sign-in sheet appears (dismissible)</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">2</span><span class="step-text"><strong>Browse catalogue (guest)</strong> → Full catalogue across three feed tabs: every institution, all four content types</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">3</span><span class="step-text"><strong>Tap Open Access item</strong> → Read + Download, no loan (no session needed)</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">4</span><span class="step-text"><strong>Tap Subscription/Elite item</strong> → Access Gate sheet appears</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">5</span><span class="step-text"><strong>Choose route:</strong> "Through my institution" (SSO) or "Personal account" (email)</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">6</span><span class="step-text"><strong>Authenticate</strong> → Pending-intent store remembers tapped item</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">7</span><span class="step-text"><strong>⭐ Returns to SAME item</strong> → Re-resolved access: Subscription→Read+Download, Elite→Read only, Not entitled→Subscribe (B2C) / Access Restricted (B2B)</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">8</span><span class="step-text"><strong>Catalogue re-scopes</strong> → B2B: entitled + Open Access + Elite. B2C: Open Access</span></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step"><span class="step-num">9</span><span class="step-text"><strong>First tap borrows</strong> → Open Access and Subscription create a loan, then show Read + Download. Elite takes no copy, so never borrows.</span></div>
+    </div>
+    <p style="margin-top:16px;padding:14px 16px;background:#FEF3C7;border-left:4px solid var(--accent-amber);border-radius:var(--radius-sm);font-size:13px;line-height:1.6">
+      <strong>Revised — v0.2.</strong> Steps 2 and 8 replace the v0.1 model in which the catalogue was
+      <em>never</em> filtered by institution in any session state. The feed now has two scopes: full when logged out,
+      B2B sees entitled&nbsp;+&nbsp;Open Access&nbsp;+&nbsp;Elite; B2C sees Open Access. Pending ratification by leadership (delivery plan L-2).
+      <code>Buy</code> and <code>Borrow</code> are removed from the prototype; <code>subscribe</code> is added, and is <strong>B2C-only</strong>. wokay serve <strong>three separate OPDS endpoints</strong>, surfaced as <strong>three tabs</strong> rather than the single mixed list in the screen&nbsp;01 mockup &mdash; merging would require cross-feed dedup, merged pagination and re-ranking three incomparable result sets. Pending ratification (delivery plan L-5).
+    </p>
+
+    <h3 style="margin-top:32px;margin-bottom:16px;font-size:18px">resolveAccess Contract</h3>
+    <pre style="background:var(--dark-navy-deep);color:#A7F3D0;padding:20px;border-radius:var(--radius-sm);font-size:13px;overflow-x:auto;font-family:'Fira Code',monospace">resolveAccess(item, session) → {
+  tier:    'open_access' | 'subscription' | 'elite',
+  state:   'available' | 'requires_signin' | 'not_entitled' | 'no_seats',
+  actions: ['read'] | ['read','download'] | ['borrow']
+         | ['signin'] | ['subscribe'] | ['waitlist'] | []
+}
+
+// Every screen renders from state + actions only.
+// No screen knows what a licence is.
+//
+// Elite, when entitled, resolves to ['read'] — never download.
+// A loan is required for anything the user can take a copy of:
+//   Open Access + Subscription -> ['borrow'] first, then ['read','download']
+//   Elite -> ['read'] only. No copy taken, so no loan, ever.
+//   Logged out + Open Access -> ['read','download']. No borrower to lend to.
+// not_entitled → ['subscribe'] for B2C, [] for B2B (Access Restricted).
+// Reachable only via pending intent — the signed-in feed contains
+// no unentitled items.</pre>
+  </section>
+
+
+  <!-- LIVE MOCKUPS v0.2 -->
+  <section class="section" id="mockups">
+    <h2 class="section-title">Live Mockups &mdash; v0.2</h2>
+    <div class="stale">
+      <b>These supersede the PNGs below where they differ.</b> The gallery images were generated against
+      v0.1 and show a single mixed catalogue with no feed tabs, and no Borrow / loan model at all.
+      These mockups are HTML and CSS, so they render live and can be edited directly &mdash; treat them
+      as the current reference for screens&nbsp;01, 03, 09 and the action states. Screens 02, 04&ndash;08
+      and 10&ndash;17 are unchanged from v0.1 and their PNGs remain accurate.
+    </div>
+    <div class="mock-grid">
+      <div class="mock-wrap"><div class="phone"><div class="ph-status"><span>9:41</span><span>&#9646;&#9646;&#9646; &#11052; &#9648;</span></div>
+<div class="ph-bar"><span>Taylor &amp; Francis</span><span>&#128269;</span></div>
+<div class="ph-tabs"><div class="ph-tab on">Books</div><div class="ph-tab">Journals</div><div class="ph-tab">Audiobooks</div></div>
+<div class="ph-body">
+  <div class="ph-sec">Featured</div>
+  <div class="ph-feat">
+    <div class="ph-fcard"><div class="ph-cover" style="background:#F5C518"></div><div class="ph-ftitle">Statistical Methods for Applied Research</div><div class="ph-fmeta">Routledge &middot; 2024</div><button class="ph-btn pri">Read</button></div>
+    <div class="ph-fcard"><div class="ph-cover" style="background:#2F6F8F"></div><div class="ph-ftitle">Circular Economy in Manufacturing</div><div class="ph-fmeta">CRC Press &middot; 2023</div><button class="ph-btn gate">Sign in</button></div>
+  </div>
+  <div class="ph-sec">Browse by Subject</div>
+  <div class="ph-chips"><div class="ph-chip on">All</div><div class="ph-chip">Engineering</div><div class="ph-chip">Medicine</div><div class="ph-chip">Humanities</div></div>
+  <div class="ph-sec">Recently Published</div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#3E7C59"></div><div style="flex:1"><div class="ph-rtitle">Renewable Energy Integration in Smart Grids</div><div class="ph-rmeta">Routledge &middot; 2024</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-oa">&#128275; Open Access</span><div style="flex:1"></div><div class="act-btns"><button class="ph-btn pri">Read</button><button class="ph-btn sec">Download</button></div></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">No loan &mdash; there is no borrower yet</div></div></div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#1F6FB2"></div><div style="flex:1"><div class="ph-rtitle">CRISPR-Cas9: Advances and Applications</div><div class="ph-rmeta">CRC Press &middot; 2024</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-sub">&#128274; Subscription</span><div style="flex:1"></div><button class="ph-btn gate" style="width:auto;padding:5px 12px">Sign in</button></div></div></div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#7A4B8C"></div><div style="flex:1"><div class="ph-rtitle">Digital Transformation in Public Policy</div><div class="ph-rmeta">Routledge &middot; 2023</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-el">&#128081; Elite</span><div style="flex:1"></div><button class="ph-btn gate" style="width:auto;padding:5px 12px">Sign in</button></div></div></div>
+</div><div class="ph-nav"><div class="on"><span>&#128218;</span>Catalogue</div><div><span>&#128269;</span>Search</div><div><span>&#128229;</span>Library</div><div><span>&#128100;</span>Profile</div></div></div><div class="mock-cap"><b>01 &mdash; Catalogue Home &middot; Books &middot; guest</b><span>Three feed tabs for wokay&rsquo;s three OPDS endpoints. Open Access is Read + Download with no loan, because there is no borrower yet.</span></div></div>
+      <div class="mock-wrap"><div class="phone"><div class="ph-status"><span>9:41</span><span>&#9646;&#9646;&#9646; &#11052; &#9648;</span></div>
+<div class="ph-bar"><span>Taylor &amp; Francis</span><span>&#128269;</span></div>
+<div class="ph-tabs"><div class="ph-tab">Books</div><div class="ph-tab">Journals</div><div class="ph-tab on">Audiobooks</div></div>
+<div class="ph-body">
+  <div style="background:#ECFDF5;padding:7px 14px;font-size:10.5px;color:#065F46;font-weight:600">
+    Signed in &middot; University of Oxford &mdash; entitled + Open Access + Elite</div>
+  <div class="ph-sec">Recently Added</div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#B45309"></div><div style="flex:1"><div class="ph-rtitle">The History of Scientific Thought</div><div class="ph-rmeta">Narrated &middot; 11h 24m</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-oa">&#128275; Open Access</span><div style="flex:1"></div><button class="ph-btn brw" style="width:auto;padding:5px 13px">Borrow</button></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">First tap creates a loan</div></div></div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#0F766E"></div><div style="flex:1"><div class="ph-rtitle">Foundations of Modern Linguistics</div><div class="ph-rmeta">Narrated &middot; 8h 02m</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-sub">&#128274; Subscription</span><div style="flex:1"></div><div class="act-btns"><button class="ph-btn pri">Read</button><button class="ph-btn sec">Download</button></div></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">On loan until 21 Sep</div></div></div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#6D28D9"></div><div style="flex:1"><div class="ph-rtitle">Advanced Clinical Pharmacology</div><div class="ph-rmeta">Narrated &middot; 14h 10m</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-el">&#128081; Elite</span><div style="flex:1"></div><button class="ph-btn pri" style="width:auto;padding:5px 13px">Read</button></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">Elite takes no copy, so never a loan</div></div></div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#9F1239"></div><div style="flex:1"><div class="ph-rtitle">Research Ethics in Practice</div><div class="ph-rmeta">Narrated &middot; 6h 47m</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-sub">&#128274; Subscription</span><div style="flex:1"></div><button class="ph-btn wait" style="width:auto;padding:5px 11px" disabled>Waitlist</button></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">All copies on loan</div></div></div>
+</div><div class="ph-nav"><div class="on"><span>&#128218;</span>Catalogue</div><div><span>&#128269;</span>Search</div><div><span>&#128229;</span>Library</div><div><span>&#128100;</span>Profile</div></div></div><div class="mock-cap"><b>01 &mdash; Audiobooks &middot; signed in B2B</b><span>Feed re-scoped to entitled + Open Access + Elite, showing all four loan states side by side: un-borrowed, on loan, Elite, and no copies free.</span></div></div>
+      <div class="mock-wrap"><div class="phone"><div class="ph-status"><span>9:41</span><span>&#9646;&#9646;&#9646; &#11052; &#9648;</span></div>
+<div class="ph-bar"><span>&#8592; Action states</span><span></span></div>
+<div class="ph-body">
+  <div style="padding:11px 14px;font-size:10.5px;color:var(--text-secondary);line-height:1.5;background:var(--surface)">
+    Every combination the resolver can emit. <b>Exactly one action per item.</b></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128275; Open Access</b><i>Logged out</i><div style="font-size:9px;color:var(--text-secondary);margin-top:3px">No loan &mdash; no borrower exists</div></div><div class="act-btns"><button class="ph-btn pri">Read</button><button class="ph-btn sec">Download</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128275; Open Access</b><i>Signed in &middot; no loan yet</i></div><div class="act-btns"><button class="ph-btn brw">Borrow</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128275; Open Access</b><i>Signed in &middot; on loan</i></div><div class="act-btns"><button class="ph-btn pri">Read</button><button class="ph-btn sec">Download</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128274; Subscription &mdash; entitled</b><i>B2B &middot; no loan yet</i></div><div class="act-btns"><button class="ph-btn brw">Borrow</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128274; Subscription &mdash; entitled</b><i>B2B &middot; on loan</i></div><div class="act-btns"><button class="ph-btn pri">Read</button><button class="ph-btn sec">Download</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128081; Elite</b><i>B2B</i><div style="font-size:9px;color:var(--text-secondary);margin-top:3px">Never Borrow, never Download</div></div><div class="act-btns"><button class="ph-btn pri">Read</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128274; Any non-OA</b><i>B2C individual</i></div><div class="act-btns"><button class="ph-btn sub">Subscribe</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128274; Any non-OA</b><i>Logged out</i></div><div class="act-btns"><button class="ph-btn gate">Sign in</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#9203; No copies free</b><i>Signed in</i><div style="font-size:9px;color:var(--text-secondary);margin-top:3px">no_seats &mdash; live, not defensive</div></div><div class="act-btns"><button class="ph-btn wait" disabled>Waitlist</button></div></div>
+  <div class="act-row"><div class="act-ctx"><b>&#128683; Non-entitled Subscription</b><i>B2B &middot; via pending intent</i></div><div class="act-btns"><button class="ph-btn off" disabled>Restricted</button></div></div>
+  <div style="padding:13px 14px;font-size:10.5px;color:var(--text-secondary);line-height:1.55;border-top:1px solid var(--border)">
+    <b>The loan rule:</b> a loan is required for anything the user can take a copy of. Open Access and
+    Subscription are downloadable, so the first tap borrows. Elite is read-only &mdash; no copy, no loan.</div>
+</div></div><div class="mock-cap"><b>18 &mdash; Action states (the buttons)</b><span>Every combination the resolver can emit, including the loan dimension. This is the screen to review the button model against.</span></div></div>
+      <div class="mock-wrap"><div class="phone"><div class="ph-status"><span>9:41</span><span>&#9646;&#9646;&#9646; &#11052; &#9648;</span></div>
+<div class="ph-bar"><span>Taylor &amp; Francis</span><span>&#128269;</span></div>
+<div class="ph-tabs"><div class="ph-tab">Books</div><div class="ph-tab on">Journals</div><div class="ph-tab">Audiobooks</div></div>
+<div class="ph-body" style="position:relative">
+  <div style="filter:blur(2px);opacity:.45">
+    <div class="ph-row"><div class="ph-thumb" style="background:#1F6FB2"></div><div style="flex:1"><div class="ph-rtitle">CRISPR-Cas9: Advances and Applications</div><div class="ph-rmeta">Expert Review &middot; 2024</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-sub">&#128274; Subscription</span><div style="flex:1"></div></div></div></div>
+    <div class="ph-row"><div class="ph-thumb" style="background:#3E7C59"></div><div style="flex:1"><div class="ph-rtitle">Second Language Writing Development</div><div class="ph-rmeta">Language Learning Jrnl</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-oa">&#128275; Open Access</span><div style="flex:1"></div></div></div></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:18px 18px 0 0;
+              box-shadow:0 -6px 24px rgba(0,0,0,.16);padding:14px 16px 18px">
+    <div style="width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px"></div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:3px">Sign in to continue</div>
+    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:14px;line-height:1.45">
+      We&rsquo;ll bring you straight back to <b>CRISPR-Cas9: Advances and Applications</b>.</div>
+    <div style="border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:9px">
+      <div style="font-size:12px;font-weight:700">&#127963; Through my institution</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">SAML / SSO &middot; choose from list</div>
+    </div>
+    <div style="border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:13px">
+      <div style="font-size:12px;font-weight:700">&#128100; Personal account</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">Email sign-in</div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--text-secondary);font-weight:600">Not now</div>
+  </div>
+</div><div class="ph-nav"><div class="on"><span>&#128218;</span>Catalogue</div><div><span>&#128269;</span>Search</div><div><span>&#128229;</span>Library</div><div><span>&#128100;</span>Profile</div></div></div><div class="mock-cap"><b>03 &mdash; Access Gate + pending intent</b><span>Raised on tapping a gated title. Names the item it will return you to.</span></div></div>
+      <div class="mock-wrap"><div class="phone"><div class="ph-status"><span>9:41</span><span>&#9646;&#9646;&#9646; &#11052; &#9648;</span></div>
+<div class="ph-bar"><span>Search</span><span>&#127897;</span></div>
+<div class="ph-tabs"><div class="ph-tab">Books</div><div class="ph-tab on">Journals</div><div class="ph-tab">Audiobooks</div></div>
+<div class="ph-body">
+  <div style="padding:11px 14px 9px">
+    <div style="border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:11.5px">
+      &#128269; 10.4324/9781003</div>
+    <div style="font-size:9.5px;color:var(--text-secondary);margin-top:5px">
+      DOI detected &mdash; exact match, fuzzy search bypassed</div>
+  </div>
+  <div style="display:flex;gap:5px;padding:0 14px 10px;overflow-x:auto">
+    <div class="ph-chip on">Filters&nbsp;2</div><div class="ph-chip">Open Access</div>
+    <div class="ph-chip">2020&ndash;24</div><div class="ph-chip">Sort: Relevance</div>
+  </div>
+  <div style="padding:0 14px 8px;font-size:10px;color:var(--text-secondary);font-weight:600">
+    1 result in Journals</div>
+  <div class="ph-row"><div class="ph-thumb" style="background:#2F6F8F"></div><div style="flex:1"><div class="ph-rtitle">Handbook of Research Methods</div><div class="ph-rmeta">Routledge &middot; 10.4324/9781003</div><div style="display:flex;align-items:center;gap:6px"><span class="pill p-oa">&#128275; Open Access</span><div style="flex:1"></div><button class="ph-btn brw" style="width:auto;padding:5px 13px">Borrow</button></div><div style="font-size:9px;color:var(--text-secondary);margin-top:4px">Signed in &mdash; first tap borrows</div></div></div>
+  <div style="padding:14px;font-size:10.5px;color:var(--text-secondary);line-height:1.5">
+    Search is scoped to the active feed tab &mdash; one endpoint, one cursor, one result set.</div>
+</div><div class="ph-nav"><div class="on"><span>&#128218;</span>Catalogue</div><div><span>&#128269;</span>Search</div><div><span>&#128229;</span>Library</div><div><span>&#128100;</span>Profile</div></div></div><div class="mock-cap"><b>09 &mdash; Search &middot; per-feed &middot; DOI exact match</b><span>Scoped to the active tab. A DOI-shaped query bypasses fuzzy matching entirely.</span></div></div>
+    </div>
+  </section>
+
+  <!-- SCREENS -->
+  <section class="section" id="screens">
+    <h2 class="section-title">Screen Gallery</h2>
+    <div class="screen-grid">
+      <div class="screen-card">
+        <img src="screens/01-catalogue-home.png" alt="Catalogue Home">
+        <div class="screen-info">
+          <div class="screen-title">01 — Catalogue Home</div>
+          <div class="screen-desc">Featured content carousel, browse by subject, recently published list with tier badges</div><div class="screen-tag tag-stale">v0.1 — superseded: no feed tabs; single mixed list</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/02-signin-sheet.png" alt="Sign-In Sheet">
+        <div class="screen-info">
+          <div class="screen-title">02 — Sign-In Sheet</div>
+          <div class="screen-desc">Dismissible bottom sheet on app open. Sign in or continue as guest.</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/03-access-gate.png" alt="Access Gate">
+        <div class="screen-info">
+          <div class="screen-title">03 — Access Gate Sheet</div>
+          <div class="screen-desc">Route choice: institution SSO or personal account. Remembers tapped item.</div><div class="screen-tag tag-stale">v0.1 — superseded: does not name the pending-intent item</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/04-item-detail-article.png" alt="Article Detail">
+        <div class="screen-info">
+          <div class="screen-title">04 — Article Detail</div>
+          <div class="screen-desc">Title, author, journal metadata, abstract, access badge, Read/Download actions</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/05-item-detail-book.png" alt="Book Detail">
+        <div class="screen-info">
+          <div class="screen-title">05 — Book Detail</div>
+          <div class="screen-desc">Cover, format selector, ISBN/pages, access badge, Table of Contents</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/06-institution-list.png" alt="Institution List">
+        <div class="screen-info">
+          <div class="screen-title">06 — Institution List</div>
+          <div class="screen-desc">Searchable institution list with recently used and country flags</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/07-reader-view.png" alt="Reader View">
+        <div class="screen-info">
+          <div class="screen-title">07 — Reader View</div>
+          <div class="screen-desc">Article content with figures, tables, text size controls, progress bar</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/08-library-downloads.png" alt="Library">
+        <div class="screen-info">
+          <div class="screen-title">08 — Library / Downloads</div>
+          <div class="screen-desc">Downloaded content, progress indicators, guest downloads section</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/09-search-filter.png" alt="Search">
+        <div class="screen-info">
+          <div class="screen-title">09 — Search & Filter</div>
+          <div class="screen-desc">Full-text search, recent queries, popular subjects, content type tabs</div><div class="screen-tag tag-stale">v0.1 — superseded: not scoped per feed</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/10-profile.png" alt="Profile">
+        <div class="screen-info">
+          <div class="screen-title">10 — Profile</div>
+          <div class="screen-desc">User info, institution management, settings, sign out</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/11-voice-search.png" alt="Voice Search">
+        <div class="screen-info">
+          <div class="screen-title">11 — Voice Search</div>
+          <div class="screen-desc">Microphone input with live transcription, dark immersive overlay</div>
+          <span class="screen-tag tag-supporting">Supporting</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/12-filter-sort-sheet.png" alt="Filter Sheet">
+        <div class="screen-info">
+          <div class="screen-title">12 — Filter & Sort Sheet</div>
+          <div class="screen-desc">Bottom sheet with content type, access type, date range, sort options</div>
+          <span class="screen-tag tag-supporting">Supporting</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/13-email-signin.png" alt="Email Sign-In">
+        <div class="screen-info">
+          <div class="screen-title">13 — Email Sign-In</div>
+          <div class="screen-desc">Personal account login form with Google and ORCID alternatives</div>
+          <span class="screen-tag tag-supporting">Supporting</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/14-error-states.png" alt="Error States">
+        <div class="screen-info">
+          <div class="screen-title">14 — Error States</div>
+          <div class="screen-desc">Access Restricted (not entitled) and All Seats in Use (no_seats) variants</div>
+          <span class="screen-tag tag-state">State Variant</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/15-offline-banner.png" alt="Offline Banner">
+        <div class="screen-info">
+          <div class="screen-title">15 — Offline Banner</div>
+          <div class="screen-desc">Persistent offline indicator, offline library card, skeleton placeholders</div>
+          <span class="screen-tag tag-state">State Variant</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/16-loading-skeleton.png" alt="Loading Skeleton">
+        <div class="screen-info">
+          <div class="screen-title">16 — Loading Skeleton</div>
+          <div class="screen-desc">Skeleton card placeholders in final layout. No spinners.</div>
+          <span class="screen-tag tag-state">State Variant</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/17-empty-search.png" alt="Empty States">
+        <div class="screen-info">
+          <div class="screen-title">17 — Empty States</div>
+          <div class="screen-desc">No results found (search) and No matching content (filters) variants</div>
+          <span class="screen-tag tag-state">State Variant</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="screens/18-access-tiers.png" alt="Access Tiers">
+        <div class="screen-info">
+          <div class="screen-title">18 — Access Tier Variants</div>
+          <div class="screen-desc">OA, Subscription, and Elite badge + action combinations on article cards</div><div class="screen-tag tag-stale">v0.1 — superseded: predates the current action matrix</div>
+          <span class="screen-tag tag-priority">Priority</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN SPEC TABLE -->
+  <section class="section" id="specs">
+    <h2 class="section-title">Screen Specification</h2>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>Screen</th>
+          <th>Purpose</th>
+          <th>Key Components</th>
+          <th>States</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>01 Catalogue Home</td><td>Browse all content</td><td>Carousel, subject chips, article list, bottom tabs</td><td>Loading, Offline</td><td>P1</td></tr>
+        <tr><td>02 Sign-In Sheet</td><td>Initial auth prompt</td><td>Bottom sheet, buttons, close action</td><td>Default</td><td>P1</td></tr>
+        <tr><td>03 Access Gate</td><td>Route auth choice</td><td>Route cards, institution link, dismiss</td><td>Default</td><td>P1</td></tr>
+        <tr><td>04 Article Detail</td><td>Article metadata</td><td>Tabs, badges, action bar, abstract</td><td>Loading, Empty, Error</td><td>P1</td></tr>
+        <tr><td>05 Book Detail</td><td>Book metadata</td><td>Cover, format selector, TOC, action bar</td><td>Loading, Empty, Error</td><td>P1</td></tr>
+        <tr><td>06 Institution List</td><td>Select institution</td><td>Search, recently used, country list</td><td>Loading, Empty (query)</td><td>P1</td></tr>
+        <tr><td>07 Reader View</td><td>Read content</td><td>Text size, search, figures, tables, progress</td><td>Loading</td><td>P1</td></tr>
+        <tr><td>08 Library</td><td>Downloaded content</td><td>Tabs, search, download cards, guest section</td><td>Loading, Empty, Offline</td><td>P1</td></tr>
+        <tr><td>09 Search</td><td>Full-text search</td><td>Input, recent, subjects, tabs, results</td><td>Loading, Empty (query), Empty (filters)</td><td>P1</td></tr>
+        <tr><td>10 Profile</td><td>User settings</td><td>Avatar, institution, settings list, sign out</td><td>Default</td><td>P1</td></tr>
+        <tr><td>11 Voice Search</td><td>Voice input</td><td>Microphone, transcription, search/clear</td><td>Default</td><td>P2</td></tr>
+        <tr><td>12 Filter Sheet</td><td>Filter & sort</td><td>Chips, radio options, apply/clear</td><td>Default</td><td>P2</td></tr>
+        <tr><td>13 Email Sign-In</td><td>Personal login</td><td>Form fields, social buttons, create account</td><td>Default, Error (invalid)</td><td>P2</td></tr>
+        <tr><td>14 Error States</td><td>Access denied</td><td>Icons, messages, retry/learn more</td><td>Not entitled, No seats</td><td>P2</td></tr>
+        <tr><td>15 Offline</td><td>No connectivity</td><td>Banner, offline library card, skeleton</td><td>Offline</td><td>P2</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<footer class="footer">
+  <p>T&F Reader Design Specification · Derived from Taylor & Francis Online (tandfonline.com) · Platform-neutral React Native · v0.1</p>
+  <p style="margin-top:8px">All designs mock real T&F article/book metadata. Access resolution is mock-adaptable per the resolveAccess contract.</p>
+</footer>
+
+</body>
+</html>

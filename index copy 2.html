@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>T&F Knowledge Hub — Product Requirements &amp; Engineering Approach (MVP)</title>
+<meta name="description" content="Product Requirements Document and engineering approach for the T&F Knowledge Hub — a B2B academic reading platform for Taylor & Francis content. LDP Innovation Hackathon MVP." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Spectral:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f5f7fb;
+    --surface:#ffffff;
+    --surface-2:#f0f4fa;
+    --ink:#16233b;
+    --muted:#5a6b85;
+    --faint:#8494ab;
+    --line:#e2e8f2;
+    --line-strong:#cfd9e8;
+    --primary:#13487f;
+    --primary-700:#0d3562;
+    --primary-050:#e9f1fb;
+    --accent:#c8922f;
+    --accent-050:#f7edd7;
+    --green:#1c7a52;
+    --green-050:#e2f3ea;
+    --amber:#a5701a;
+    --amber-050:#f7edda;
+    --red:#b23a2e;
+    --red-050:#f8e5e2;
+    --blue:#2563a8;
+    --blue-050:#e7f0fb;
+    --radius:14px;
+    --radius-sm:9px;
+    --shadow:0 1px 2px rgba(16,35,59,.04), 0 8px 28px rgba(16,35,59,.06);
+    --shadow-lg:0 12px 44px rgba(16,35,59,.14);
+    --sidebar-w:288px;
+    --maxw:920px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--primary);text-decoration:none}
+  a:hover{text-decoration:underline}
+  h1,h2,h3,h4{font-family:'Spectral',Georgia,serif;line-height:1.25;color:var(--ink);font-weight:600}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;height:60px;
+    background:rgba(255,255,255,.86);backdrop-filter:saturate(160%) blur(10px);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:14px;padding:0 20px;
+  }
+  .topbar .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-family:'Spectral',serif;font-size:17px;letter-spacing:.1px}
+  .mark{
+    width:32px;height:32px;border-radius:8px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--primary),#1e6bb8);
+    color:#fff;display:grid;place-items:center;font-family:'Spectral',serif;font-weight:700;font-size:15px;
+    box-shadow:0 4px 12px rgba(19,72,127,.32);
+  }
+  .topbar .spacer{flex:1}
+  .topbar .doc-chip{font-size:12px;color:var(--muted);border:1px solid var(--line-strong);padding:4px 10px;border-radius:20px;font-weight:600}
+  .topbar .doc-chip b{color:var(--primary)}
+  .menu-btn{display:none;border:1px solid var(--line-strong);background:#fff;border-radius:8px;width:38px;height:38px;cursor:pointer;align-items:center;justify-content:center}
+  .menu-btn span,.menu-btn span::before,.menu-btn span::after{content:"";display:block;width:16px;height:2px;background:var(--ink);position:relative;transition:.2s}
+  .menu-btn span::before{position:absolute;top:-5px}
+  .menu-btn span::after{position:absolute;top:5px}
+
+  /* ---------- Layout ---------- */
+  .layout{display:flex;align-items:flex-start;max-width:1320px;margin:0 auto}
+  .sidebar{
+    position:sticky;top:60px;align-self:flex-start;
+    width:var(--sidebar-w);flex:0 0 var(--sidebar-w);height:calc(100vh - 60px);
+    overflow-y:auto;padding:26px 14px 60px 22px;border-right:1px solid var(--line);
+  }
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px}
+  .nav-group{margin-bottom:20px}
+  .nav-group h5{
+    font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:.9px;
+    font-size:10.5px;color:var(--faint);font-weight:700;margin:0 0 8px 12px;
+  }
+  .sidebar a{
+    display:block;color:var(--muted);font-size:13.5px;font-weight:500;
+    padding:6px 12px;border-radius:8px;border-left:2px solid transparent;line-height:1.4;
+  }
+  .sidebar a:hover{background:var(--surface-2);color:var(--ink);text-decoration:none}
+  .sidebar a.active{color:var(--primary);background:var(--primary-050);border-left-color:var(--primary);font-weight:600}
+  .sidebar a .n{color:var(--faint);font-variant-numeric:tabular-nums;font-size:12px;margin-right:8px}
+  .sidebar a.active .n{color:var(--primary)}
+
+  main{flex:1;min-width:0;padding:0 40px 120px;max-width:calc(var(--maxw) + 80px);margin:0 auto}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    margin:34px 0 8px;padding:44px 44px 40px;border-radius:22px;position:relative;overflow:hidden;
+    background:
+      radial-gradient(1200px 400px at 88% -10%, rgba(30,107,184,.35), transparent 60%),
+      radial-gradient(700px 300px at 0% 120%, rgba(200,146,47,.22), transparent 60%),
+      linear-gradient(150deg,#0d3562,#13487f 48%,#1a5ea0);
+    color:#eaf1fb;box-shadow:var(--shadow-lg);
+  }
+  .hero .kicker{font-family:'Inter';font-size:12.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a9c9ee;margin-bottom:16px}
+  .hero h1{color:#fff;font-size:clamp(30px,5vw,46px);margin:0 0 14px;font-weight:700;letter-spacing:-.5px}
+  .hero .lead{font-size:17.5px;max-width:640px;color:#d4e3f6;margin:0 0 26px;line-height:1.6}
+  .hero .metagrid{display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13px;color:#bcd4f0;border-top:1px solid rgba(255,255,255,.16);padding-top:20px}
+  .hero .metagrid div span{display:block;color:#8fb4de;font-size:10.5px;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:3px}
+  .hero .metagrid div b{color:#fff;font-weight:600;font-size:13.5px}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:20px 0 6px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;box-shadow:var(--shadow)}
+  .stat .v{font-family:'Spectral',serif;font-size:23px;font-weight:700;color:var(--primary);line-height:1.1}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:5px;font-weight:500}
+
+  /* ---------- Sections ---------- */
+  .section{padding:46px 0 8px;border-top:1px solid var(--line);margin-top:34px}
+  .section:first-of-type{border-top:none}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:500;letter-spacing:1px}
+  .section h2{font-size:29px;margin:0;letter-spacing:-.3px}
+  .section h3{font-size:20px;margin:32px 0 10px}
+  .section h4{font-size:16px;font-family:'Inter';font-weight:700;margin:22px 0 8px;color:var(--ink)}
+  .section p{color:#2c3a53;margin:12px 0}
+  .section ul,.section ol{color:#2c3a53;padding-left:22px}
+  .section li{margin:7px 0}
+  .lede{font-size:18px;color:var(--muted);line-height:1.6;max-width:70ch}
+  strong{color:var(--ink);font-weight:650}
+
+  /* ---------- Badges / pills ---------- */
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.2px;line-height:1.7;white-space:nowrap;font-family:'Inter'}
+  .b-green{background:var(--green-050);color:var(--green)}
+  .b-amber{background:var(--amber-050);color:var(--amber)}
+  .b-red{background:var(--red-050);color:var(--red)}
+  .b-blue{background:var(--blue-050);color:var(--blue)}
+  .b-primary{background:var(--primary-050);color:var(--primary)}
+  .b-accent{background:var(--accent-050);color:var(--accent)}
+  .b-gray{background:#eef1f6;color:var(--muted)}
+
+  /* ---------- Cards ---------- */
+  .cards{display:grid;gap:16px;margin:18px 0}
+  .cards.two{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .cards.three{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 8px;display:flex;align-items:center;gap:9px}
+  .card p{margin:6px 0 0;font-size:14.5px;color:var(--muted)}
+  .card .ic{width:30px;height:30px;border-radius:8px;background:var(--primary-050);color:var(--primary);display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+
+  /* ---------- Callouts ---------- */
+  .callout{border-radius:var(--radius);padding:16px 20px;margin:20px 0;border:1px solid var(--line);background:var(--surface);position:relative;padding-left:22px}
+  .callout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+  .callout .ct{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;font-family:'Inter'}
+  .callout p{margin:4px 0 0;font-size:14.5px}
+  .callout.note{background:var(--blue-050)}
+  .callout.note::before{background:var(--blue)} .callout.note .ct{color:var(--blue)}
+  .callout.decision{background:var(--green-050)}
+  .callout.decision::before{background:var(--green)} .callout.decision .ct{color:var(--green)}
+  .callout.warn{background:var(--amber-050)}
+  .callout.warn::before{background:var(--amber)} .callout.warn .ct{color:var(--amber)}
+  .callout.key{background:linear-gradient(120deg,var(--accent-050),#fff)}
+  .callout.key::before{background:var(--accent)} .callout.key .ct{color:var(--accent)}
+
+  /* ---------- Tables ---------- */
+  .tablewrap{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface)}
+  th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--surface-2);font-weight:700;color:var(--ink);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;font-family:'Inter'}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--primary-050)}
+  td code,th code{white-space:nowrap}
+
+  /* ---------- Code ---------- */
+  code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:var(--surface-2);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--primary-700)}
+  pre{background:#0f2038;color:#d6e2f2;border-radius:var(--radius);padding:18px 20px;overflow-x:auto;margin:16px 0;border:1px solid #1c3252;box-shadow:var(--shadow)}
+  pre code{background:none;border:none;padding:0;color:inherit;font-size:13px;line-height:1.7;white-space:pre}
+  .code-label{font-family:'Inter';font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);margin:20px 0 -8px}
+
+  /* ---------- Diagram ---------- */
+  .diagram{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:20px 0;box-shadow:var(--shadow);text-align:center;overflow-x:auto}
+  .diagram .mermaid{display:inline-block;min-width:min(100%,640px)}
+  .dcap{font-size:12.5px;color:var(--faint);margin-top:10px;font-style:italic}
+
+  /* ---------- 2x2 matrix ---------- */
+  .matrix{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:20px 0;box-shadow:var(--shadow);font-size:14px}
+  .matrix>div{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .matrix .mh{background:var(--surface-2);font-weight:700;font-family:'Inter';font-size:13px}
+  .matrix .mc{background:var(--surface)}
+  .matrix .allow{color:var(--green);font-weight:600}
+  .matrix .deny{color:var(--red);font-weight:600}
+
+  /* ---------- Timeline ---------- */
+  .timeline{position:relative;margin:24px 0;padding-left:30px}
+  .timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line-strong)}
+  .tl-item{position:relative;margin-bottom:20px}
+  .tl-item::before{content:"";position:absolute;left:-26px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--primary-050)}
+  .tl-item h4{margin:0 0 3px;font-family:'Spectral',serif;font-size:16px}
+  .tl-item p{margin:0;font-size:14px;color:var(--muted)}
+  .tl-item .rnd{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);font-weight:500}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--line);margin-top:60px;padding:36px 0 20px;color:var(--muted);font-size:13.5px}
+  footer .flinks{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  footer .flinks a{background:var(--surface);border:1px solid var(--line);padding:7px 13px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted)}
+  footer .flinks a:hover{border-color:var(--primary);color:var(--primary);text-decoration:none}
+  footer code{font-size:12px}
+
+  .backdrop{display:none}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:1000px){
+    .sidebar{
+      position:fixed;left:0;top:60px;z-index:40;background:var(--surface);
+      transform:translateX(-104%);transition:transform .25s ease;box-shadow:var(--shadow-lg);
+      width:280px;flex-basis:280px;
+    }
+    .sidebar.open{transform:none}
+    .menu-btn{display:flex}
+    main{padding:0 22px 100px}
+    .backdrop.show{display:block;position:fixed;inset:60px 0 0 0;background:rgba(16,35,59,.4);z-index:35}
+  }
+  @media(max-width:640px){
+    .hero{padding:32px 24px;margin-top:22px}
+    .section h2{font-size:24px}
+    .matrix{grid-template-columns:1fr}
+    .matrix>div{border-right:none}
+    body{font-size:15px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation"><span></span></button>
+  <div class="brand"><div class="mark">T&amp;F</div> Knowledge Hub</div>
+  <div class="spacer"></div>
+  <div class="doc-chip">PRD · <b>v1.0</b> · MVP</div>
+</header>
+
+<div class="layout">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <nav>
+      <div class="nav-group">
+        <h5>Overview</h5>
+        <a href="#summary"><span class="n">01</span>Executive Summary</a>
+        <a href="#problem"><span class="n">02</span>Problem &amp; Opportunity</a>
+        <a href="#background"><span class="n">03</span>Background &amp; Inspiration</a>
+      </div>
+      <div class="nav-group">
+        <h5>Product</h5>
+        <a href="#goals"><span class="n">04</span>Goals &amp; Success Metrics</a>
+        <a href="#scope"><span class="n">05</span>Scope</a>
+        <a href="#personas"><span class="n">06</span>Users &amp; Personas</a>
+        <a href="#overview"><span class="n">07</span>Product Overview</a>
+        <a href="#access-model"><span class="n">08</span>The Access Model</a>
+      </div>
+      <div class="nav-group">
+        <h5>Requirements</h5>
+        <a href="#requirements"><span class="n">09</span>Functional Requirements</a>
+        <a href="#nfr"><span class="n">10</span>Non-Functional Reqs</a>
+      </div>
+      <div class="nav-group">
+        <h5>Engineering</h5>
+        <a href="#architecture"><span class="n">11</span>System Architecture</a>
+        <a href="#services"><span class="n">12</span>Microservices</a>
+        <a href="#data-model"><span class="n">13</span>Data Model</a>
+        <a href="#flow"><span class="n">14</span>Access Flow</a>
+        <a href="#encryption"><span class="n">15</span>Content Protection</a>
+        <a href="#observability"><span class="n">16</span>Observability</a>
+        <a href="#stack"><span class="n">17</span>Tech Stack</a>
+        <a href="#engineering"><span class="n">18</span>Engineering &amp; APIs</a>
+      </div>
+      <div class="nav-group">
+        <h5>Planning</h5>
+        <a href="#roadmap"><span class="n">19</span>Roadmap</a>
+        <a href="#mapping"><span class="n">20</span>MVP ↔ PRD Mapping</a>
+        <a href="#decisions"><span class="n">21</span>Key Decisions</a>
+        <a href="#evolution"><span class="n">22</span>Design Evolution</a>
+      </div>
+      <div class="nav-group">
+        <h5>Reference</h5>
+        <a href="#glossary"><span class="n">23</span>Glossary</a>
+        <a href="#sources"><span class="n">24</span>Sources</a>
+      </div>
+    </nav>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ================= MAIN ================= -->
+  <main>
+    <!-- HERO -->
+    <div class="hero">
+      <div class="kicker">Product Requirements &amp; Engineering Approach</div>
+      <h1>T&amp;F Knowledge Hub</h1>
+      <p class="lead">A mobile-first, B2B academic reading platform that unifies Taylor &amp; Francis
+        <strong style="color:#fff">books and journals</strong> into a single reading and research
+        experience — sold to universities and libraries, gated by a purpose-built licensing &amp;
+        entitlement spine, and read through the free Readium toolkit.</p>
+      <div class="metagrid">
+        <div><span>Document</span><b>Product Requirements (MVP)</b></div>
+        <div><span>Version</span><b>1.0</b></div>
+        <div><span>Status</span><b>MVP Design — Approved scope</b></div>
+        <div><span>Program</span><b>T&amp;F LDP Innovation Hackathon</b></div>
+        <div><span>Prepared by</span><b>Prayas Yadav</b></div>
+        <div><span>Audience</span><b>Product · Engineering · Business</b></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="v">B2B</div><div class="l">Institutional subscription model</div></div>
+      <div class="stat"><div class="v">3 + 6</div><div class="l">Platform + domain microservices</div></div>
+      <div class="stat"><div class="v">8</div><div class="l">MongoDB collections (DB-per-service)</div></div>
+      <div class="stat"><div class="v">2</div><div class="l">Content types — eBooks &amp; Journals</div></div>
+      <div class="stat"><div class="v">AES-256-GCM</div><div class="l">Content protection at rest</div></div>
+    </div>
+
+    <!-- 01 SUMMARY -->
+    <section class="section" id="summary">
+      <div class="section-head"><span class="section-num">01</span><h2>Executive Summary</h2></div>
+      <p class="lede">The T&amp;F Knowledge Hub is the access-control spine plus the reading surface for
+        Taylor &amp; Francis academic content, delivered as a Spring Cloud microservices backend and a
+        React Native app.</p>
+      <p>The platform is <strong>B2B</strong>: it is sold to <strong>organizations</strong> (universities and
+        libraries) on subscription. There is <strong>no consumer purchase path</strong> — but any logged-in
+        user, even one not attached to an organization, can browse the entire catalogue and read
+        <strong>open-access</strong> content.</p>
+      <p>The MVP proves one loop end to end: <strong>log in → browse everything → get gated at
+        read/download → read &amp; track</strong>. Every user sees the whole catalogue. Open-access content
+        opens for anyone. For licensed (non-open-access) content, two time-bounded checks fire at the moment
+        of reading or download — <strong>License</strong> (does one of the user's organizations license this
+        title?) and <strong>Entitlement</strong> (is the user an active member of that organization?). Once
+        reading, the app tracks progress, highlights, bookmarks, and downloads, online and offline.</p>
+      <div class="callout key">
+        <div class="ct">The one-sentence mental model</div>
+        <p>Everyone who logs in sees all content. Open-access opens for anyone. For licensed content, access is
+          granted only if <strong>one of the user's organizations licenses it</strong> (License) <strong>and</strong>
+          the user is an <strong>active member</strong> of that organization (Entitlement) — evaluated
+          <strong>when they try to read or download</strong>, not while browsing.</p>
+      </div>
+      <p>Non-open-access files are encrypted at rest with <strong>AES-256-GCM</strong> and unlocked by our own
+        <strong>License layer</strong> — a practical, free stand-in for the paid Readium LCP — while reading is
+        rendered in the <strong>free, open-source Readium toolkit</strong>. Operations and business KPIs are
+        tracked from day one with <strong>Prometheus + Grafana</strong>, woven into every service like logging.</p>
+    </section>
+
+    <!-- 02 PROBLEM -->
+    <section class="section" id="problem">
+      <div class="section-head"><span class="section-num">02</span><h2>Problem &amp; Opportunity</h2></div>
+      <p>Academic readers work across fragmented surfaces: books in one system, journals and their articles in
+        another, each with its own access rules, logins, and reading experience. Institutions pay for large
+        subscriptions but struggle to give members a single, coherent, offline-capable place to read what
+        they are entitled to.</p>
+      <p>The opportunity is a <strong>unified, single-publisher reading platform</strong> for Taylor &amp;
+        Francis content that:</p>
+      <ul>
+        <li>presents <strong>all</strong> content to every user (discovery is never blocked), while enforcing
+          entitlement precisely at the point of consumption;</li>
+        <li>models the institutional reality — <strong>organizations</strong> hold subscriptions, users belong to
+          organizations, and access follows from both;</li>
+        <li>protects commercial content without the cost and gating of a full commercial DRM stack;</li>
+        <li>gives the <strong>business/sales team</strong> a live view of engagement and — critically —
+          <strong>unmet demand</strong> (what users tried to open but couldn't).</li>
+      </ul>
+      <div class="callout note">
+        <div class="ct">Scope discipline</div>
+        <p>The PRD is the destination; this document specifies <strong>phase one</strong>. It reconciles the full
+          product vision with a deliberately narrowed MVP, and states explicitly what is deferred and what is
+          dropped (see <a href="#scope">Scope</a> and <a href="#roadmap">Roadmap</a>).</p>
+      </div>
+    </section>
+
+    <!-- 03 BACKGROUND -->
+    <section class="section" id="background">
+      <div class="section-head"><span class="section-num">03</span><h2>Background &amp; Inspiration</h2></div>
+      <p>The architecture is inspired by <strong>The Palace Project</strong> — an open-source, cloud-based
+        digital library platform operated by Lyrasis with the Digital Public Library of America, and the
+        successor to NYPL's Library Simplified / SimplyE. We studied it to ground our design in a proven,
+        standards-based model for institutional e-content lending.</p>
+      <div class="cards three">
+        <div class="card"><h4><span class="ic">◎</span>Open standards</h4><p>Palace is glued together by
+          <strong>OPDS</strong> catalogue feeds and the <strong>Readium</strong> reading toolkit. We adopt
+          <strong>OPDS 2.0</strong> feeds and the free Readium toolkit for the same reasons.</p></div>
+        <div class="card"><h4><span class="ic">◲</span>Distributed services</h4><p>A backend of independently
+          deployable services talking over feeds — mirrored here as Spring Cloud microservices with a
+          database-per-service.</p></div>
+        <div class="card"><h4><span class="ic">⌸</span>DRM as a spectrum</h4><p>Palace ships Readium
+          <strong>LCP</strong> and Adobe DRM (off by default). This validated our choice to reproduce LCP's
+          <em>shape</em> with free primitives rather than pay for the certified stack in the MVP.</p></div>
+      </div>
+      <p class="dcap">Key difference: Palace is a multi-publisher public-library lending network; the T&amp;F
+        Knowledge Hub is a <strong>single-publisher, B2B</strong> platform rebuilt for institutional
+        subscriptions. Full research notes live in <code>README.md</code>.</p>
+    </section>
+
+    <!-- 04 GOALS -->
+    <section class="section" id="goals">
+      <div class="section-head"><span class="section-num">04</span><h2>Goals &amp; Success Metrics</h2></div>
+      <h3>Primary goal</h3>
+      <p>Prove <strong>browse-everything → gate-at-read → read/track</strong> end to end — open-access content
+        served plainly, non-open-access content unlocked by our own License layer and rendered in Readium.</p>
+      <h3>Objectives</h3>
+      <div class="cards two">
+        <div class="card"><h4>Correct access control</h4><p>A user can read exactly what their organizations
+          license and no more; open-access is universally readable; denials are correct and explained.</p></div>
+        <div class="card"><h4>Real reading surface</h4><p>Open, read, and annotate EPUB/PDF with progress,
+          highlights, bookmarks, and downloads that sync across devices — online and offline.</p></div>
+        <div class="card"><h4>Commercial protection</h4><p>Non-open-access content is unreadable at rest and if
+          a URL leaks; keys are released only after the checks pass.</p></div>
+        <div class="card"><h4>Business visibility</h4><p>Live dashboards for API health/traffic and for
+          engagement + unmet-demand signals, from day one.</p></div>
+      </div>
+      <h3>Success metrics (MVP)</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Signal</th><th>What "good" looks like</th></tr></thead>
+        <tbody>
+          <tr><td>Access correctness</td><td>100% of licensed/open/denied cases resolve as designed in the demo matrix</td></tr>
+          <tr><td>Gate behaviour</td><td>Full catalogue always visible; enforcement only at read/download</td></tr>
+          <tr><td>Reading + sync</td><td>Progress/highlights/bookmarks survive offline → reconnect (last-write-wins)</td></tr>
+          <tr><td>Protection</td><td>Encrypted blob unreadable without the gated key; plaintext never written to disk</td></tr>
+          <tr><td>Observability</td><td>Ops + Business dashboards populate; a denied access shows on the demand panel</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 05 SCOPE -->
+    <section class="section" id="scope">
+      <div class="section-head"><span class="section-num">05</span><h2>Scope</h2></div>
+      <h3><span class="badge b-green">In scope — MVP</span></h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Area</th><th>What we build</th></tr></thead>
+        <tbody>
+          <tr><td><b>Platform services</b></td><td>Eureka (discovery), API Gateway (routing + JWT validation), Config Server (central config)</td></tr>
+          <tr><td><b>Domain services</b></td><td>Auth, Organization, Catalog, License, Entitlement, User-Content</td></tr>
+          <tr><td><b>Content</b></td><td>eBooks and Journals (a journal has many Articles); metadata mocked/seeded; files in S3</td></tr>
+          <tr><td><b>Access model</b></td><td>Browse-all after login; License + Entitlement checks at read/download; open-access bypass</td></tr>
+          <tr><td><b>Reading</b></td><td>Progress-sync, highlights, bookmarks, downloads; online + offline</td></tr>
+          <tr><td><b>Discovery</b></td><td>OPDS 2.0 feeds + a scheduled OPDS cronjob; per-item access badges &amp; filter</td></tr>
+          <tr><td><b>Auth</b></td><td>JWT only, with mocked/pre-seeded membership (multi-org)</td></tr>
+          <tr><td><b>Protection</b></td><td>AES-256-GCM at rest; content key over TLS; offline key in Keychain/Keystore</td></tr>
+          <tr><td><b>Observability</b></td><td>Micrometer + Actuator → Prometheus → Grafana (Ops + Business dashboards)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3><span class="badge b-amber">Deferred — Roadmap</span></h3>
+      <p>Chapters / chapter-split · audiobooks · real Readium LCP (paid EDRLab) · concurrent-seat DRM
+        enforcement · SAML / SCIM / federated auth · deep-BI pipeline (Redshift, Power BI) · text-to-audio ·
+        full-text search · reading lists · recommendations. <em>Text-to-audio and in-book search come nearly
+        free with the Readium toolkit — low-cost to pull in later.</em></p>
+
+      <h3><span class="badge b-red">Dropped entirely</span></h3>
+      <div class="callout warn">
+        <div class="ct">Not deferred — removed</div>
+        <p>The <strong>B2C / individual-purchase</strong> business model — paywall, in-app purchase, and the
+          <code>purchaseType: bought</code> path — is removed. The platform is <strong>B2B only</strong>.</p>
+      </div>
+    </section>
+
+    <!-- 06 PERSONAS -->
+    <section class="section" id="personas">
+      <div class="section-head"><span class="section-num">06</span><h2>Users &amp; Personas</h2></div>
+      <div class="cards two">
+        <div class="card"><h4><span class="ic">🎓</span>Student / Member</h4><p>Belongs to one or more
+          organizations. Browses the full catalogue, reads what their institution licenses, annotates and syncs
+          across devices, and reads offline on the app.</p></div>
+        <div class="card"><h4><span class="ic">🔬</span>Researcher / Faculty</h4><p>Consumes journals and
+          individual articles deeply; values in-book search, highlights, and (roadmap) citation and reading
+          lists. May belong to multiple organizations.</p></div>
+        <div class="card"><h4><span class="ic">🏛️</span>Library / Org Admin</h4><p>Represents the licensee.
+          Cares about what the organization has licensed, its subscription window, and its member roster
+          (<code>userList</code>) — the authoritative source of who is active.</p></div>
+        <div class="card"><h4><span class="ic">📈</span>Business / Sales</h4><p>Watches engagement and
+          <strong>unmet demand</strong> (denied sessions by reason) on the Grafana Business dashboard to guide
+          acquisition and upsell.</p></div>
+      </div>
+      <div class="callout note"><div class="ct">Open-access reader</div><p>A logged-in user with no
+        organization is still a first-class user: they browse everything and read all open-access content.</p></div>
+    </section>
+
+    <!-- 07 OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="section-head"><span class="section-num">07</span><h2>Product Overview</h2></div>
+      <p>The product is the <strong>access-control spine plus the reading surface</strong>. Licensing +
+        entitlement is the hard, differentiating core; reading + sync is the engagement surface. Everything
+        else layers on top of a correct access model.</p>
+      <h3>The loop</h3>
+      <ol>
+        <li>A user <strong>logs in</strong> (JWT) and sees the <strong>entire catalogue</strong>.</li>
+        <li><strong>Open-access</strong> content is readable/downloadable by anyone.</li>
+        <li>For <strong>licensed</strong> content, two time-bounded checks fire <strong>at read/download
+          time</strong> — License (from the org's <code>licenseId[]</code>) and Entitlement (from the
+          user's <code>entitlementId[]</code>).</li>
+        <li>Once reading, the app tracks <strong>progress, highlights, bookmarks, and downloads</strong>
+          (offline-capable, synced).</li>
+      </ol>
+      <div class="callout decision">
+        <div class="ct">Design principle</div>
+        <p>Discovery is never gated — the gate is at <strong>consumption</strong>. The whole catalogue is
+          visible to everyone; enforcement happens only when a user tries to read online or download.</p>
+      </div>
+    </section>
+
+    <!-- 08 ACCESS MODEL -->
+    <section class="section" id="access-model">
+      <div class="section-head"><span class="section-num">08</span><h2>The Access Model</h2></div>
+      <p>Access is expressed as <strong>two orthogonal, time-bounded records</strong> — a
+        <strong>license</strong> the org holds and an <strong>entitlement</strong> the user holds.
+        They answer different questions and are kept deliberately separate.</p>
+      <div class="cards two">
+        <div class="card"><h4><span class="badge b-primary">License</span> org ↔ content</h4>
+          <p>Does one of the user's organizations <strong>license this title</strong>? A thin
+            <code>licenses</code> doc (<code>{isbn, start, end, openAccess}</code>) the org holds via
+            <code>organization.licenseId[]</code>, matched on the content's <strong>isbn</strong>. For an
+            article, its <strong>parent journal's</strong> license.</p></div>
+        <div class="card"><h4><span class="badge b-accent">Entitlement</span> user ↔ access</h4>
+          <p>Does the user hold a valid <code>entitlements</code> doc (<code>{start, end}</code>) via
+            <code>user.entitlementId[]</code>, and is the user <code>active</code> in the org's
+            <code>userList[]</code>? The "who you are" layer.</p></div>
+      </div>
+
+      <h3>Why they are separate — the 2×2</h3>
+      <p>The two dimensions are independent: an organization can license a title without a given user being an
+        active member, and a user can be an active member of an org that hasn't licensed a given title. Only the
+        intersection grants access.</p>
+      <div class="matrix">
+        <div class="mh"></div>
+        <div class="mh">Org licenses the title</div>
+        <div class="mh">Org does <em>not</em> license it</div>
+        <div class="mh">User is active in org</div>
+        <div class="mc"><span class="allow">✓ Access granted</span><br/><small>License ✓ &amp; Entitlement ✓</small></div>
+        <div class="mc"><span class="deny">✕ Denied</span><br/><small>not_licensed</small></div>
+        <div class="mh">User not active / left</div>
+        <div class="mc"><span class="deny">✕ Denied</span><br/><small>not_entitled / left_org</small></div>
+        <div class="mc"><span class="deny">✕ Denied</span><br/><small>neither holds</small></div>
+      </div>
+      <div class="callout key">
+        <div class="ct">Library-card analogy</div>
+        <p><strong>License</strong> is whether the <em>library owns the book</em>. <strong>Entitlement</strong>
+          is whether <em>your library card is valid</em>. You need both to check the book out — and each is
+          owned and revoked independently, which is exactly why they are two collections owned by two services.</p>
+      </div>
+
+      <h3>Rules</h3>
+      <ul>
+        <li><strong>Open access</strong> (<code>catalogue.openAccess</code> / <code>article.openAccess</code>)
+          → skip both checks, serve the file plainly.</li>
+        <li><strong>Multi-org resolution</strong> — the <strong>first qualifying org</strong> (holds a
+          matching valid license + subscription valid + user active) wins.</li>
+        <li><strong>Validity window</strong> — a license/entitlement is honored only while
+          <code>start ≤ now ≤ end</code> (bounded by <code>subscription.endsAt</code>); expired → deny.
+          The gate <strong>reads</strong> the reference arrays — no per-user materialization, no cron.</li>
+      </ul>
+    </section>
+
+    <!-- 09 FUNCTIONAL REQUIREMENTS -->
+    <section class="section" id="requirements">
+      <div class="section-head"><span class="section-num">09</span><h2>Functional Requirements</h2></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr><td><code>FR-1</code></td><td><b>Authentication.</b> Email/password login issues an <strong>access token</strong> (JWT, validated at the Gateway) + a <strong>refresh token</strong>. Membership is mocked/pre-seeded; multi-org supported.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-2</code></td><td><b>Browse everything.</b> The catalogue endpoint returns the full set of books and journals as OPDS 2.0 feeds; nothing is hidden.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-3</code></td><td><b>Access badges &amp; filter.</b> Each item carries a per-user badge (Open Access / Full Access via org / Locked) and is filterable.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-4</code></td><td><b>Access gate at read/download.</b> On read/download of non-open-access content, check the org holds a valid license for the ISBN and the user holds a valid entitlement, then allow or deny with a reason.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-5</code></td><td><b>Open-access bypass.</b> Open-access content is served plainly via a signed S3 URL, with no checks.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-6</code></td><td><b>Content protection.</b> Non-open-access files are AES-256-GCM encrypted at rest; the key is released only after the checks and delivered over TLS; the app decrypts in memory.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-7</code></td><td><b>Reading &amp; annotation.</b> Render EPUB (Readium) and PDF (react-native-pdf); capture progress, highlights, bookmarks.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-8</code></td><td><b>Offline reading &amp; sync.</b> Download for offline use (app-only); sync reading state on reconnect (last-write-wins).</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-9</code></td><td><b>Discovery refresh.</b> A scheduled OPDS cronjob regenerates feeds from the (mock) catalogue.</td><td><span class="badge b-amber">P1</span></td></tr>
+          <tr><td><code>FR-10</code></td><td><b>Observability.</b> Every service exposes metrics; Prometheus scrapes; Grafana serves Ops + Business dashboards, including denials by reason.</td><td><span class="badge b-green">P0</span></td></tr>
+          <tr><td><code>FR-11</code></td><td><b>Device-limited session management.</b> Multi-device sessions (one per device) capped at <strong>N devices per account</strong> (configurable, default 3) — a login beyond the cap is <strong>refused</strong> (<code>device_limit_reached</code>) until a device is signed out (no auto-eviction); <strong>silent refresh</strong> on token expiry; <strong>manage devices</strong> (list / logout / logout-all); TTL auto-expiry.</td><td><span class="badge b-green">P0</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout note"><div class="ct">Session ≠ content access</div><p>A valid session only proves
+        <em>who</em> is signed in. Every read/download still re-checks <strong>License + Entitlement</strong> at
+        the gate — so leaving an org or an expired subscription denies content even on a live session.</p></div>
+    </section>
+
+    <!-- 10 NFR -->
+    <section class="section" id="nfr">
+      <div class="section-head"><span class="section-num">10</span><h2>Non-Functional Requirements</h2></div>
+      <div class="cards two">
+        <div class="card"><h4>Security</h4><p>JWT validated at the edge; content encrypted at rest; keys never
+          embedded in a signed token; <code>/actuator</code> endpoints internal-only; Grafana behind auth.</p></div>
+        <div class="card"><h4>Isolation</h4><p>Database-per-service — services never share a database; they call
+          one another via the Gateway / Eureka. Clear ownership boundaries.</p></div>
+        <div class="card"><h4>Performance</h4><p>Denormalized catalogue so list/search hit one collection with
+          no join; short-TTL signed URLs; lazy grant refresh avoids a reconciliation cron.</p></div>
+        <div class="card"><h4>Portability &amp; ops</h4><p>Stateless services behind the Gateway; central config;
+          Dockerized local stack; metrics/health from day one, added like logging.</p></div>
+        <div class="card"><h4>Offline-first</h4><p>Reading state is created offline and synced on reconnect;
+            plaintext is never written to disk; keys live in the OS secure enclave.</p></div>
+        <div class="card"><h4>Observability boundary</h4><p>Metrics use <strong>bounded labels only</strong> —
+          never <code>userId</code>/<code>contentId</code> — to protect Prometheus cardinality.</p></div>
+      </div>
+    </section>
+
+    <!-- 11 ARCHITECTURE -->
+    <section class="section" id="architecture">
+      <div class="section-head"><span class="section-num">11</span><h2>System Architecture</h2></div>
+      <p>A single backend of independently deployable Spring Boot services, coordinated by Spring Cloud. The
+        React Native app talks <strong>only</strong> to the API Gateway; the Gateway validates the JWT and
+        routes to domain services, which discover each other through Eureka and read config from the Config
+        Server. <strong>Each service owns its own MongoDB database.</strong> Content files live in S3 —
+        open-access files are served plainly; non-open-access files are unlocked by a license token + key from
+        the License service.</p>
+      <div class="diagram">
+        <div class="mermaid">
+flowchart TB
+    RN["React Native App (iOS + Android)"]
+    GW["API Gateway · routing + JWT validation"]
+    RN -->|"HTTPS · Bearer JWT"| GW
+    subgraph SVC["Domain services (6) · each owns its own MongoDB"]
+        direction LR
+        AUTH["Auth · user/sessions"]
+        CAT["Catalog · catalogue/article"]
+        ORG["Organization · organization"]
+        LIC["License · licenses<br/>(the gate + unlock)"]
+        ENT["Entitlement · entitlements"]
+        UC["User-Content · user_content"]
+    end
+    GW --> AUTH
+    GW --> CAT
+    GW --> LIC
+    GW --> ORG
+    GW --> UC
+    LIC -->|"org holds license? sub + membership"| ORG
+    LIC -->|"user entitled?"| ENT
+    EUR["Eureka · service discovery"]
+    CFG["Config Server · central config"]
+    SVC -. "register · discover" .-> EUR
+    SVC -. "pull config" .-> CFG
+    S3[("AWS S3 · EPUB / PDF files")]
+    CAT -->|"signed URL"| S3
+    LIC -->|"content key + signed URL"| S3
+    RN -. "read / download" .-> S3
+        </div>
+        <div class="dcap">The React Native app reaches only the Gateway; observability (<code>/actuator/prometheus</code>) is scraped on an internal port, not shown.</div>
+      </div>
+      <div class="callout note"><div class="ct">Why separate services</div><p>Each of
+        <strong>Organization</strong>, <strong>License</strong>, and <strong>Entitlement</strong> is its own
+        bounded context with a single responsibility, its own database, and an independent deploy/scale path —
+        clean ownership boundaries that mirror the domain (who the tenant is · what is licensed · who is
+        entitled). The <strong>read/download gate</strong> lives in the <strong>License</strong> service, which
+        chains synchronous calls to <strong>Organization</strong> (subscription + membership) and
+        <strong>Entitlement</strong> (user validity) — the accepted cost of keeping the contexts separate.
+        "University" is generalized to <strong>Organization</strong> (its own service); <code>user</code> stays
+        in <strong>Auth</strong>.</p></div>
+    </section>
+
+    <!-- 12 SERVICES -->
+    <section class="section" id="services">
+      <div class="section-head"><span class="section-num">12</span><h2>Microservices</h2></div>
+      <h3>Platform services</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Service</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><b>Eureka Server</b></td><td>Service registry / discovery.</td></tr>
+          <tr><td><b>API Gateway</b></td><td>Single entry point; routes to services and <strong>validates the JWT</strong> on protected routes.</td></tr>
+          <tr><td><b>Config Server</b></td><td>Centralized config — DB URIs, S3 bucket, JWT secret/expiry, feed schedule.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Domain services <span class="badge b-gray">database-per-service</span></h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Service</th><th>Responsibility</th><th>Owns (MongoDB)</th></tr></thead>
+        <tbody>
+          <tr><td><b>Auth</b></td><td>User accounts + email/password login; issues <strong>access + refresh tokens</strong>; owns <code>user</code> (multi-org) and <code>sessions</code> (per-device: hashed refresh token, TTL). Handles login / refresh / logout / list-sessions.</td><td><code>auth-db</code>: <code>user</code>, <code>sessions</code></td></tr>
+          <tr><td><b>Catalog</b></td><td>Denormalized <code>catalogue</code> and <code>article</code>; generates OPDS 2.0 feeds + cronjob; computes access badges.</td><td><code>catalog-db</code>: <code>catalogue</code>, <code>article</code></td></tr>
+          <tr><td><b>Organization</b></td><td>The tenant (University / Library): owns <code>organization</code> — <code>licenseId[]</code> (licenses the org holds), <code>subscription</code>, and the authoritative <code>userList[]</code>. Answers membership + subscription-validity checks for the gate.</td><td><code>organization-db</code>: <code>organization</code></td></tr>
+          <tr><td><b>License</b></td><td>Owns <code>licenses</code> (<code>{isbn,start,end,openAccess}</code>). Runs the <strong>read/download gate</strong> and mints the unlock token + content key — calling <strong>Organization</strong> (does an org hold a valid license for the ISBN + is the user active) and <strong>Entitlement</strong> (is the user entitled). Our home-grown stand-in for paid Readium LCP.</td><td><code>license-db</code>: <code>licenses</code></td></tr>
+          <tr><td><b>Entitlement</b></td><td>Owns <code>entitlements</code> (<code>{start,end}</code>). Validates that a user holds a valid, unexpired entitlement (via <code>user.entitlementId[]</code>).</td><td><code>entitlement-db</code>: <code>entitlements</code></td></tr>
+          <tr><td><b>User-Content</b></td><td>Per-user reading state: progress, highlights, bookmarks, downloads, library membership.</td><td><code>usercontent-db</code>: <code>user_content</code></td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout decision"><div class="ct">Data-ownership note (inverted references, separate services)</div><p>Ownership
+        is inverted but the collections live in <strong>three separate services</strong>. A <code>licenses</code> doc
+        (<code>{isbn, start, end, openAccess}</code>, in <strong>License</strong>) carries <strong>no</strong>
+        userId/orgId — the <strong>organization references it</strong> via <code>licenseId[]</code> (in
+        <strong>Organization</strong>); an <code>entitlements</code> doc (in <strong>Entitlement</strong>) likewise —
+        the <strong>user references it</strong> via <code>entitlementId[]</code>. The access token carries the user's
+        <code>organizationId[]</code> + <code>entitlementId[]</code>; the gate (in <strong>License</strong>) resolves
+        those id-lists by <strong>calling Organization and Entitlement</strong> — a cross-service chain that is the
+        accepted cost of separate bounded contexts. <em>Arrays get long by design — an accepted requirement.</em></p></div>
+    </section>
+
+    <!-- 13 DATA MODEL -->
+    <section class="section" id="data-model">
+      <div class="section-head"><span class="section-num">13</span><h2>Data Model</h2></div>
+      <p>We use a <strong>denormalized <code>catalogue</code></strong> ("Architecture 1"): content-type-specific
+        fields (ebook / journal) are embedded directly in the <code>catalogue</code> document, so list/search
+        hits one collection with no join. Articles are the exception — they live in their own collection.</p>
+      <div class="diagram">
+        <div class="mermaid">
+erDiagram
+    CATALOGUE ||--o{ ARTICLE : "journal contains"
+    ORGANIZATION }o--o{ USER : "membership"
+    ORGANIZATION ||--o{ LICENSE : "holds (licenseId[])"
+    LICENSE }o--|| CATALOGUE : "for isbn"
+    USER ||--o{ ENTITLEMENT : "holds (entitlementId[])"
+    USER ||--o{ USER_CONTENT : "reading state"
+    USER_CONTENT }o--|| CATALOGUE : for
+    USER ||--o{ SESSION : "device login (max N)"
+        </div>
+        <div class="dcap">Entity relationships across the eight collections.</div>
+      </div>
+
+      <div class="code-label">catalogue — denormalized; one doc per ebook / journal (not articles)</div>
+      <pre><code>{ _id, title, subtitle?, description,
+  authors[],                       // embedded for MVP
+  language, image, price, openAccess: bool,
+  region[]?, category[],
+  contentType: ENUM[ebook|journal],
+  timestamp,
+  // embedded content-type block (only the matching one is populated)
+  ebook?:   { isbn, format[], link },                     // link = S3 object key
+  journal?: { issn, format[]?, subject[], frequency, articleIds[] } }</code></pre>
+
+      <div class="code-label">article — separate collection; referenced by a journal's articleIds[]</div>
+      <pre><code>{ _id, journalId, link, format[], rangeOfPage, subject[],
+  openAccess: bool,               // can differ per article
+  timestamp }</code></pre>
+
+      <div class="code-label">organization — universities &amp; libraries (licensee / tenant; owned by Organization)</div>
+      <pre><code>{ _id, type: ENUM[University|Library],
+  licenseId[],                                  // ids of licenses (content) this org holds
+  subscription: { status, startsAt, endsAt },   // validity window
+  userList: [ { userId, status: ENUM[active|left] } ] }  // AUTHORITATIVE roster</code></pre>
+
+      <div class="code-label">user — owned by Auth</div>
+      <pre><code>{ _id, name, email, passwordHash,
+  organizationId[],        // multi-org convenience index
+  entitlementId[],         // ids of entitlements this user holds
+  userContentIds[] }
+// Membership status is AUTHORITATIVE on organization.userList[] — not duplicated here.</code></pre>
+
+      <div class="code-label">user_content — per-user reading state</div>
+      <pre><code>{ _id, userId, catalogueId,
+  inLibrary: bool,
+  purchaseType: ENUM[free|subscription],          // "bought" (B2C) dropped
+  syncProgress: { pageLocation, updatedAtTime },  // last-write-wins
+  highlights[]: { id, pageLocation, textHighlighted, color, updatedAtTime },
+  bookmarks[]:  { id, pageLocation, label, updatedAtTime },
+  download[]:   { deviceId, downloadedAt },
+  timestampOfUpdation }</code></pre>
+
+      <div class="code-label">licenses — thin content-license (owned by License; ref by organization.licenseId[])</div>
+      <pre><code>{ _id,                     // licenseId — stored in organization.licenseId[]
+  isbn,                    // content identifier (ebook ISBN / journal ISSN)
+  start, end,              // validity window; end ≤ subscription.endsAt
+  openAccess }             // boolean
+// NO userId / organizationId — "which org holds it" = organization.licenseId[]
+// article access = its PARENT JOURNAL's license</code></pre>
+
+      <div class="code-label">entitlements — thin validity record (owned by Entitlement; ref by user.entitlementId[])</div>
+      <pre><code>{ _id,                     // entitlementId — stored in user.entitlementId[]
+  start, end }             // validity window; end ≤ subscription.endsAt
+// NO userId / organizationId — membership stays on organization.userList[]</code></pre>
+
+      <div class="code-label">sessions — per-user↔device login (owned by Auth)</div>
+      <pre><code>{ _id,                     // = sessionId (also an access-token claim)
+  userId, deviceId,        // one active session per (user, device)
+  deviceInfo?,             // platform / model label — backs "list my sessions"
+  refreshTokenHash,        // SHA-256 of the refresh token — never the raw token
+  createdAt, lastUsedAt,
+  expiresAt }              // TTL index auto-deletes the row; unique {userId, deviceId}
+// DEVICE CAP: at most N active sessions per userId (default 3, configurable). A NEW-device login
+// at the cap is REFUSED (device_limit_reached) — sign out an existing device first (no auto-evict).</code></pre>
+    </section>
+
+    <!-- 14 FLOW -->
+    <section class="section" id="flow">
+      <div class="section-head"><span class="section-num">14</span><h2>End-to-End Access Flow</h2></div>
+      <p>The gate is at <strong>read/download time</strong>, not at browse time.</p>
+      <ol>
+        <li><strong>Authenticate.</strong> Login (+ <code>deviceId</code>) → Auth creates a <strong>session</strong> and returns an <strong>access token</strong> (short-lived JWT, sent as <code>Bearer</code>) + a <strong>refresh token</strong> (kept in Keychain/Keystore).</li>
+        <li><strong>Browse everything.</strong> Catalog returns the full catalogue (OPDS feed), each item tagged
+          with an access badge. No content is hidden.</li>
+        <li><strong>Open or download a title.</strong> The user tries to read online or download a book, or an
+          article inside a journal.</li>
+        <li><strong>Open-access shortcut.</strong> If <code>openAccess</code> → serve plainly via a signed S3 URL
+          and record in <code>user_content</code>.</li>
+        <li><strong>License check</strong> (<strong>License</strong> service, the gate — token carries <code>organizationId[]</code>).
+          The gate calls <strong>Organization</strong> for the user's orgs that have a valid <code>subscription</code>
+          with the user <code>active</code> and their <code>licenseId[]</code>, then finds the first of those
+          <code>licenses</code> whose <code>isbn</code> matches the content and is within <code>start ≤ now ≤ end</code>.</li>
+        <li><strong>Entitlement check</strong> (<strong>Entitlement</strong> service — token carries <code>entitlementId[]</code>).
+          The gate calls Entitlement: those ids must resolve to a <strong>valid entitlement</strong> (<code>entitlements</code>, <code>start ≤ now ≤ end</code>).</li>
+        <li><strong>Unlock or deny.</strong> Both valid → <strong>License</strong> issues the unlock token + content key
+          (over TLS); the encrypted file is fetched from S3 and decrypted in memory. Otherwise → deny (with reason).</li>
+        <li><strong>Read &amp; track.</strong> Progress / highlights / bookmarks / downloads sync to
+          <code>user_content</code> (last-write-wins).</li>
+        <li><strong>Access window.</strong> Access persists while the referenced <code>licenses</code> /
+          <code>entitlements</code> are within <code>start</code>/<code>end</code>; each read re-runs the gate
+          (License → Organization + Entitlement) against the current windows.</li>
+        <li><strong>Session lifecycle &amp; device cap.</strong> On a <strong>401</strong> the client interceptor silently calls
+          <code>/auth/refresh</code> and retries — no surprise logout; <strong>manage devices</strong> via
+          <code>GET /auth/sessions</code> + logout / logout-all; sessions auto-expire via a <strong>TTL index</strong>.
+          An account holds at most <strong>N devices</strong> (default 3) — a login beyond the cap is refused
+          (<code>device_limit_reached</code>) until one is signed out.</li>
+      </ol>
+      <div class="diagram">
+        <div class="mermaid">
+sequenceDiagram
+    actor U as User (RN App)
+    participant GW as API Gateway
+    participant A as Auth
+    participant C as Catalog
+    participant L as License (gate)
+    participant O as Organization
+    participant E as Entitlement
+    participant S as S3
+    U->>GW: POST /auth/login
+    GW->>A: forward
+    A-->>U: access + refresh tokens (claims: orgs[], ents[])
+    U->>GW: GET /catalog (Bearer JWT)
+    GW->>C: forward
+    C-->>U: FULL catalogue + access badges
+    U->>GW: Read / Download (contentId)
+    GW->>L: POST /access/{contentId}
+    L->>C: content: isbn, openAccess, blob location, wrapped key
+    C-->>L: metadata
+    alt Open access
+        L-->>U: signed URL → content (plain)
+    else Licensed content
+        L->>O: org holds license for isbn? sub + membership (orgs[])
+        O-->>L: licenseId[] + ok
+        L->>E: user entitled? (ents[])
+        E-->>L: ok
+        alt both ok
+            L->>L: unwrap content key (master key / KMS)
+            L-->>U: license token + content key (TLS) + signed URL
+            U->>S: fetch encrypted blob
+            S-->>U: encrypted blob → decrypt in memory → reader
+        else either fails
+            L-->>U: DENY (reason)
+        end
+    end
+        </div>
+        <div class="dcap">Read/download sequence — open-access shortcut vs. the licensed-content gate.</div>
+      </div>
+    </section>
+
+    <!-- 15 ENCRYPTION -->
+    <section class="section" id="encryption">
+      <div class="section-head"><span class="section-num">15</span><h2>Content Protection &amp; Encryption</h2></div>
+      <p>Non-open-access content is protected with an <strong>LCP-style scheme built from free, standard
+        primitives</strong> — it mirrors the shape of Readium LCP without the paid EDRLab licensing. Every
+        claim below is backed by a cited fact in <code>ENCRYPTION.md</code>.</p>
+
+      <h3>The scheme</h3>
+      <div class="cards two">
+        <div class="card"><h4>Encrypt at rest</h4><p>Each non-open-access file is encrypted with
+          <strong>AES-256-GCM</strong> (AEAD — confidentiality + integrity), a per-file random content key and a
+          unique 96-bit IV. S3 stores <code>ciphertext + IV + auth tag</code>.</p></div>
+        <div class="card"><h4>Gate the key</h4><p>After License + Entitlement pass, the server returns a
+          short-TTL presigned URL for the encrypted blob, a <strong>license JWS</strong> (validity window +
+          <code>deviceId</code>), and the <strong>content key over TLS</strong>.</p></div>
+        <div class="card"><h4>Never in the token</h4><p>The key is <strong>never</strong> placed in a signed JWT
+          — a JWS payload is base64url, readable by anyone. It travels over TLS (or, later, as a JWE).</p></div>
+        <div class="card"><h4>Decrypt in memory</h4><p>The app decrypts in memory, verifies the GCM tag, and
+          hands a <strong>plain</strong> file to Readium / react-native-pdf. Plaintext never touches disk.</p></div>
+      </div>
+
+      <div class="callout key"><div class="ct">Key hierarchy &amp; KMS — what exists before <code>/access</code></div><p>A
+        per-file <strong>content key (CEK)</strong> encrypts each file; the CEK is stored <strong>wrapped</strong>
+        by a long-lived <strong>master key (KEK)</strong> on the content record; the master key lives in the
+        <strong>secret store / Config Server</strong> (MVP) or <strong>AWS KMS</strong> HSM (production, rotatable).
+        <strong>All keys exist before <code>/access</code></strong> — the master key is needed at ingest to encrypt.
+        <code>/access</code> doesn't <em>create</em> a key; it <strong>unwraps</strong> the CEK server-side and
+        <strong>releases</strong> the plaintext CEK to an authorized client over TLS (never in S3, never in the JWS).
+        We use app-layer encryption, not S3 SSE — otherwise a presigned URL would return plaintext. Full detail:
+        <code>ENCRYPTION.md §3.2</code>.</p></div>
+
+      <h3>Online vs. offline</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>Online</th><th>Offline (app-only)</th></tr></thead>
+        <tbody>
+          <tr><td><b>Key provenance</b></td><td>Fetched per session over TLS</td><td>Stored on device, wrapped in OS Keychain / Keystore</td></tr>
+          <tr><td><b>Expiry check</b></td><td>Server-side on each access</td><td>Client-side against <code>license.exp</code></td></tr>
+          <tr><td><b>At rest on device</b></td><td>Nothing — key discarded after session</td><td>Encrypted blob + license + wrapped key</td></tr>
+          <tr><td><b>Revocation</b></td><td>Immediate</td><td>On next reconnect / heartbeat; wipe on expiry</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Hardening</h3>
+      <div class="cards two">
+        <div class="card"><h4><span class="badge b-green">In the MVP</span></h4><p>Unique-IV AES-GCM with
+          <strong>AAD bound to <code>{contentId, userId, deviceId}</code></strong>; content key over TLS;
+          offline key in Keychain/Keystore; <code>deviceId</code>-bound license with short <code>exp</code> +
+          silent heartbeat; server-side master key wraps per-file keys.</p></div>
+        <div class="card"><h4><span class="badge b-amber">Deferred</span></h4><p>AWS KMS envelope encryption;
+          JWE key delivery + TLS pinning; device attestation (App Attest / Play Integrity); watermarking
+          (social DRM); and real Readium LCP — the certified endpoint of this path.</p></div>
+      </div>
+
+      <h3>How this compares to real Readium LCP</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Dimension</th><th>Our MVP (LCP-style)</th><th>Real Readium LCP</th></tr></thead>
+        <tbody>
+          <tr><td>Content cipher</td><td>AES-256-<b>GCM</b> (AEAD)</td><td>AES-256-<b>CBC</b></td></tr>
+          <tr><td>Key protection</td><td>Wrapped by master key / KMS; delivered over TLS or JWE</td><td>Encrypted in the license, wrapped by a passphrase-derived key</td></tr>
+          <tr><td>"License" document</td><td>Signed JWS with non-secret claims</td><td>Signed JSON license (RSA + X.509)</td></tr>
+          <tr><td>Reader</td><td>Free Readium reads the plain file after the app decrypts</td><td>Readium + <code>liblcp</code> decrypts the LCP file</td></tr>
+          <tr><td>Cost / gating</td><td><b>Free</b> — our own services</td><td>EDRLab agreement + annual cert fee + confidential binary</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout note"><div class="ct">Free-Readium consequence</div><p>Because the free reader consumes a
+        <strong>plain</strong> file, we decrypt the <strong>whole</strong> publication in memory before handing it
+        over — not per-resource like real LCP. <code>react-native-pdf</code> may need a <strong>temporary decrypted
+        file</strong> (kept in app-private, OS-encrypted storage and deleted on close). Per-resource on-the-fly
+        decryption is the roadmap fix. Detail: <code>ENCRYPTION.md</code>.</p></div>
+      <div class="callout warn"><div class="ct">Honest ceiling</div><p>Any client-side decryption can ultimately
+        be defeated — plaintext exists in memory at read time. The MVP measures make this a strong
+        <strong>deterrent-grade</strong> protection; the final increment is exactly what paid Readium LCP
+        provides. Full facts &amp; citations: <code>ENCRYPTION.md</code>.</p></div>
+    </section>
+
+    <!-- 16 OBSERVABILITY -->
+    <section class="section" id="observability">
+      <div class="section-head"><span class="section-num">16</span><h2>Observability &amp; Tracking</h2></div>
+      <p>Two audiences, one mechanism. <strong>Prometheus + Grafana</strong>, woven into every service as it's
+        built — like logging. Operational metrics come almost free from Spring Boot Actuator + Micrometer;
+        business KPIs are thin counters incremented at the same points we already log a domain event.</p>
+      <div class="callout key"><div class="ct">Definition of done — not a phase</div><p>A service isn't
+        "done" until its metrics are emitted, in the <strong>same PR</strong> as its logs. The Prometheus scrape
+        + Grafana instance are stood up <strong>once, early</strong> (at platform bring-up); only the dashboard
+        panels evolve. Observability is never a trailing "phase 8."</p></div>
+      <div class="cards three">
+        <div class="card"><h4>Ops dashboard</h4><p>Traffic (req/s), latency p50/p95/p99, error rates, JVM +
+          Mongo health, service availability. Mostly automatic.</p></div>
+        <div class="card"><h4>Business dashboard</h4><p>Logins, content opens, downloads,
+          <strong>denials by reason</strong>, reading time — split by content type / org.</p></div>
+        <div class="card"><h4>The boundary</h4><p>Deep per-entity BI (top-N titles, cohorts, per-user journeys)
+          is the roadmap's Redshift + Power BI pipeline — not Prometheus.</p></div>
+      </div>
+      <div class="code-label">Business metrics — bounded labels only</div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Metric</th><th>Labels</th><th>Emitted at</th></tr></thead>
+        <tbody>
+          <tr><td><code>tf_logins_total</code></td><td><code>result</code></td><td>Auth login</td></tr>
+          <tr><td><code>tf_content_opened_total</code></td><td><code>contentType</code>, <code>openAccess</code></td><td>access endpoint (read)</td></tr>
+          <tr><td><code>tf_downloads_total</code></td><td><code>contentType</code></td><td>access endpoint (download)</td></tr>
+          <tr><td><code>tf_access_denied_total</code></td><td><code>reason</code></td><td>License + Entitlement checks</td></tr>
+          <tr><td><code>tf_reading_seconds</code></td><td>—</td><td>User-Content on session end</td></tr>
+          <tr><td><code>tf_active_grants</code></td><td><code>kind</code></td><td>periodic count from Mongo</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout key"><div class="ct">Headline sales metric</div><p><code>tf_access_denied_total{reason}</code>
+        makes the platform's core commercial thesis tangible: <strong>a denied session is an unmet-demand
+        signal</strong>. Full plan: <code>OBSERVABILITY.md</code>.</p></div>
+      <div class="callout warn"><div class="ct">Cardinality rule</div><p>Never label a metric with
+        <code>userId</code> / <code>contentId</code> / <code>title</code> / raw path — each unique combination is
+        a new time series. <code>/actuator/prometheus</code> stays on the internal management port, never public.</p></div>
+    </section>
+
+    <!-- 17 STACK -->
+    <section class="section" id="stack">
+      <div class="section-head"><span class="section-num">17</span><h2>Tech Stack</h2></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Layer</th><th>MVP choice</th></tr></thead>
+        <tbody>
+          <tr><td>Service discovery</td><td>Spring Cloud Netflix Eureka</td></tr>
+          <tr><td>Edge / routing</td><td>Spring Cloud Gateway (+ JWT validation)</td></tr>
+          <tr><td>Configuration</td><td>Spring Cloud Config Server</td></tr>
+          <tr><td>Services</td><td>Java Spring Boot (REST)</td></tr>
+          <tr><td>Data store</td><td>MongoDB — one DB per service</td></tr>
+          <tr><td>Sessions</td><td><b>Access + refresh tokens</b> — short-lived access JWT (validated statelessly) + refresh token <b>hashed</b> in a per-device <code>sessions</code> store (TTL); <b>device cap</b> (default 3, block-on-exceed); silent refresh on 401; manage devices (list/logout/logout-all); tokens in device Keychain/Keystore. Mocked membership; no SAML/SCIM.</td></tr>
+          <tr><td>Discovery feed</td><td>OPDS 2.0 + scheduled cronjob</td></tr>
+          <tr><td>Content files</td><td>AWS S3 (signed-URL delivery)</td></tr>
+          <tr><td>Content protection</td><td>AES-256-GCM at rest; key over TLS; offline key in Keychain/Keystore; license JWS. Real LCP deferred.</td></tr>
+          <tr><td>Reading client</td><td>Readium toolkit (BSD-3, free) as a <b>native RN Fabric UI component</b> for EPUB + react-native-pdf for PDF</td></tr>
+          <tr><td>Mobile client</td><td>React Native (iOS + Android)</td></tr>
+          <tr><td>Metrics</td><td>Micrometer + Spring Boot Actuator (<code>/actuator/prometheus</code>, internal)</td></tr>
+          <tr><td>Metrics store</td><td>Prometheus (Eureka SD or static targets)</td></tr>
+          <tr><td>Dashboards</td><td>Grafana (Ops + Business/Sales)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout note"><div class="ct">Why Readium</div><p>The Readium toolkit is free (BSD-3) and
+        brings <strong>text-to-speech, in-book search, highlights, custom fonts, and accessibility</strong> for
+        free — so several roadmap reading features are low-cost later. The main effort is the <strong>native
+        reader view</strong> (a React Native Fabric component with two-way events, built per platform) — the single
+        largest client task and a known risk.</p></div>
+    </section>
+
+    <!-- 18 ENGINEERING & API REFERENCE -->
+    <section class="section" id="engineering">
+      <div class="section-head"><span class="section-num">18</span><h2>Engineering &amp; API Reference</h2></div>
+      <p class="lede">The build-level view — the REST APIs each service exposes and the Spring Cloud
+        patterns that implement them. The full how-to (code, indexes, docker-compose, seeding, tests)
+        lives in <a href="IMPLEMENTATION.md">IMPLEMENTATION.md</a>.</p>
+
+      <h3>Baseline</h3>
+      <div class="cards three">
+        <div class="card"><h4><span class="ic">☕</span>Services</h4><p>Java 17 + <strong>Spring Boot 3</strong>
+          (MVC for services, <strong>WebFlux</strong> for the Gateway). Discovery via <strong>Eureka</strong>,
+          config via <strong>Config Server</strong>, service calls via <strong>OpenFeign</strong>.</p></div>
+        <div class="card"><h4><span class="ic">🔑</span>Tokens</h4><p><strong>jjwt</strong> signs/validates the
+          access JWT; <strong>BCrypt</strong> hashes passwords; refresh tokens hashed (SHA-256) in
+          <code>sessions</code>.</p></div>
+        <div class="card"><h4><span class="ic">🗄️</span>Data</h4><p><strong>Spring Data MongoDB</strong>,
+          DB-per-service; ownership by id arrays (<code>licenseId[]</code>/<code>entitlementId[]</code>)
+          written idempotently with <strong><code>$addToSet</code></strong>; <strong>TTL index</strong> for sessions.</p></div>
+      </div>
+
+      <h3>How to create a service (the recipe)</h3>
+      <ol>
+        <li>Scaffold with the starter deps; set <code>spring.application.name</code> = the service id
+          (used by Eureka, Feign, and Gateway routing).</li>
+        <li><code>spring.config.import: configserver:</code> to pull config; point
+          <code>spring.data.mongodb.uri</code> at the service's <strong>own</strong> DB.</li>
+        <li>Expose <code>health</code> + <code>prometheus</code> on the management port (see Observability).</li>
+        <li><code>@Document</code> model → <code>MongoRepository</code> → <code>@Service</code> →
+          <code>@RestController</code>; create indexes; register the route on the Gateway.</li>
+        <li><strong>Emit this service's business metrics</strong> next to its log lines — part of the
+          service's <strong>definition of done</strong>, same PR, like logging.</li>
+      </ol>
+
+      <h3>API reference</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Service</th><th>Endpoint</th><th>Auth</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="6"><b>Auth</b></td><td><code>POST /auth/login</code></td><td><span class="badge b-gray">public</span></td><td>Issue access + refresh; create a session (or <code>409 device_limit_reached</code> at the cap)</td></tr>
+          <tr><td><code>POST /auth/refresh</code></td><td><span class="badge b-gray">public</span></td><td>New access token from a refresh token</td></tr>
+          <tr><td><code>POST /auth/logout</code></td><td><span class="badge b-blue">bearer</span></td><td>Revoke this session</td></tr>
+          <tr><td><code>GET /auth/sessions</code></td><td><span class="badge b-blue">bearer</span></td><td>List active sessions (devices)</td></tr>
+          <tr><td><code>POST /auth/logout-all</code></td><td><span class="badge b-blue">bearer</span></td><td>Revoke all sessions</td></tr>
+          <tr><td><code>GET /users/me</code></td><td><span class="badge b-blue">bearer</span></td><td>Profile</td></tr>
+          <tr><td rowspan="6"><b>Catalog</b></td><td><code>GET /catalog</code></td><td><span class="badge b-blue">bearer</span></td><td>List + per-user access badges</td></tr>
+          <tr><td><code>GET /catalog/{id}</code></td><td><span class="badge b-blue">bearer</span></td><td>Item detail</td></tr>
+          <tr><td><code>GET /catalog/{id}/articles</code></td><td><span class="badge b-blue">bearer</span></td><td>A journal's articles</td></tr>
+          <tr><td><code>GET /catalog/search?q=</code></td><td><span class="badge b-blue">bearer</span></td><td>Text search (Mongo text index)</td></tr>
+          <tr><td><code>GET /opds</code></td><td><span class="badge b-blue">bearer</span></td><td>OPDS 2.0 feed</td></tr>
+          <tr><td><code>GET /internal/content/{id}</code></td><td><span class="badge b-amber">internal</span></td><td>isbn + blob + wrapped key (for License)</td></tr>
+          <tr><td rowspan="3"><b>License</b></td><td><code>POST /access/{contentId}</code></td><td><span class="badge b-blue">bearer</span></td><td><strong>The gate</strong> → calls Organization + Entitlement → unlock token + key + URL, or deny</td></tr>
+          <tr><td><code>GET /access/licensed-isbns</code></td><td><span class="badge b-blue">bearer</span></td><td>Caller's licensed isbns (for badges)</td></tr>
+          <tr><td><code>GET /licenses/me</code></td><td><span class="badge b-blue">bearer</span></td><td>Caller's licenses</td></tr>
+          <tr><td rowspan="1"><b>Entitlement</b></td><td><code>GET /entitlements/me</code></td><td><span class="badge b-blue">bearer</span></td><td>Caller's entitlements</td></tr>
+          <tr><td rowspan="2"><b>Organization</b></td><td><code>GET /orgs/{id}</code></td><td><span class="badge b-blue">bearer</span></td><td>Org profile + subscription (admin/mock)</td></tr>
+          <tr><td><code>GET /internal/orgs/access-check</code></td><td><span class="badge b-amber">internal</span></td><td>membership + subscription + <code>licenseId[]</code> (for the License gate)</td></tr>
+          <tr><td rowspan="4"><b>User-Content</b></td><td><code>GET /me/content/{id}</code></td><td><span class="badge b-blue">bearer</span></td><td>Reading state for one item</td></tr>
+          <tr><td><code>PUT /me/content/{id}/progress</code></td><td><span class="badge b-blue">bearer</span></td><td>Sync progress (last-write-wins)</td></tr>
+          <tr><td><code>POST/DELETE …/highlights[,/bookmarks]</code></td><td><span class="badge b-blue">bearer</span></td><td>Annotations &amp; bookmarks</td></tr>
+          <tr><td><code>POST /me/content/{id}/downloads</code></td><td><span class="badge b-blue">bearer</span></td><td>Register an offline copy</td></tr>
+        </tbody>
+      </table></div>
+      <p class="dcap"><b>internal</b> = not exposed through the Gateway; called service-to-service via Feign.</p>
+
+      <h3>Key implementation patterns</h3>
+      <div class="code-label">API Gateway — validate the access token once, inject identity downstream</div>
+      <pre><code>// WebFlux GlobalFilter — the single security choke-point
+if (path.startsWith("/auth/login") || path.startsWith("/auth/refresh"))
+    return chain.filter(exchange);                    // public routes
+var claims = jwt.parse(bearer).getPayload();          // 401 if invalid -&gt; client silent-refresh
+exchange.mutate().request(r -&gt; r
+    .header("X-User-Id",   claims.getSubject())
+    .header("X-User-Orgs", orgsCsv)).build();         // downstream services trust these</code></pre>
+
+      <div class="code-label">Provisioning — idempotent reference write ($addToSet)</div>
+      <pre><code>// grant a license to an org: create the thin doc, then reference it
+License lic = licenses.save(new License(isbn, start, end, openAccess));
+mongoTemplate.updateFirst(query(where("_id").is(orgId)),
+    new Update().addToSet("licenseId", lic.getId()), Organization.class);  // no duplicate id
+// (entitlements work the same via user.entitlementId[]). The gate is a READ: resolve ids,
+// validate start<=now<=end — no create-race to guard.</code></pre>
+
+      <div class="code-label">React Native — silent refresh on a 401</div>
+      <pre><code>api.interceptors.response.use(ok, async (err) =&gt; {
+  if (err.response?.status === 401 &amp;&amp; !err.config._retried) {
+    err.config._retried = true;
+    const { accessToken } = await refresh(await getRefresh());   // POST /auth/refresh
+    err.config.headers.Authorization = `Bearer ${accessToken}`;
+    return api(err.config);                                      // retry original request
+  }
+  throw err;
+});</code></pre>
+
+      <div class="callout warn"><div class="ct">Build-time pitfalls</div><p>Hash refresh tokens at rest (never
+        raw in the DB or AsyncStorage); the unique index + upsert is what stops double-tap duplicate grants;
+        <strong>never</strong> put a secret (content key, refresh token) in a JWS; the <strong>native reader
+        view</strong> (Fabric) is the schedule risk, not the endpoints.</p></div>
+      <div class="callout note"><div class="ct">Full guide</div><p>Request/response bodies, index &amp; entity
+        code, the content-protection ingest job, docker-compose, mock seeding, and the test matrix:
+        <a href="IMPLEMENTATION.md">IMPLEMENTATION.md</a>.</p></div>
+    </section>
+
+    <!-- 19 ROADMAP -->
+    <section class="section" id="roadmap">
+      <div class="section-head"><span class="section-num">19</span><h2>Roadmap</h2></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Deferred capability</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><b>Audiobooks</b></td><td>Dropped from the MVP data model; Readium supports them — add the type + playback later.</td></tr>
+          <tr><td><b>Real Readium LCP</b></td><td>Production DRM via EDRLab: commercial agreement, annual certification, confidential <code>liblcp</code> binary. Replaces our License-token stand-in.</td></tr>
+          <tr><td><b>Concurrent-seat DRM</b></td><td>Enforcing simultaneous-reader limits — the PRD's premium seat model.</td></tr>
+          <tr><td><b>Protection hardening</b></td><td>KMS envelope encryption, JWE key delivery, device attestation, watermarking.</td></tr>
+          <tr><td><b>Text-to-audio · in-book search</b></td><td>Largely free via the Readium toolkit — low-cost to enable.</td></tr>
+          <tr><td><b>Federated auth</b></td><td>Institutional SSO / roster sync (SAML + OIDC). MVP is JWT only.</td></tr>
+          <tr><td><b>Deep BI pipeline</b></td><td>Per-entity analytics via Redshift + Power BI/QuickSight — successor to the MVP's aggregate Prometheus layer.</td></tr>
+          <tr><td><b>Chapters · reading lists · recommendations</b></td><td>PRD P1/P2 reading &amp; discovery features.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 20 MAPPING -->
+    <section class="section" id="mapping">
+      <div class="section-head"><span class="section-num">20</span><h2>MVP ↔ PRD Mapping</h2></div>
+      <p>How each MVP piece traces to the full PRD vision — building phase one without losing the destination.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>MVP piece</th><th>PRD concept</th></tr></thead>
+        <tbody>
+          <tr><td>License (per-user <code>licenses</code> grant)</td><td>Concurrent-seat license + AES/JWT content key / "what is licensed"</td></tr>
+          <tr><td>Entitlement (per-user <code>entitlements</code> grant)</td><td>Institutional + subscription entitlement / "who you are"</td></tr>
+          <tr><td>Gate at read/download; open-access bypass</td><td>Access badges (Full / Preview / Open) + access-status behaviour</td></tr>
+          <tr><td>JWT-only + mocked membership</td><td>JWT session layer (PRD adds SAML/OIDC)</td></tr>
+          <tr><td>Organization (University | Library)</td><td>Institution multitenancy / tenant isolation</td></tr>
+          <tr><td>OPDS cronjob</td><td>Weekly OPDS feed refresh</td></tr>
+          <tr><td>License-token unlock; real LCP later</td><td>AES-encrypted content + JWT license tokens; LCP as production option</td></tr>
+          <tr><td>Readium toolkit (free)</td><td>Readium SDK reading experience (EPUB, TTS, search, accessibility)</td></tr>
+          <tr><td><code>user_content</code> (progress/notes/downloads)</td><td>Offline-first reading, annotation, sync</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 21 DECISIONS -->
+    <section class="section" id="decisions">
+      <div class="section-head"><span class="section-num">21</span><h2>Key Decisions</h2></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Decision</th><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Business model</td><td>B2B only, no B2C</td><td>No paywall / <code>purchaseType: bought</code>; no-org users still browse + read open-access.</td></tr>
+          <tr><td>Auth &amp; sessions</td><td>Access + refresh tokens; per-device sessions; <strong>device cap</strong> (default 3, block-on-exceed); membership mocked</td><td>Silent refresh (no surprise logout); multi-device up to the cap; manage devices (list/logout/logout-all). Stateless access-token validation; <strong>session ≠ content access</strong>. No SAML/SCIM.</td></tr>
+          <tr><td>Multi-org</td><td>Array of orgs; first qualifying wins</td><td>One <code>entitlements</code> row per (user, org); <code>licenses.organizationId</code> records the granting org.</td></tr>
+          <tr><td>Where the gate fires</td><td>At read/download, not browse</td><td>Full catalogue visible; enforcement only on consumption. Open-access bypasses.</td></tr>
+          <tr><td>Access = referenced records</td><td><code>organization.licenseId[]</code> → <code>licenses{isbn,…}</code>; <code>user.entitlementId[]</code> → <code>entitlements{start,end}</code></td><td>User requirement — ownership moved into the parent arrays; docs carry no userId/orgId. The gate reads the arrays + validates windows. Long arrays accepted.</td></tr>
+          <tr><td>Concurrency-safe references</td><td><code>$addToSet</code> on the id arrays</td><td>A double-tap can't add a duplicate id (idempotent). Replaces the old per-user upsert-on-unique-key pattern.</td></tr>
+          <tr><td>Content protection</td><td>AES-256-GCM + License unlock; no paid LCP</td><td>Key over TLS, decrypt in memory; offline key in Keychain/Keystore. No concurrent-seat DRM.</td></tr>
+          <tr><td>Reading client</td><td>Readium (free) + react-native-pdf</td><td>Full-featured &amp; free; cost is the <strong>native Fabric reader view</strong> (largest client task).</td></tr>
+          <tr><td>Service granularity</td><td>6 domain services (Auth · Catalog · <strong>Organization</strong> · <strong>License</strong> · <strong>Entitlement</strong> · User-Content)</td><td>Each entity is its own bounded context with its own DB and deploy path — clean single-responsibility ownership (tenant · what is licensed · who is entitled). The gate (License) chains calls to Organization + Entitlement — the accepted cost of keeping the contexts separate.</td></tr>
+          <tr><td>Data architecture</td><td>Database-per-service</td><td>Strict isolation; services call services, no shared DB.</td></tr>
+          <tr><td>Catalogue shape</td><td>Denormalized ("Architecture 1")</td><td>One collection, no join → faster reads/search. Articles stay separate.</td></tr>
+          <tr><td>Publisher collection</td><td>Dropped</td><td>Single publisher (T&amp;F) → a <code>publisher</code> entity adds nothing in the MVP; <code>catalogue</code> drops <code>publisherId</code>/<code>publisherName</code>.</td></tr>
+          <tr><td>Observability</td><td>Prometheus + Grafana, like logging</td><td>Ops + aggregate KPIs; bounded labels only; deep BI is Redshift roadmap.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 22 EVOLUTION -->
+    <section class="section" id="evolution">
+      <div class="section-head"><span class="section-num">22</span><h2>Design Evolution</h2></div>
+      <p>The MVP was refined through eleven clarification rounds — captured so the reasoning is never lost.</p>
+      <div class="timeline">
+        <div class="tl-item"><span class="rnd">ROUND 1</span><h4>Content &amp; auth boundaries</h4><p>Books + journals only (journal → many articles; no chapters); university &amp; catalogue data mocked; files in S3; JWT only, no SAML.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 2</span><h4>B2B + reading features</h4><p>No B2C; a rough DB schema; membership pre-seeded on both sides; browse-all, gate at read/download, open-access bypass; build reading features.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 3</span><h4>Auth &amp; DRM narrowed</h4><p>No SAML/SCIM at all; not implementing concurrent-seat DRM (<code>organization.DRM</code> removed).</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 4</span><h4>Protection re-scoped</h4><p>Non-open-access content still needs protection — the earlier "no DRM" meant only concurrent-seat DRM; open-access served plainly.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 5</span><h4>Readium research + License layer</h4><p>Real Readium LCP is paid/gated → not used; our License schema is the protection mechanism; the Readium reading toolkit is free (BSD-3).</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 6</span><h4>Grants as first-class collections</h4><p><code>licenses</code> and <code>entitlements</code> become materialized, time-bounded, lazily-refreshed collections; multi-org; cleanups (dropped audiobook, <code>subscribedIds[]</code>, "bought").</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 7</span><h4>Encryption + online/offline</h4><p>AES-256-GCM at rest locked in; key over TLS (never in the signed token); online = key per session, offline = key in Keychain/Keystore + local <code>exp</code>.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 8</span><h4>Observability</h4><p>Prometheus + Grafana woven in like logging; Ops + aggregate business KPIs; bounded labels only; deep BI deferred to Redshift.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 9</span><h4>Cross-team review + sessions</h4><p>Folded in engineering-hardening from a peer team's design: <strong>access + refresh tokens with multi-device sessions</strong> &amp; silent refresh; reader recast as a <strong>native Fabric component</strong>; whole-file-decrypt limitation documented; <strong>publisher collection dropped</strong>.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 10</span><h4>Inverted license/entitlement ownership</h4><p>User requirement: store the <strong>ids, not the payload</strong>. <code>licenses</code> → <code>{isbn, start, end, openAccess}</code>, <code>entitlements</code> → <code>{start, end}</code> (no userId/orgId); the org holds <code>licenseId[]</code>, the user holds <code>entitlementId[]</code>. The materialized-grant/upsert model is replaced by <strong>reference arrays</strong> the gate reads &amp; window-validates (<code>$addToSet</code> for idempotency). Long arrays accepted.</p></div>
+        <div class="tl-item"><span class="rnd">ROUND 11</span><h4>Services kept separate + KMS write-up</h4><p>Kept <strong>Organization, License, and Entitlement as separate services</strong> — each a single-responsibility bounded context with its own database and deploy path. "University" is generalized to <strong>Organization</strong> (its own service). The <strong>read/download gate lives in License</strong>, which chains synchronous calls to Organization (subscription + membership) and Entitlement (user validity) — the accepted cost of separate contexts. Key management made explicit: per-file <strong>content key</strong> wrapped by a <strong>master key</strong> (secret store → <strong>AWS KMS</strong>); all keys exist before <code>/access</code>, which only <strong>unwraps + releases</strong> the key over TLS.</p></div>
+      </div>
+    </section>
+
+    <!-- 23 GLOSSARY -->
+    <section class="section" id="glossary">
+      <div class="section-head"><span class="section-num">23</span><h2>Glossary</h2></div>
+      <div class="tablewrap"><table>
+        <tbody>
+          <tr><td><b>License</b> <em>(our meaning)</em></td><td>A thin <code>licenses</code> doc (<code>{isbn, start, end, openAccess}</code>, no userId/orgId) an org references via <code>licenseId[]</code>, plus the unlock token the <strong>License</strong> service mints to open non-open-access content.</td></tr>
+          <tr><td><b>Entitlement</b> <em>(our meaning)</em></td><td>A thin <code>entitlements</code> doc (<code>{start, end}</code>, no userId/orgId) a user references via <code>entitlementId[]</code>; the user must also be <code>active</code> in the org's <code>userList[]</code>.</td></tr>
+          <tr><td><b>Reference arrays + window</b></td><td>Ownership lives in <code>organization.licenseId[]</code> / <code>user.entitlementId[]</code> (updated via <code>$addToSet</code>); the gate honors a referenced doc only while <code>start ≤ now ≤ end</code>.</td></tr>
+          <tr><td><b>Open access</b></td><td>Content readable by anyone logged in, no license/entitlement, served plainly.</td></tr>
+          <tr><td><b>Organization</b></td><td>A University or Library — the licensee and tenant. <code>userList[]</code> is the authoritative membership roster. Its <strong>own service</strong> (generalized from "University").</td></tr>
+          <tr><td><b>Organization / License / Entitlement services</b></td><td>The three bounded contexts behind <strong>"who may read what"</strong>: <strong>Organization</strong> owns the tenant (<code>organization</code> — <code>licenseId[]</code>, subscription, <code>userList[]</code>); <strong>License</strong> owns <code>licenses</code> and runs the read/download gate + unlock; <strong>Entitlement</strong> owns <code>entitlements</code>. The gate (License) chains calls to Organization + Entitlement.</td></tr>
+          <tr><td><b>Readium toolkit</b></td><td>The free, open-source (BSD-3) reading toolkit. Renders EPUB and gives TTS, in-book search, highlights, fonts, and accessibility for free.</td></tr>
+          <tr><td><b>Readium LCP</b></td><td>Readium's paid DRM (EDRLab agreement + annual cert + confidential <code>liblcp</code>). Not used in the MVP.</td></tr>
+          <tr><td><b>OPDS</b></td><td>Open Publication Distribution System — an open standard serving a catalogue as a feed at a URL. Catalog exposes OPDS 2.0.</td></tr>
+          <tr><td><b>JWT</b></td><td>Signed token issued at login, carried as <code>Bearer</code>, validated at the Gateway; its payload drives the checks.</td></tr>
+          <tr><td><b>S3 signed URL</b></td><td>A time-limited URL granting temporary access to a private S3 object; used after the checks pass.</td></tr>
+          <tr><td><b>Denormalization ("Architecture 1")</b></td><td>Embedding content-type fields inside <code>catalogue</code> so reads/search hit one collection (no join), at the cost of duplicated data.</td></tr>
+          <tr><td><b>Metrics vs events</b></td><td>Metrics = aggregates with bounded labels (Prometheus); raw per-user/per-title events go to logs now → a warehouse later.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 24 SOURCES -->
+    <section class="section" id="sources">
+      <div class="section-head"><span class="section-num">24</span><h2>Sources &amp; Companion Docs</h2></div>
+      <p>This site is compiled from the project's research and specification documents. For full detail,
+        citations, and diagrams, see the source files in the workspace:</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Document</th><th>What it contains</th></tr></thead>
+        <tbody>
+          <tr><td><a href="TF_KnowledgeHub_PRD_v1%20(1).pdf">TF_KnowledgeHub_PRD_v1 (1).pdf</a></td><td>The full 17-page product vision — superset of this MVP.</td></tr>
+          <tr><td><a href="README.md">README.md</a></td><td>Research on The Palace Project — the OPDS/library platform that inspired the architecture.</td></tr>
+          <tr><td><a href="APPROACH.md">APPROACH.md</a></td><td>The engineering approach spec — architecture, services, data model, flow, roadmap, PRD mapping.</td></tr>
+          <tr><td><a href="CONTEXT.md">CONTEXT.md</a></td><td>Cold-start knowledge base + the rationale behind every decision.</td></tr>
+          <tr><td><a href="ENCRYPTION.md">ENCRYPTION.md</a></td><td>Fact-backed content-encryption &amp; key-delivery design (every claim cited).</td></tr>
+          <tr><td><a href="OBSERVABILITY.md">OBSERVABILITY.md</a></td><td>The Prometheus + Grafana tracking plan.</td></tr>
+          <tr><td><a href="IMPLEMENTATION.md">IMPLEMENTATION.md</a></td><td>The build guide — APIs, Spring Cloud how-to, indexes, content-protection impl, local dev &amp; tests.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout note"><div class="ct">External references</div><p>NIST SP 800-38D (AES-GCM) · FIPS 197
+        (AES) · RFC 7515/7516/7519 (JWS/JWE/JWT) · Readium LCP specification · Readium Kotlin toolkit &amp; EDRLab
+        · AWS S3 presigned URLs · AWS KMS · Prometheus &amp; Grafana docs. Full URLs in <code>ENCRYPTION.md</code>
+        and <code>OBSERVABILITY.md</code>.</p></div>
+    </section>
+
+    <footer>
+      <div class="brand" style="font-size:15px;margin-bottom:6px"><div class="mark" style="width:26px;height:26px;font-size:12px">T&amp;F</div> Knowledge Hub — Product Requirements &amp; Engineering Approach</div>
+      <div class="flinks">
+        <a href="README.md">README.md</a>
+        <a href="APPROACH.md">APPROACH.md</a>
+        <a href="CONTEXT.md">CONTEXT.md</a>
+        <a href="ENCRYPTION.md">ENCRYPTION.md</a>
+        <a href="OBSERVABILITY.md">OBSERVABILITY.md</a>
+        <a href="IMPLEMENTATION.md">IMPLEMENTATION.md</a>
+        <a href="TF_KnowledgeHub_PRD_v1%20(1).pdf">Full PRD (PDF)</a>
+      </div>
+      <p>Version 1.0 · MVP Design · T&amp;F LDP Innovation Hackathon · Prepared by Prayas Yadav.<br/>
+        This document specifies phase one; the PRD is the destination. Diagrams render with Mermaid (requires an internet connection).</p>
+    </footer>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  // --- Mermaid theme to match the palette ---
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        fontFamily: 'Inter, sans-serif',
+        primaryColor: '#e9f1fb',
+        primaryTextColor: '#16233b',
+        primaryBorderColor: '#13487f',
+        lineColor: '#5a6b85',
+        secondaryColor: '#f7edd7',
+        tertiaryColor: '#f0f4fa',
+        actorBkg: '#e9f1fb',
+        actorBorder: '#13487f',
+        actorTextColor: '#16233b',
+        signalColor: '#5a6b85',
+        signalTextColor: '#16233b',
+        labelBoxBkgColor: '#f7edd7',
+        labelBoxBorderColor: '#c8922f',
+        noteBkgColor: '#f7edd7',
+        noteBorderColor: '#c8922f'
+      },
+      flowchart: { curve: 'basis', useMaxWidth: true },
+      sequence: { useMaxWidth: true, wrap: true },
+      er: { useMaxWidth: true }
+    });
+  }
+
+  // --- Mobile nav ---
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('backdrop');
+  const menuBtn = document.getElementById('menuBtn');
+  function closeNav(){ sidebar.classList.remove('open'); backdrop.classList.remove('show'); }
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    backdrop.classList.toggle('show');
+  });
+  backdrop.addEventListener('click', closeNav);
+
+  // --- Active section highlight + smooth close on click ---
+  const links = Array.from(document.querySelectorAll('.sidebar a'));
+  const byId = {};
+  links.forEach(a => { byId[a.getAttribute('href').slice(1)] = a; a.addEventListener('click', closeNav); });
+  const sections = document.querySelectorAll('main .section');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = byId[e.target.id];
+        if (active) {
+          active.classList.add('active');
+          active.scrollIntoView({ block: 'nearest' });
+        }
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
