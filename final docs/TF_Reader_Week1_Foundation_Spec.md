@@ -48,7 +48,7 @@ Three assumptions are baked into this document. All are flagged rather than hidd
 
 - **Greenfield.** No T&F Reader codebase exists. Day 1 begins with `npx create-expo-app`, not with `git pull`. §3.1 covers the bootstrap.
 - **JavaScript, not TypeScript.** A team decision. It removes the compiler that the delivery plan's contract-first approach was resting on, so three replacements are specified in its place — see §1.5.
-- **Khushi is newer to React Native.** Her block is re-cut to props-only presentational components — no navigation, no async, no effects, no adapter access. §6 sets out the rule and why it is also good architecture rather than a special case.
+- **Khushi is newer to React Native.** Her block is re-cut to props-only presentational components — no navigation, no async, no effects, no adapter access. §7 sets out the rule and why it is also good architecture rather than a special case.
 
 ### 1.5 Building in JavaScript — what has to replace the compiler
 
@@ -82,18 +82,18 @@ Editor-only. It fails nothing at build time and blocks nobody, but everyone sees
 ## 2. Week 1 at a glance
 
 ```
-DAY 1 (Mon 10 Aug)   DAY 2 (Tue 11 Aug)    DAYS 3-5 (Wed 12 - Fri 14 Aug)
-─────────────────    ──────────────────    ────────────────────────────────
-ALL FIVE, ONE BRANCH, NO FEATURE WORK      SPLIT — FEATURE + COMPONENTS
+DAY 1 (Mon 10)     DAY 2 (Tue 11)      DAY 3 (Wed 12)      DAYS 4-5 (Thu 13 - Fri 14)
+──────────────     ──────────────      ──────────────      ──────────────────────────
+ALL FIVE, ONE BRANCH, NO FEATURE WORK  LIBRARY COMPLETION  FEATURE WORK
 
-Hour 0  scaffold     shell + tab nav       Prayas   F1, F2, A4 + 4 components
-Tokens  (Khushi)     core five components  Moktik   search shell, B1 + 2 comps
-Types   (Akriti)     fixtures complete     Khushi   6 leaf components, gallery, C2
-Fixtures (Prayas)    merge gate            Keshav   B9, C1 + 3 components
-Conventions (all)    ──────────────        Akriti   D1 skeleton, F6 + 2 components
-Section 09 sent      GATE: main runs       ────────────────────────────────
-                                           Fri 16:00  consistency review (Khushi)
-                                           Fri 17:00  dependency board handover
+Hour 0 scaffold    shell + tab nav     Prayas   4 comps    Prayas   F1, F2, A4
+Tokens  (Khushi)   core five comps     Moktik   2 comps    Moktik   search shell, B1
+Types   (Akriti)   fixtures complete   Keshav   3 comps    Keshav   B9, C1
+Fixtures (Prayas)  ────────────────    Akriti   2 comps    Akriti   D1 skeleton, F6
+Conventions (all)  GATE: main runs     Khushi   2 comps    Khushi   2 comps, gallery, C2
+Section 09 sent    6 of 21 merged      ──────────────      ──────────────────────────
+                                       19 of 21 merged     Fri 16:00 consistency review
+                                                           Fri 17:00 board handover
 ```
 
 **The Phase 0 gate is absolute.** No feature branch is cut until every item in §3 is merged to `main` and the app runs on a device or simulator. Two days of apparent slowness buys back a week; skipping the gate is what turns Week 3 integration into a rewrite.
@@ -199,7 +199,7 @@ export const space  = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 } as const
 export const radius = { card: 8, sheet: 16, pill: 999 } as const
 ```
 
-**Inter must be loaded on Day 1, not later.** §2.2 names it specifically. On Expo that is `@expo-google-fonts/inter` plus `expo-font`, wired into the scaffold in P0-1. If it is deferred, all twenty-two components get built and eyeballed in the system font, and adding Inter in Week 3 shifts every line height and every truncation point in the library at once.
+**Inter must be loaded on Day 1, not later.** §2.2 names it specifically. On Expo that is `@expo-google-fonts/inter` plus `expo-font`, wired into the scaffold in P0-1. If it is deferred, all twenty-one components get built and eyeballed in the system font, and adding Inter in Week 3 shifts every line height and every truncation point in the library at once.
 
 **Values inferred rather than specified** — flag all three in standup so nobody later treats them as ratified design:
 
@@ -383,9 +383,9 @@ This is the highest-value 40 lines in the JavaScript version of this plan. It co
 
 **Owner:** Khushi authors the convention document and the gallery route; agreed by all five
 **Duration:** Day 1, ~1 hour of discussion, written up same day
-**Blocks:** all 22 components
+**Blocks:** all 21 components
 
-Five authors produce five styles unless something prevents it. Three things do: tokens written first (P0-2), one agreed skeleton (this item), and the Day 5 consistency review (§7.2).
+Five authors produce five styles unless something prevents it. Three things do: tokens written first (P0-2), one agreed skeleton (this item), and the Day 5 consistency review (§8.2).
 
 **The convention:**
 
@@ -435,7 +435,7 @@ Rules, all five sign up to them:
 **Duration:** Day 2
 **Blocks:** the Days 3–5 feature work
 
-The remaining seventeen components are built during Days 3–5.
+The library is 21 components, not the delivery plan's 22 — see §6.1. Six land in Phase 0; the remaining fifteen are built on Days 3–4, per the schedule in §6.2.
 
 #### The admission test — two conditions, both required
 
@@ -552,7 +552,7 @@ Feature work begins. Each person also builds their remaining components; **compo
 - C1 institution list, with recently-used pinned above the full list
 - Client-side search over the 8-institution fixture
 
-**C2 (institution detail) moves to Khushi** — see §6.
+**C2 (institution detail) moves to Khushi** — see §7.
 
 **Contingency:** no wokay institution schema — the `Institution` shape in P0-3 is ours; send it to them. OPDS does not model institutions at all, so they may not have considered it.
 
@@ -1151,36 +1151,17 @@ Persistent dark-grey banner, pinned top. Takes `visible` as a prop; the network 
 
 Renders the formats an item declares. Formats come from the OPDS link-type MIME declaration on `ContentItem.formats`, **never from a hardcoded list** — an audiobook fixture with only `audio/*` must render correctly with no PDF or EPUB option present.
 
-```js
-FormatSelector.propTypes = {
-  formats: PropTypes.arrayOf(PropTypes.shape({
-    mime:      PropTypes.string.isRequired,
-    sizeBytes: PropTypes.number,
-  })).isRequired,
-  selectedMime: PropTypes.string,
-  onSelect:     PropTypes.func.isRequired,
-}
-```
+Prop contract in §6.8, component 21.
 
-**K5 · `ProgressBar`** — Difficulty 2 · Screens 07, 08
+> **`ProgressBar` was removed from her list.** It appears only on screens 07 and 08, both t4targaryen's — see §6.1. If t4targaryen answer their question 4 with "team1 owns the download indication," it returns here, at roughly two hours.
 
-Download and reading progress. Consumed by t4targaryen later, so keep the props minimal and the styling entirely token-driven.
-
-```js
-ProgressBar.propTypes = {
-  value:   PropTypes.number.isRequired,   // 0..1
-  variant: PropTypes.oneOf(['download', 'reading']).isRequired,
-  label:   PropTypes.string,
-}
-```
-
-**K6 · State gallery route** — Difficulty 4 · The most valuable thing she builds
+**K5 · State gallery route** — Difficulty 4 · The most valuable thing she builds
 
 One scrolling screen rendering **every** component in **every** variant: default, loading, empty, error, offline, and all three access tiers. Grouped by component, labelled, with a light/dark toggle if time allows.
 
 This is the review surface for Day 5, the regression surface for Week 3's state-matrix pass, and the fastest way for a newer React Native developer to see the whole library at once. It is also the thing that makes the five-way split safe — drift between five authors is invisible in five files and obvious on one screen.
 
-**K7 · `C2` Institution detail** — Difficulty 4 · Screen 06 detail
+**K6 · `C2` Institution detail** — Difficulty 4 · Screen 06 detail
 
 Read-only screen: crest, name, country, sign-in type, and a description block. Built as a **pure presentational view**:
 
@@ -1214,7 +1195,7 @@ This is worth doing deliberately rather than out of convenience: it is the same 
 |---|---|---|---|
 | Design tokens | Herself, Day 1 | Day 1 | n/a |
 | Component convention | P0-5, all five | Day 1 | n/a |
-| `Institution` type + 8 fixtures | P0-3, P0-4 | Day 2 | Hand-write one institution object locally for K7 |
+| `Institution` type + 8 fixtures | P0-3, P0-4 | Day 2 | Hand-write one institution object locally for K6 |
 | Running app shell | P0-6 | Day 2 | Build in the gallery only; the route wrapper is Keshav's |
 | Empty-state copy variants | Moktik, Week 3 | Week 3 | Not a Week 1 dependency |
 
@@ -1224,12 +1205,12 @@ This is worth doing deliberately rather than out of convenience: it is the same 
 
 | Day | Work |
 |---|---|
-| Wed AM | K6 gallery route scaffold — build it empty first, then add each component as it lands. Building the review surface first makes everything after it self-checking. |
+| Wed AM | K5 gallery route scaffold — build it empty first, then add each component as it lands. Building the review surface first makes everything after it self-checking. |
 | Wed PM | K1 `EmptyState`, K2 `ErrorState` — the two simplest; get the convention into muscle memory before anything with logic. |
-| Thu AM | K3 `OfflineBanner`, K5 `ProgressBar` |
-| Thu PM | K4 `FormatSelector` — first one with real prop-driven branching |
-| Fri AM | K7 `InstitutionDetailView` against the fixture |
-| Fri PM | Gallery completion pass, then chair the consistency review (§7.2) |
+| Thu AM | K3 `OfflineBanner` |
+| Thu PM | K4 `FormatSelector` — the first with real prop-driven branching — then the gallery completion pass |
+| Fri AM | K6 `InstitutionDetailView` against the fixture |
+| Fri PM | Final gallery sweep, then chair the consistency review (§8.2) |
 
 ---
 
@@ -1245,7 +1226,7 @@ This is worth doing deliberately rather than out of convenience: it is the same 
 
 **Chair: Khushi** (she owns the gallery). All five attend.
 
-All twenty-two components are looked at side by side in the gallery. Checking for: divergent spacing, off-token colours, inconsistent prop naming, missing state variants, two components that should be one — and, in the JavaScript build, **any component missing its `propTypes` block or its JSDoc typedef.**
+All twenty-one components are looked at side by side in the gallery. Checking for: divergent spacing, off-token colours, inconsistent prop naming, missing state variants, two components that should be one — and, in the JavaScript build, **any component missing its `propTypes` block or its JSDoc typedef.**
 
 **This review is the single thing that pays for splitting the library five ways.** Skip it and the drift will not surface until Week 3, by which point every screen has consumed the drifted components. Anything found is fixed before Monday, not logged.
 
@@ -1277,7 +1258,7 @@ From the delivery plan, plus what this document adds:
 
 - [ ] Catalogue browsable and searchable on mock data
 - [ ] Institution list, detail and search working
-- [ ] Component library — all 22 merged, each with a gallery entry
+- [ ] Component library — all 21 merged (§6), each with a gallery entry and a `propTypes` block
 - [ ] State gallery route complete and reviewed
 - [ ] Consistency review held, findings fixed before Monday
 - [ ] Contracts sent in writing to all four audiences, including the `accessTier` request
@@ -1288,32 +1269,34 @@ From the delivery plan, plus what this document adds:
 
 ## Appendix A — Component ownership, reconciled
 
-22 components. Bold = built in Phase 0 (Days 1–2). The rest land Days 3–5.
+21 components. Bold = Phase 0 (Day 2). Full design specs in §6. Screens listed are **team1's only** — 07, 08 and 13 are excluded per §6.1.
 
-| # | Component | Author | Screens | Diff |
-|---|---|---|---|---|
-| 1 | **ContentCard** | Prayas | 01, 04, 05, 08, 09, 17, 18 | 6 |
-| 2 | SectionHeader | Prayas | 01, 06, 08, 09 | 2 |
-| 3 | SubjectChip | Prayas | 01, 09 | 2 |
-| 4 | Carousel + PageDots | Prayas | 01 | 5 |
-| 5 | Tabs | Prayas | 01, 04, 08, 09 | 4 |
-| 6 | **SearchInput** | Moktik | 01, 06, 08, 09 | 3 |
-| 7 | FilterChip | Moktik | 09, 12 | 2 |
-| 8 | VoiceOverlay | Moktik | 11 | 6 |
-| 9 | BottomSheet | Keshav | 02, 03, 12 | 5 |
-| 10 | InstitutionRow | Keshav | 06, 10 | 2 |
-| 11 | **TopAppBar** | Keshav | every screen | 3 |
-| 12 | ListRow | Keshav | 10 | 1 |
-| 13 | **AccessTierBadge** | Akriti | 01, 04, 05, 08, 09, 18 | 2 |
-| 14 | ActionButton | Akriti | every screen | 5 |
-| 15 | ActionBar | Akriti | 04, 05 | 4 |
-| 16 | **Skeleton** | Khushi | 01, 04, 05, 06, 08, 09, 15, 16 | 3 |
-| 17 | EmptyState | Khushi | 06, 08, 09, 17 | 2 |
-| 18 | ErrorState | Khushi | 04, 05, 14 | 2 |
-| 19 | OfflineBanner | Khushi | global, 15 | 2 |
-| 20 | FormatSelector | Khushi | 05 | 3 |
-| 21 | ProgressBar | Khushi | 07, 08 | 2 |
-| 22 | **BottomTabBar** | *P0-6 shell* — Keshav + Khushi | 01, 08, 09, 10 | 4 |
+| # | Component | Author | Day | Screens | Diff |
+|---|---|---|---|---|---|
+| 1 | **ContentCard** | Prayas | 2 | 01, 04, 05, 09, 17, 18 | 6 |
+| 2 | SectionHeader | Prayas | 3 | 01, 06, 09 | 2 |
+| 3 | SubjectChip | Prayas | 3 | 01, 09 | 2 |
+| 4 | Carousel + PageDots | Prayas | 3 | 01 | 5 |
+| 5 | Tabs | Prayas | 3 | 01, 04, 09 | 4 |
+| 6 | **SearchInput** | Moktik | 2 | 01, 06, 09 | 3 |
+| 7 | FilterChip | Moktik | 3 | 09, 12 | 2 |
+| 8 | VoiceOverlay | Moktik | 3 | 11 | 6 |
+| 9 | **TopAppBar** | Keshav | 2 | every screen | 3 |
+| 10 | **BottomTabBar** | *P0-6 shell* — Keshav + Khushi | 2 | 01, 09, 10 | 4 |
+| 11 | BottomSheet | Keshav | 3 | 02, 03, 12 | 5 |
+| 12 | InstitutionRow | Keshav | 3 | 06, 10 | 2 |
+| 13 | ListRow | Keshav | 3 | 10 | 1 |
+| 14 | **AccessTierBadge** | Akriti | 2 | 01, 04, 05, 09, 18 | 2 |
+| 15 | ActionButton | Akriti | 3 | every screen | 5 |
+| 16 | ActionBar | Akriti | 3 | 04, 05 | 4 |
+| 17 | **Skeleton** | Khushi | 2 | 01, 04, 05, 06, 09, 15, 16 | 3 |
+| 18 | EmptyState | Khushi | 3 | 06, 09, 17 | 2 |
+| 19 | ErrorState | Khushi | 3 | 04, 05, 14 | 2 |
+| 20 | OfflineBanner | Khushi | 4 | global, 15 | 2 |
+| 21 | FormatSelector | Khushi | 4 | 05 | 3 |
+| — | ~~ProgressBar~~ | — | — | *07, 08 — t4targaryen only. Removed, §6.1* | — |
+
+**Totals:** Prayas 5 · Keshav 4 · Khushi 5 · Moktik 3 · Akriti 3 · shell 1. **19 of 21 merged by end of Day 3.**
 
 Design tokens are deliberately absent from this table. They are written by one person on Day 1, before any component exists, so that no component author ever picks a colour or a spacing value. That single exception is what makes splitting the other twenty-one safe.
 
