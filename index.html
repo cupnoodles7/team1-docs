@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T&amp;F Reader — team1 Working Document</title>
+<style>
+  :root{
+    --teal:#00A19D; --navy:#1A3A5C; --ink:#1A1A2E; --mute:#6B7280;
+    --surface:#F8F9FA; --border:#E5E7EB; --paper:#ffffff;
+    --success:#10B981; --error:#EF4444; --wait:#F59E0B;
+    --subscription:#2563EB; --elite:#7C3AED;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --nav-w:264px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink); background:var(--paper);
+    font-size:15px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{display:flex; align-items:flex-start}
+  nav.side{
+    position:sticky; top:0; width:var(--nav-w); flex:0 0 var(--nav-w);
+    height:100vh; overflow-y:auto; background:var(--navy); color:#fff; padding:22px 0 40px;
+  }
+  main{flex:1 1 auto; min-width:0; max-width:1020px; padding:0 44px 120px}
+
+  nav.side .brand{padding:0 22px 18px; border-bottom:1px solid rgba(255,255,255,.14); margin-bottom:14px}
+  nav.side .brand b{display:block; font-size:15px; letter-spacing:.2px}
+  nav.side .brand span{display:block; font-size:11.5px; color:#9fc0d8; margin-top:3px; line-height:1.45}
+  nav.side .grp{font-size:10.5px; text-transform:uppercase; letter-spacing:.11em; color:#7ea8c4;
+    padding:16px 22px 6px; font-weight:600}
+  nav.side a{
+    display:block; padding:5px 22px; color:#d6e6f2; text-decoration:none; font-size:13px;
+    border-left:3px solid transparent;
+  }
+  nav.side a:hover{background:rgba(255,255,255,.07); color:#fff}
+  nav.side a.on{border-left-color:var(--teal); color:#fff; background:rgba(0,161,157,.16); font-weight:500}
+  nav.side a.sub{padding-left:34px; font-size:12.5px; color:#b8d2e4}
+
+  /* ---------- masthead ---------- */
+  header.mast{border-bottom:2px solid var(--ink); padding:38px 0 20px; margin-bottom:34px}
+  header.mast h1{margin:0 0 6px; font-size:29px; letter-spacing:-.4px; line-height:1.2}
+  header.mast .sub{color:var(--mute); font-size:14px}
+  header.mast .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+  .pill{
+    display:inline-block; font-size:11.5px; padding:3px 10px; border-radius:999px;
+    background:var(--surface); border:1px solid var(--border); color:var(--mute); white-space:nowrap;
+  }
+  .pill.live{background:rgba(0,161,157,.1); border-color:var(--teal); color:#00736f; font-weight:600}
+
+  /* ---------- headings ---------- */
+  h2{
+    font-size:13px; text-transform:uppercase; letter-spacing:.13em; color:var(--teal);
+    margin:0 0 4px; font-weight:700;
+  }
+  section.major{padding-top:44px; margin-top:44px; border-top:1px solid var(--border)}
+  section.major:first-of-type{border-top:0; margin-top:0; padding-top:0}
+  section.major > h3.title{
+    font-size:25px; margin:0 0 10px; letter-spacing:-.3px; line-height:1.25;
+  }
+  section.major > p.lede{font-size:16px; color:#3d4a5c; margin:0 0 8px}
+  h4{font-size:17.5px; margin:34px 0 10px; letter-spacing:-.15px}
+  h5{font-size:14.5px; margin:22px 0 7px}
+  h6{font-size:12.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--mute); margin:20px 0 6px}
+  p{margin:0 0 12px}
+  ul,ol{margin:0 0 14px; padding-left:22px}
+  li{margin:0 0 5px}
+  a{color:#00736f}
+  strong{font-weight:600}
+
+  /* ---------- tables ---------- */
+  table{border-collapse:collapse; width:100%; margin:14px 0 20px; font-size:13.5px}
+  th,td{text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top}
+  th{background:var(--surface); font-weight:600; font-size:12px; text-transform:uppercase;
+    letter-spacing:.05em; color:#4a5568; border-bottom:2px solid var(--border)}
+  tbody tr:hover{background:#fcfdfe}
+  td code{font-size:12.5px}
+  .nowrap{white-space:nowrap}
+
+  /* ---------- code ---------- */
+  code{font-family:var(--mono); font-size:13px; background:var(--surface);
+    padding:1.5px 5px; border-radius:3px; border:1px solid var(--border)}
+  pre{
+    background:#12253a; color:#dbe7f0; padding:15px 17px; border-radius:6px;
+    overflow-x:auto; margin:12px 0 20px; font-size:12.8px; line-height:1.62;
+  }
+  pre code{background:none; border:0; padding:0; color:inherit; font-size:inherit}
+  pre .c{color:#7fa2bd}
+  pre .k{color:#7ee0dc}
+  pre .s{color:#f3c98b}
+
+  /* ---------- callouts ---------- */
+  .note{
+    border-left:3px solid var(--teal); background:rgba(0,161,157,.055);
+    padding:12px 16px; margin:16px 0 20px; border-radius:0 4px 4px 0; font-size:14px;
+  }
+  .note.warn{border-left-color:var(--wait); background:rgba(245,158,11,.075)}
+  .note.stop{border-left-color:var(--error); background:rgba(239,68,68,.06)}
+  .note.ok{border-left-color:var(--success); background:rgba(16,185,129,.07)}
+  .note .lbl{
+    display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:700; margin-bottom:5px; color:#00736f;
+  }
+  .note.warn .lbl{color:#8a5a00}
+  .note.stop .lbl{color:#b3261e}
+  .note.ok .lbl{color:#0b6b4f}
+  .note p:last-child{margin-bottom:0}
+
+  /* ---------- badges ---------- */
+  .tag{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; vertical-align:1px;
+  }
+  .t-oa{background:var(--success)} .t-sub{background:var(--subscription)} .t-el{background:var(--elite)}
+  .t-open{background:var(--wait)} .t-done{background:var(--success)} .t-risk{background:var(--error)}
+  .who{
+    display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:4px;
+    white-space:nowrap; border:1px solid;
+  }
+  .w-ak{background:#f3ecfb; border-color:#c9a7ea; color:#5b2d8e}
+  .w-pr{background:#e7f2ec; border-color:#95cbaf; color:#125c3d}
+  .w-mo{background:#e9eef8; border-color:#a3b9e0; color:#1c3f80}
+  .w-ke{background:#fdf0e3; border-color:#e5bd8a; color:#8a5a00}
+  .w-kh{background:#fdeaea; border-color:#eda9a9; color:#a32020}
+  .w-all{background:var(--surface); border-color:#c3cbd4; color:#3d4a5c}
+
+  /* ---------- day grid ---------- */
+  .days{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin:16px 0 24px}
+  .day{border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--paper)}
+  .day .hd{
+    background:var(--navy); color:#fff; padding:7px 12px; font-size:11.5px;
+    font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  }
+  .day .hd small{display:block; font-weight:400; text-transform:none; letter-spacing:0;
+    color:#9fc0d8; font-size:11px; margin-top:1px}
+  .day ul{margin:0; padding:10px 12px 12px 12px; list-style:none; font-size:12.8px}
+  .day li{margin:0 0 8px; padding-left:0; line-height:1.5}
+  .day li:last-child{margin-bottom:0}
+  .day li .who{margin-right:5px}
+
+  /* ---------- flow diagram ---------- */
+  .flow{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; margin:16px 0 22px;
+  }
+  .step{
+    flex:1 1 128px; border:1px solid var(--border); border-radius:6px; padding:11px 12px;
+    background:var(--surface); font-size:12.5px; position:relative; min-width:128px;
+  }
+  .step b{display:block; font-size:11px; color:var(--teal); letter-spacing:.06em;
+    text-transform:uppercase; margin-bottom:4px}
+  .step span{color:#3d4a5c; line-height:1.45; display:block}
+  .step .owner{margin-top:7px; display:block}
+
+  /* ---------- screens grid ---------- */
+  .screens{display:grid; grid-template-columns:repeat(auto-fill,minmax(176px,1fr)); gap:16px; margin:18px 0 26px}
+  figure.scr{margin:0; border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--surface)}
+  figure.scr a{display:block; line-height:0; background:#e9edf1}
+  figure.scr img{width:100%; height:auto; display:block; transition:opacity .15s}
+  figure.scr a:hover img{opacity:.87}
+  figure.scr figcaption{padding:8px 10px; font-size:12px; line-height:1.4; background:var(--paper);
+    border-top:1px solid var(--border)}
+  figure.scr figcaption b{display:block; font-size:12.5px; margin-bottom:2px}
+  figure.scr figcaption span{color:var(--mute); font-size:11.5px}
+
+  /* ---------- misc ---------- */
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:4px 16px; font-size:13.5px; margin:12px 0 20px}
+  .kv dt{font-weight:600; color:#3d4a5c; white-space:nowrap}
+  .kv dd{margin:0; color:#4a5568}
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:0 30px}
+  @media(max-width:1080px){
+    nav.side{position:fixed; left:-100%;}
+    main{padding:0 22px 90px; max-width:100%}
+    .cols2{grid-template-columns:1fr}
+  }
+  @media print{
+    nav.side{display:none} main{max-width:100%; padding:0}
+    pre{background:#f4f6f8; color:#1a1a2e; border:1px solid var(--border)}
+    section.major{page-break-before:always}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="side">
+  <div class="brand">
+    <b>T&amp;F Reader · team1</b>
+    <span>Discovery &amp; Selection — CAP-2, CAP-3</span>
+  </div>
+
+  <div class="grp">1 · Context &amp; Flow</div>
+  <a href="#context" class="sub">What we are building</a>
+  <a href="#ownership" class="sub">Who owns what</a>
+  <a href="#userflow" class="sub">The user journey</a>
+  <a href="#stack" class="sub">Stack</a>
+  <a href="#architecture" class="sub">Architecture</a>
+  <a href="#contract" class="sub">The data contract</a>
+  <a href="#adapter" class="sub">Adapter &amp; endpoints</a>
+  <a href="#access" class="sub">Access resolution</a>
+  <a href="#state" class="sub">State</a>
+  <a href="#errors" class="sub">Errors</a>
+  <a href="#open" class="sub">Open items</a>
+  <a href="#decisions" class="sub">Decisions on record</a>
+
+  <div class="grp">2 · Weekly Deliverables</div>
+  <a href="#week1" class="sub">Week 1 — day by day</a>
+  <a href="#week2" class="sub">Week 2</a>
+  <a href="#week3" class="sub">Week 3</a>
+  <a href="#week4" class="sub">Week 4</a>
+  <a href="#codes" class="sub">Deliverable reference</a>
+
+  <div class="grp">3 · GitHub Flow</div>
+  <a href="#repos" class="sub">Repos &amp; forks</a>
+  <a href="#branches" class="sub">Branches</a>
+  <a href="#loop" class="sub">Daily loop</a>
+  <a href="#prs" class="sub">PRs &amp; review</a>
+  <a href="#cadence" class="sub">Weekly cadence</a>
+  <a href="#cicd" class="sub">CI/CD &amp; environments</a>
+  <a href="#secrets" class="sub">Protection &amp; secrets</a>
+
+  <div class="grp">4 · Design</div>
+  <a href="#tokens" class="sub">Design tokens</a>
+  <a href="#components" class="sub">Component library</a>
+  <a href="#screens" class="sub">All 18 screens</a>
+  <a href="#designrules" class="sub">Rules that bind design</a>
+</nav>
+
+<main>
+
+<header class="mast">
+  <h1>T&amp;F Reader — team1 working document</h1>
+  <div class="sub">Context and flow · weekly deliverables per person · GitHub flow · design system. One file, four sections.</div>
+  <div class="meta">
+    <span class="pill live">Current as of 11 August 2026</span>
+    <span class="pill">team1 — Discovery &amp; Selection</span>
+    <span class="pill">Akriti · Khushi · Prayas · Moktik · Keshav</span>
+    <span class="pill">4-week plan · feature-complete end of Week 3</span>
+  </div>
+</header>
+
+<div class="note">
+  <span class="lbl">Read this first</span>
+  <p><strong>wokay's sample feeds are the contract; their written document is out of date</strong> — confirmed by them on 11 August. Where the two disagree, the sample wins. Two fields we had modelled from their prose turned out not to exist at all. The three samples are in <code>wokay_docs/frozen/</code> and everything in section 1 is reconciled against them.</p>
+</div>
+
+<!-- ============================================================ 1 -->
+<section class="major" id="context">
+  <h2>Section 1</h2>
+  <h3 class="title">Context &amp; flow of the application</h3>
+  <p class="lede">What the app does, who builds which part, and how a request travels from a tap to a rendered button.</p>
+
+  <h4>What we are building</h4>
+  <p>The T&amp;F Reader is a React Native app that puts Taylor &amp; Francis books, journals, articles and audiobooks behind one interface. A reader finds their institution, signs in through it, and browses the catalogue that institution is entitled to. Some titles are free to read, some need a loan, and some have a limited number of copies.</p>
+  <p>Four teams of five build it over eight weeks. <strong>team1 owns discovery and selection</strong> — finding an institution, choosing one, and the catalogue browse, search and detail screens that follow. team1's own plan runs to four weeks, feature-complete at the end of Week 3, with Week 4 for integration.</p>
+
+  <h4 id="ownership">Who owns what</h4>
+  <table>
+    <thead><tr><th>Team</th><th>Capability</th><th>What they hand us / take from us</th></tr></thead>
+    <tbody>
+      <tr><td><strong>team1</strong></td><td>CAP-2 institution listing<br>CAP-3 institute selection<br>+ catalogue UI</td><td>—</td></tr>
+      <tr><td>wokay</td><td>CAP-1 onboarding &amp; admin<br>CAP-5 OPDS catalogue</td><td>Every institution and every catalogue feed we display. They also filter search results by entitlement — we render, they filter.</td></tr>
+      <tr><td>flambeau</td><td>CAP-6 auth (SAML, JWT)<br>CAP-4 borrow &amp; licences</td><td>We hand them an <code>idpHint</code> and get a session back. Loans and live copy availability come from them.</td></tr>
+      <tr><td>t4targaryen</td><td>CAP-7 reader &amp; offline</td><td>We hand off an item; they render and store it.</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Screens</h5>
+  <p><strong>Ours:</strong> 01 catalogue home · 02 sign-in sheet · 03 access gate · 04 article detail · 05 book detail · 06 institution search · 09 search results · 10 profile · 11 voice search · 12 filters · 14–18 state screens.</p>
+  <p><strong>Not ours:</strong> 07 reader and 08 library/downloads are t4targaryen's; 13 sign-in is flambeau's.</p>
+  <div class="note warn">
+    <span class="lbl">Unresolved — decide by Friday</span>
+    <p><strong>Screen 08 ownership.</strong> wokay's document lists "my library" under team1; our plan assigns it to t4targaryen on the grounds that everything decision-bearing on it — download progress, bytes on disk, the keystore — is theirs, and screens 07 and 08 belong together. We have pushed back and are treating it as theirs. If it lands on us, the component library grows and one person's week is re-cut.</p>
+  </div>
+
+  <h4 id="userflow">The user journey</h4>
+  <div class="flow">
+    <div class="step"><b>1 · Find</b><span>Search the institution directory, server-side and paged. Recently used pinned on top.</span><span class="owner"><span class="who w-ke">Keshav</span></span></div>
+    <div class="step"><b>2 · Select</b><span>Choose an institution. Persisted to disk so it survives a restart.</span><span class="owner"><span class="who w-ke">Keshav</span></span></div>
+    <div class="step"><b>3 · Sign in</b><span>Read <code>signIn.idpHint</code> and hand it to flambeau. Always SAML — nothing to branch on.</span><span class="owner"><span class="who w-ke">Keshav</span></span></div>
+    <div class="step"><b>4 · Browse</b><span>One request draws the home screen: tabs from navigation rows, sections from groups.</span><span class="owner"><span class="who w-pr">Prayas</span></span></div>
+    <div class="step"><b>5 · Search</b><span>Server-side and entitlement-scoped. Metadata only, never inside books.</span><span class="owner"><span class="who w-mo">Moktik</span></span></div>
+    <div class="step"><b>6 · Detail</b><span>Article or book detail, plus the availability call that only detail can make.</span><span class="owner"><span class="who w-kh">Khushi</span></span></div>
+    <div class="step"><b>7 · Resolve</b><span>The acquisition link decides which buttons exist. Borrow, read, download, or nothing.</span><span class="owner"><span class="who w-ak">Akriti</span></span></div>
+    <div class="step"><b>8 · Hand off</b><span>Read passes the item to t4targaryen's reader.</span><span class="owner"><span class="who w-all">t4targaryen</span></span></div>
+  </div>
+  <p><strong>The path that has to survive interruption.</strong> A reader taps a locked title while signed out. The access gate rises, they sign in, authentication leaves the app entirely, and they come back. The <em>pending intent</em> store holds that tapped item across the whole round trip and persists to disk, because we do not know whether the app stays alive during SAML.</p>
+
+  <h4 id="stack">Stack</h4>
+  <div class="cols2">
+    <div>
+      <h6>Decided and in the repo</h6>
+      <dl class="kv">
+        <dt>Framework</dt><dd>Expo SDK 57 + React Native, with a <strong>development build</strong> — Expo Go cannot run this app</dd>
+        <dt>Language</dt><dd><strong>TypeScript</strong>, <code>strict: true</code>. <code>npm run typecheck</code> is a CI gate</dd>
+        <dt>Navigation</dt><dd>React Navigation — <code>bottom-tabs</code> + <code>native-stack</code></dd>
+        <dt>Client state</dt><dd>Zustand — three small stores</dd>
+        <dt>Persistence</dt><dd>AsyncStorage behind our own interface</dd>
+        <dt>Styling</dt><dd><code>StyleSheet</code> + design tokens, nothing else</dd>
+        <dt>Tests</dt><dd>Jest (<code>jest-expo</code>) + React Native Testing Library</dd>
+        <dt>Quality</dt><dd>ESLint 9 flat config + Prettier, pre-commit</dd>
+      </dl>
+    </div>
+    <div>
+      <h6>Recommended, not yet decided</h6>
+      <dl class="kv">
+        <dt>Server state</dt><dd><strong>TanStack Query.</strong> Its infinite-query API maps directly onto <code>next</code>-link paging, and supplies the loading and error states every component already has a prop for</dd>
+        <dt>Covers</dt><dd><code>expo-image</code> — disk cache + placeholder</dd>
+        <dt>Network</dt><dd><code>@react-native-community/netinfo</code></dd>
+        <dt>Voice</dt><dd><code>expo-speech-recognition</code></dd>
+        <dt>BDD (Wk 4)</dt><dd><code>jest-cucumber</code>, inside the Jest setup we already have</dd>
+      </dl>
+      <h6>Deliberately not used</h6>
+      <p style="font-size:13.5px;color:#4a5568">No NativeWind or styled-components — tokens are the only styling vocabulary. No Redux — global state is three slices, and the complex logic is a pure function. No axios — we follow URLs we were handed, so <code>fetch</code> plus one wrapper is enough. No <code>prop-types</code> — React 19 ignores it.</p>
+    </div>
+  </div>
+
+  <h4 id="architecture">Architecture — four layers, one rule each</h4>
+<pre><code><span class="c">screens/ + features/</span>     may fetch, navigate, hold local state
+<span class="c">components/</span>              props in, callbacks out. Nothing else
+<span class="c">adapters/ + model/</span>       the only place that knows wokay's shapes
+<span class="c">access/</span>                  the only place access logic may live</code></pre>
+  <div class="note ok">
+    <span class="lbl">The rule that has already paid for itself three times</span>
+    <p>A component receives data and renders it. It does not fetch, read a store, navigate, or work out access rights. <code>ContentCard</code> takes <code>item</code> and <code>access</code> as props and <strong>computes nothing</strong>. wokay's contract changed shape three times in two weeks — the access matrix inverted, the tier stopped being a field, the action rule moved — and the card needed no edit on any of them. A card that read <code>accessTier</code> and picked its own button would have been rework each time.</p>
+  </div>
+
+  <h4 id="contract">The data contract</h4>
+  <p><code>TF_Reader_Mobile_team1/src/model/types.ts</code> is the contract. One file, four people code against it, and it is what goes to wokay and flambeau for correction. Changes land there first and everything follows.</p>
+
+  <h5>Five fields are worked out, not read</h5>
+  <p>This is where the normalisation risk lives. All five are one-way doors: get them wrong and the mistake shows up on a screen, not in a test.</p>
+  <table>
+    <thead><tr><th class="nowrap">Field</th><th>How it is obtained</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Access tier</strong></td><td>From the acquisition link's <code>licenceModel</code>. <code>UNLIMITED</code> → <span class="tag t-sub">SUBSCRIPTION</span> · <code>CONCURRENT</code> → <span class="tag t-el">ELITE</span> · <strong>key absent entirely</strong> → <span class="tag t-oa">OPEN_ACCESS</span>. wokay's own mapping. <strong>There is no tier field.</strong></td></tr>
+      <tr><td><strong>File format</strong></td><td>From the acquisition link's MIME. <code>application/pdf</code> → PDF, <code>application/epub+zip</code> → EPUB, anything under <code>audio/</code> → AUDIO. There is no <code>contentType</code> in the feed.</td></tr>
+      <tr><td><strong>Work type</strong></td><td>From <code>metadata.@type</code>. <code>schema.org/Book</code> and <code>schema.org/Audiobook</code> confirmed; journal and article values still to come.</td></tr>
+      <tr><td><strong>Item id</strong></td><td>From the tail of the publication's own <code>self</code> URL. <code>metadata.identifier</code> is <em>not</em> the id, and the batch endpoint needs the real one.</td></tr>
+      <tr><td><strong>ISBN</strong></td><td>Unwrapped from <code>metadata.identifier</code> — <code>urn:isbn:9780367211745</code>. Titles without one carry <code>urn:tf:catalogue:…</code> instead.</td></tr>
+    </tbody>
+  </table>
+  <div class="note stop">
+    <span class="lbl">The subtle one</span>
+    <p><strong>"Looked it up and got nothing" and "the key is not there" are different facts.</strong> A missing <code>licenceModel</code> means Open Access. Treat the two cases the same and every Subscription title with a slightly malformed link renders as free to read. The derivation takes the whole properties object, not a string, so the absent case cannot be lost at the call site.</p>
+    <p>All five derivations happen <strong>in the adapter</strong>. By the time data reaches a component, <code>accessTier</code> is a plain value again — which is what keeps the design rule intact.</p>
+  </div>
+
+  <h5>Two things that closed, and one that did not</h5>
+  <ul>
+    <li><strong>DOI is gone for good.</strong> There is no DOI field and there never will be — only wokay's own identifier. <strong>Drop DOI from screen 04.</strong> A design change to make, not an answer to wait for.</li>
+    <li><strong>One format per title.</strong> A publication has exactly one acquisition link. <strong>Consequence: <code>FormatSelector</code> has nothing to select between</strong> — decide whether to drop it or keep it as a single-format display strip.</li>
+    <li><strong>B2C is retained.</strong> wokay recommended cutting individual subscribers at their own gate; that recommendation is not being taken and they will supply the details later. So <code>subscribe</code> stays in the action vocabulary, <code>Session.type</code> stays, <code>ActionButton</code> has six variants, and screen 03's second option is reopened rather than settled.</li>
+  </ul>
+
+  <h4 id="adapter">The adapter, and when each endpoint arrives</h4>
+  <p>Eight methods. <code>MockAdapter</code> implements them in Week 1; <code>ApiAdapter</code> must satisfy the identical interface in Week 3 before it is wired up. Both declare <code>implements DataAdapter</code>, so the compiler now guarantees they cannot drift.</p>
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th class="nowrap">Token</th><th class="nowrap">wokay's week</th></tr></thead>
+    <tbody>
+      <tr><td><code>getInstitutions</code></td><td><code>GET /api/v1/institutions?q=&amp;country=&amp;page=&amp;size=</code></td><td>none</td><td><strong>Wk 2</strong></td></tr>
+      <tr><td><code>getInstitution</code></td><td><code>GET /api/v1/institutions/{id}</code></td><td>none</td><td><strong>Wk 2</strong></td></tr>
+      <tr><td><code>getCatalogueRoot</code></td><td><code>GET /opds/v1/institutions/{id}/catalogue</code></td><td>app</td><td>Wk 3</td></tr>
+      <tr><td><code>getPublication</code></td><td><code>GET /opds/v1/institutions/{id}/publications/{iid}</code></td><td>app</td><td>Wk 3</td></tr>
+      <tr><td><code>getFeed</code></td><td>a shelf, a <code>next</code> link, or a search page</td><td>app</td><td>Wk 4</td></tr>
+      <tr><td><code>searchCatalogue</code></td><td><code>GET /opds/v1/institutions/{id}/search?query=</code></td><td>app</td><td>Wk 4</td></tr>
+      <tr><td><code>getPublicCatalogue</code></td><td><code>GET /opds/v1/public/catalogue</code> — open access only</td><td>none</td><td>Wk 4</td></tr>
+      <tr><td><code>getItemsBatch</code></td><td><code>POST /api/v1/catalogue/items:batch</code>, max 100 ids</td><td>app</td><td>Wk 4</td></tr>
+    </tbody>
+  </table>
+  <p><strong>The institution endpoints land first, and they matter most.</strong> Keshav is the first person who can delete a mock. His work is also on the sign-in critical path: if catalogue search breaks, a reader browses instead; if institution search breaks, nobody can sign in, obtain entitlements, or read anything. Low difficulty, high consequence — give it review attention rather than help.</p>
+
+  <h5>Four rules wokay set, which the method signatures enforce</h5>
+  <ol>
+    <li><strong>Follow URLs, never build them.</strong> Every catalogue method takes a URL we were handed. The only string we ever construct is expanding the search template <code>…/search{?query}</code>.</li>
+    <li><strong>Page by following the <code>next</code> link until it is absent.</strong> Never count pages.</li>
+    <li><strong>An empty result is not an empty array.</strong> A zero-result search returns a feed containing a navigation entry pointing back at the catalogue. Render it as a browse-instead button; a missing <code>publications</code> key is not an error.</li>
+    <li><strong>The acquisition link decides the buttons</strong> — not our logic. No link means no button.</li>
+  </ol>
+
+  <h5>Navigation rows and shelves are two different lists</h5>
+  <p>The root feed carries both, and they do not match. In wokay's own words: <em>"one request draws the home screen: navigation rows and shelves."</em></p>
+  <table>
+    <thead><tr><th>In the feed</th><th>Sample contents</th><th>Where it renders</th></tr></thead>
+    <tbody>
+      <tr><td><code>navigation</code> (3)</td><td>eBooks · Audiobooks · Open access — pointers, no items</td><td>The <strong>tabs</strong></td></tr>
+      <tr><td><code>groups</code> (2)</td><td>New this term · Free to read — each with inline publications</td><td><strong>Screen 01's sections</strong>, rendered directly with no second request</td></tr>
+    </tbody>
+  </table>
+  <p>They can overlap: in the sample, one navigation row and one group point at the same URL under different names. <strong>Dedupe by URL</strong> or the same shelf appears twice.</p>
+  <p><strong>Two pagination models, split cleanly.</strong> OPDS feeds use <code>next</code> links only; the institutions endpoint uses page/size/total. They belong to different endpoint families, so build both plainly rather than abstracting over them. Note that shelves and search <em>do</em> carry a result count (<code>metadata.numberOfItems</code>), so "3 results" is available even though page numbers are not.</p>
+
+  <h4 id="access">Access resolution — the spine</h4>
+  <p><code>resolveAccess(item, session, loan, availability)</code> lives in <code>src/access/</code> and is the only place access logic may exist. It interprets the feed; it is not a rules engine.</p>
+<pre><code><span class="k">rel = open-access</span>                        → read, download
+<span class="k">rel = acquisition</span>, canPersist true       → borrow, then read + download
+<span class="k">rel = borrow</span>,      canPersist false      → borrow, then read only
+<span class="k">no acquisition link</span>                      → no actions at all</code></pre>
+  <ul>
+    <li><strong>session</strong> decides signed-in versus needs-sign-in. Open Access resolves the same either way.</li>
+    <li><strong>loan</strong> decides before-borrow versus after-borrow.</li>
+    <li><strong>availability</strong> decides no-seats — <span class="tag t-el">ELITE</span> only, detail screen only, because the number of free copies is not in the feed.</li>
+    <li><strong>tier</strong> decides the badge and nothing else.</li>
+  </ul>
+  <p><code>availability</code> is null on every list surface. That is why a <code>ContentCard</code> can never show a no-seats state — structural, rather than something a reviewer has to remember.</p>
+  <div class="note warn">
+    <span class="lbl">Building against an unratified correction</span>
+    <p>The signed design specification's access matrix contradicts wokay's on two of the three tiers — it said Open Access needs a loan once signed in, and that Elite never borrows. wokay say the opposite on both, and we believe wokay. The design spec is corrected to v0.3 and <strong>that correction is not yet ratified.</strong> Anyone reverting to the older table produces a wrong demo.</p>
+  </div>
+
+  <h4 id="state">State — what lives where</h4>
+  <table>
+    <thead><tr><th>What</th><th>Where</th><th class="nowrap">Survives restart?</th></tr></thead>
+    <tbody>
+      <tr><td>Shelves, items, search results, institution lists, detail</td><td><strong>TanStack Query</strong> — never in a store</td><td>No</td></tr>
+      <tr><td>Session from flambeau</td><td>Zustand</td><td>Yes</td></tr>
+      <tr><td>Chosen institution + recently used</td><td>Zustand</td><td>Yes</td></tr>
+      <tr><td>Pending intent</td><td>Zustand</td><td>Yes</td></tr>
+      <tr><td>Search text, active filter chips</td><td>Local component state</td><td>No</td></tr>
+      <tr><td>Resolved access</td><td><strong>Nowhere</strong> — recomputed per render</td><td>—</td></tr>
+      <tr><td>Online / offline</td><td><code>useNetworkStatus</code> hook</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Two rules:</strong> no server data in a store, and no resolved access in a store. A cached access result is how a stale button outlives a borrow.</p>
+  <div class="note warn">
+    <span class="lbl">Wire this while the navigator is open</span>
+    <p>Persisted state rehydrates <strong>asynchronously</strong>, so the chosen institution is briefly absent on a cold start. The root navigator must wait for rehydration before choosing between the institution picker and the catalogue, or a returning reader sees the picker flash on every launch. Zustand exposes <code>persist.hasHydrated()</code> for exactly this.</p>
+  </div>
+
+  <h4 id="errors">Errors</h4>
+  <p>wokay send one error shape for every failure, carrying an enumerated <code>code</code>. <strong>Copy is keyed on that code, never on the HTTP status</strong> — so a reader sees "your library's subscription has expired" rather than "not available".</p>
+  <p style="font-size:13.5px"><code>UNAUTHENTICATED</code> · <code>TOKEN_EXPIRED</code> · <code>FORBIDDEN_INSTITUTION_MISMATCH</code> · <code>NO_ENTITLEMENT</code> · <code>ENTITLEMENT_EXPIRED</code> · <code>ENTITLEMENT_SUSPENDED</code> · <code>CONTENT_NOT_READY</code> · <code>DOWNLOAD_NOT_PERMITTED</code> · <code>INVALID_DEVICE_PUBLIC_KEY</code> · <code>NOT_FOUND</code></p>
+  <p><code>ErrorState</code> takes a string, never an <code>Error</code> object — no stack traces reach a screen. A publication the institution is not entitled to returns <strong>404, identical to one that does not exist</strong>, so the catalogue cannot be probed by guessing ids. The same applies to inactive institutions: treat 404 on institution detail as not-found, never as forbidden.</p>
+
+  <h4 id="open">Open items</h4>
+  <table>
+    <thead><tr><th class="nowrap">Waiting on</th><th>Item</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>wokay</td><td>Sample shapes for the empty-search result, an error response, and <strong>the institution list and detail</strong></td><td>The institution one is Keshav's whole block and those endpoints land Week 2. Chase it first.</td></tr>
+      <tr><td>wokay</td><td><code>@type</code> values for <strong>journal and article</strong></td><td>Two marked guesses stand in. Decides which detail screen renders — Week 2 work.</td></tr>
+      <tr><td>wokay</td><td><strong>Can access tier still be used as a filter</strong>, with no tier field?</td><td>The filter chips were designed assuming it was free. Moktik builds them Day 3. <span class="tag t-risk">Same-week</span></td></tr>
+      <tr><td>wokay</td><td>Subject facets</td><td>Their default is not to build them, which would delete Browse-by-Subject. We answered yes.</td></tr>
+      <tr><td>wokay</td><td>B2C details</td><td><code>subscribe</code> has a button but no specified flow.</td></tr>
+      <tr><td>flambeau</td><td>Sign-in handoff; bulk loan-state lookup; the session payload shape</td><td>Narrow now — always SAML, payload is <code>idpHint</code>. But the payload question reopens with B2C retained: a B2C session may carry no institution at all.</td></tr>
+      <tr><td>t4targaryen</td><td>Screen 08 ownership; who renders the downloaded indicator</td><td>Re-cuts a week if it moves.</td></tr>
+      <tr><td>Leadership</td><td>Ratify the corrected access matrix; ratify that the logged-out feed is open-access only</td><td>Two contradictory rule sets are in circulation until then.</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Carried risks</h5>
+  <table>
+    <thead><tr><th>Risk</th><th>Standing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Catalogue search lands Week 4, which is also our integration week</strong></td><td><span class="tag t-risk">Live</span> Moktik builds against fixtures for three weeks and integrates in the busiest one. Mitigated only by the interface boundary: fetch-and-filter must stay strictly behind it so the swap is a configuration change.</td></tr>
+      <tr><td>Contract drift between adapter and screens</td><td><span class="tag t-done">Low</span> Largely closed by TypeScript — <code>implements DataAdapter</code> on both adapters and typecheck in CI. What the compiler cannot see is runtime data, so fixture and response validation still carry weight.</td></tr>
+      <tr><td>Prayas designing the normalisation model blind</td><td><span class="tag t-done">Closed</span> The samples landed and the contract is reconciled against them.</td></tr>
+      <tr><td>Five authors, five styles</td><td><span class="tag t-open">Managed</span> Tokens written Day 1, one agreed skeleton, and the Friday consistency review. All three are required; any two is not enough.</td></tr>
+      <tr><td>A feature quietly introducing its own component</td><td><span class="tag t-open">Watch</span> The rule most likely to break under deadline pressure. Enforced at review.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 id="decisions">Decisions on record</h4>
+  <p>Recorded so they read as decisions rather than as things nobody noticed.</p>
+  <ol>
+    <li><strong>No per-institution theming</strong> in the prototype. One fixed palette; <code>branding.primaryColor</code> is carried and deliberately unused, so adopting it later is additive rather than a refactor.</li>
+    <li><strong>The tier drives the badge only</strong> — never an action. Confirmed to wokay in writing.</li>
+    <li><strong>Sort institutions alphabetically</strong> server-side; recently-used pinning is ours and client-side.</li>
+    <li><strong>Yes to subject facets</strong> — asked for explicitly, because silence would have removed the feature.</li>
+    <li><strong>The public open-access feed is a skip-institution path</strong>, and an addition rather than a replacement now that B2C is retained.</li>
+    <li><strong>Screen 08 is t4targaryen's.</strong> Screens 07 and 08 belong together.</li>
+    <li><strong>DOI is removed from screen 04.</strong></li>
+    <li><strong>TypeScript with <code>strict: true</code></strong>, reversing the earlier JavaScript call. <code>any</code> and <code>as</code> allowed without review pushback in Week 1 — the value is in the contract file and the props, not in purity.</li>
+  </ol>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="major" id="week1">
+  <h2>Section 2</h2>
+  <h3 class="title">Weekly deliverables, per person</h3>
+  <p class="lede">Week 1 is broken down day by day, because that is the resolution it needs to start on Monday morning. Weeks 2 to 4 are listed at the level the plan genuinely specifies — named deliverables per person — rather than invented detail.</p>
+
+  <h4>Week 1 — 10 to 14 August · foundation</h4>
+  <p>Days 1 and 2 are a <strong>foundation sprint</strong>: all five people, one branch, no feature work. The blocking work is collectively owned precisely so that no single person is a bottleneck. Days 3 to 5 split into components and then features.</p>
+
+  <div class="days">
+    <div class="day">
+      <div class="hd">Day 1 · Mon<small>All five, one branch</small></div>
+      <ul>
+        <li><span class="who w-pr">Prayas</span> Repository scaffold — all five pair for the first hour. Blocks literally everything.</li>
+        <li><span class="who w-kh">Khushi</span> Design tokens. Single author, never split. ~2 hours, transcription not interpretation.</li>
+        <li><span class="who w-ak">Akriti</span> The contract — <code>types.ts</code>. Blocks the other four.</li>
+        <li><span class="who w-pr">Prayas</span> Mock fixtures, derived from wokay's samples.</li>
+        <li><span class="who w-all">All five</span> Component conventions, agreed and written up.</li>
+        <li><span class="who w-ak">Akriti</span> Send the four question sets; answer wokay's four asks; chase the remaining samples.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Day 2 · Tue<small>Shell + the core five</small></div>
+      <ul>
+        <li><span class="who w-ke">Keshav</span> App shell and tab navigation, paired with Khushi. Blocks every screen.</li>
+        <li><span class="who w-pr">Prayas</span> <code>ContentCard</code> — the most reused component in the app.</li>
+        <li><span class="who w-ke">Keshav</span> <code>TopAppBar</code></li>
+        <li><span class="who w-mo">Moktik</span> <code>SearchInput</code></li>
+        <li><span class="who w-ak">Akriti</span> <code>AccessTierBadge</code></li>
+        <li><span class="who w-kh">Khushi</span> <code>Skeleton</code></li>
+        <li><span class="who w-pr">Prayas</span> Fixtures complete + validation.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Day 3 · Wed<small>Library completion</small></div>
+      <ul>
+        <li><span class="who w-pr">Prayas</span> 4 components — SectionHeader, SubjectChip, Carousel + PageDots, Tabs</li>
+        <li><span class="who w-ke">Keshav</span> 3 — BottomSheet, InstitutionRow, ListRow</li>
+        <li><span class="who w-mo">Moktik</span> 2 — FilterChip, VoiceOverlay</li>
+        <li><span class="who w-ak">Akriti</span> 2 — ActionButton, ActionBar</li>
+        <li><span class="who w-kh">Khushi</span> 2 — EmptyState, ErrorState</li>
+        <li><span class="who w-all">Gate</span> 19 of 21 merged by end of day.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Days 4–5 · Thu–Fri<small>Feature work</small></div>
+      <ul>
+        <li><span class="who w-pr">Prayas</span> F1, F2, A4 — one OPDS adapter, normalisation, next-link paging</li>
+        <li><span class="who w-mo">Moktik</span> Search shell + B1 query surface</li>
+        <li><span class="who w-ke">Keshav</span> B9, C1 — institution pipeline and list</li>
+        <li><span class="who w-ak">Akriti</span> D1 skeleton + F6 pending intent</li>
+        <li><span class="who w-kh">Khushi</span> 2 components, the state gallery, C2 institution detail</li>
+        <li><span class="who w-all">Fri 16:00</span> Consistency review · <strong>17:00</strong> board handover</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note stop">
+    <span class="lbl">The Day 2 gate is absolute</span>
+    <p>No feature branch is cut until the foundation is merged and the app runs on a device or simulator — <strong>confirmed by all five people on their own machines</strong>, not just the author's. A scaffold that only runs on one laptop is not a scaffold. Two days of apparent slowness buys back a week; skipping the gate is what turns Week 3 integration into a rewrite.</p>
+    <p>If Day 2 evening is not green, <strong>cut the core five to three</strong> — ContentCard, TopAppBar, Skeleton — rather than cutting the contract or the fixtures.</p>
+  </div>
+
+  <h5>The two genuine fan-out risks in Week 1</h5>
+  <p>With the library split five ways, only two artefacts block more than one person. <strong>Design tokens</strong>, single-authored on Day 1 before any component exists, so no component author ever picks a colour or a spacing value — that single exception is what makes splitting the other twenty-one safe. And the <strong>app shell</strong>, which everything with a screen needs, so it moves into the all-hands phase. Everything else is either self-contained or consumed from a fixture.</p>
+
+  <h5>Week 1 exit criteria</h5>
+  <ul>
+    <li>Catalogue browsable and searchable on mock data; institution list, detail and search working</li>
+    <li>All 21 components merged, each with a gallery entry and a typed props interface</li>
+    <li>State gallery complete; consistency review held and findings fixed before Monday</li>
+    <li>Contracts sent to all four audiences, reconciled against wokay's samples — <em>not</em> re-asking what they already answered</li>
+    <li>wokay's four asks answered in writing, subject facets among them</li>
+    <li>Access matrix correction and feed-scoping escalated in writing; sign-in handoff agreed with flambeau</li>
+    <li>Screen 08 ownership resolved, or recorded as an open escalation with a name against it</li>
+    <li>Dependency board handed over, every item in exactly one of: <strong>Asked · Answered · Stubbed · Integrated</strong></li>
+  </ul>
+
+  <h4 id="week2">Week 2 — features</h4>
+  <table>
+    <thead><tr><th class="nowrap">Person</th><th>Deliverables</th><th>Watch out for</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>A0 shelf tabs from the root feed's navigation rows · A1, A3, A5, A7, A9 catalogue home · D10, F8 loan-state fetching and caching · F9 items:batch</td><td>The shelf set is per-institution configuration and wokay can re-cut it without a rebuild, so <strong>the tab bar is data, not code</strong> — mandatory rather than prudent.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>B3, B4, B6, B7, B8 filters, sort, result count, combined-state persistence · B11 voice input</td><td>B5 access-tier filter depends on the open question about filtering without a tier field. Subject filters depend on facets we asked for in Week 1.</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>C3–C8 selection, persistence, offline institution cache · screens 02, 06, 10</td><td>Two areas converging: authentication churn alongside detail work. Persist pending intent <strong>to disk</strong>, since authentication leaves the app.</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>E1–E4 item detail across work types · D3 tier badges · screens 04, 05</td><td>Work type is derived until wokay confirm the journal and article values. Metadata may be incomplete — render what exists and leave gaps blank rather than blocking.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>D1, D2, D4, D6–D9, D11, A2, A6, F3 — the link interpreter, the corrected loan rule, Borrow orchestration and the optimistic flip · screens 03, 18</td><td><span class="tag t-risk">Largest stub in the plan.</span> Still the most externally blocked block by a wide margin. If flambeau's entitlement access lands late, this is rework rather than extension.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 id="week3">Week 3 — states and hardening</h4>
+  <table>
+    <thead><tr><th class="nowrap">Person</th><th>Deliverables</th><th>Watch out for</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 — begin the real adapter swap; catalogue and pagination hardening</td><td>If endpoints are late, do fixture-parity work instead so the swap is shorter when it comes.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>Search hardening and query-state depth</td><td><strong>Not</strong> a ranking pass — ranking is wokay's. The real endpoint does not arrive until Week 4, so everything here runs on fixtures.</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>Item detail hardening · offline institution cache · authentication round-trip hardening</td><td>If flambeau's mock is late, exercise the full round trip against our own placeholder.</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>F5 states everywhere · D8, D12, B10 rendered states · screens 14, 17 · the state-matrix pass — <strong>her largest week</strong></td><td>Scheduled here precisely because it is the one block that cannot slip on somebody else's account.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>D13 Borrow failure handling · D14 the error-code copy map · supporting Khushi through the state-matrix pass</td><td>Build the copy map against wokay's published code enumeration, and confirm with flambeau that the codes reach us unchanged.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 id="week4">Week 4 — integration</h4>
+  <table>
+    <thead><tr><th class="nowrap">Person</th><th>Deliverables</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 close-out; shape-mismatch fixes against the real feed. Demo on mocks and record the delta if it slips.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>G4 — the BDD test suite. Plus integrating the real search endpoint, which arrives this week. <span class="tag t-risk">The schedule risk</span></td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>G2, G3 — real authentication routing and reader launch. Keep the placeholder round trip; it is demonstrable.</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>G4 — accessibility pass. Unaffected by external slippage.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>G2 — real session and entitlements. Keep the mocked session, and say clearly in the demo that it is mocked.</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Component ownership across the library</h5>
+  <table>
+    <thead><tr><th class="nowrap">Person</th><th class="nowrap">Count</th><th>Components</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>5</td><td><strong>ContentCard</strong> · SectionHeader · SubjectChip · Carousel + PageDots · Tabs</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>4</td><td><strong>TopAppBar</strong> · BottomSheet · InstitutionRow · ListRow</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>5</td><td><strong>Skeleton</strong> · EmptyState · ErrorState · OfflineBanner · FormatSelector <span class="tag t-open">under review</span></td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>3</td><td><strong>SearchInput</strong> · FilterChip · VoiceOverlay</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>3</td><td><strong>AccessTierBadge</strong> · ActionButton · ActionBar</td></tr>
+      <tr><td><span class="who w-all">Shell</span></td><td>1</td><td>BottomTabBar — navigation wiring, built in the all-hands phase</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13.5px;color:var(--mute)">Bold = one of the core five, built Day 2. Design tokens are deliberately absent from this table: one author, Day 1, before any component exists.</p>
+
+  <h4 id="codes">Deliverable reference</h4>
+  <p>The codes used above, so a row in the weekly tables can be looked up without another document.</p>
+  <table>
+    <thead><tr><th class="nowrap">Code</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>A0</code></td><td>Shelf tabs read from the root feed's navigation rows. Data, never a hardcoded list.</td></tr>
+      <tr><td><code>A1</code></td><td>Anonymous browse via the public catalogue. <strong>Open access only</strong>, not the full catalogue.</td></tr>
+      <tr><td><code>A2</code></td><td>Signed-in feed, scoped by the backend to what the institution is entitled to, plus open access.</td></tr>
+      <tr><td><code>A3</code></td><td>Item card — title, publisher, file format, access-tier badge.</td></tr>
+      <tr><td><code>A4</code></td><td>Pagination by following the next link. Two models, split by endpoint family.</td></tr>
+      <tr><td><code>A5</code></td><td>Featured carousel and Browse-by-Subject chips (screen 01). Chips need facets.</td></tr>
+      <tr><td><code>A6</code></td><td>Access Gate raised when a locked item is opened while anonymous.</td></tr>
+      <tr><td><code>A7</code></td><td>Feed re-scopes and re-resolves on sign-in and sign-out without a full reload.</td></tr>
+      <tr><td><code>A8</code>–<code>A9</code></td><td>Follow hrefs, never build URLs · zero results is a navigation feed, not an empty array.</td></tr>
+      <tr><td><code>B1</code></td><td>Catalogue search UI over wokay's server-side endpoint — query state, templated-link expansion, rendering, paging, empty and error states.</td></tr>
+      <tr><td><code>B2</code></td><td>ISBN unpacked from the identifier string. URN extraction <em>is</em> required.</td></tr>
+      <tr><td><code>B3</code>–<code>B8</code></td><td>Filters (format, subject, publisher, year, tier), sort, visible result count, and combined state that survives navigation.</td></tr>
+      <tr><td><code>B9</code></td><td>Institution search over wokay's paged endpoint — a separate pipeline sharing only the shell.</td></tr>
+      <tr><td><code>B10</code>–<code>B13</code></td><td>Three empty states · voice search (catalogue only) · recent queries · the filter and sort sheet.</td></tr>
+      <tr><td><code>C1</code>–<code>C2</code></td><td>Institution list with recently-used pinned · institution detail view.</td></tr>
+      <tr><td><code>C3</code>–<code>C5</code></td><td>Select an institution · persist and restore on relaunch · change or clear it from Profile.</td></tr>
+      <tr><td><code>C6</code></td><td>Route to sign-in by passing <code>signIn.idpHint</code> to flambeau. Always SAML.</td></tr>
+      <tr><td><code>C7</code>–<code>C9</code></td><td>Entry choice on the home screen · institution list works offline from cache · 404 not 403 on an inactive institution.</td></tr>
+      <tr><td><code>D1</code>–<code>D4</code></td><td><code>resolveAccess</code> as a link interpreter · one correct action per item · the tier badge · Elite offers no Download.</td></tr>
+      <tr><td><code>D6</code>–<code>D8</code></td><td>Read handoff to the reader team · Download on Open Access and Subscription only · the not-entitled state.</td></tr>
+      <tr><td><code>D9</code>–<code>D12</code></td><td>Borrow through flambeau · loan state joined to each item · the optimistic flip · no-seats and waitlist (Elite, detail only).</td></tr>
+      <tr><td><code>D13</code>–<code>D14</code></td><td>Borrow failure handling driven by the error codes · one copy map keyed on code, not status.</td></tr>
+      <tr><td><code>E1</code>–<code>E5</code></td><td>Book detail · article detail (no DOI) · journal and audio through the same model · identical access model to the list, plus the availability call · screens 04 and 05 differ by work type.</td></tr>
+      <tr><td><code>F1</code>–<code>F2</code></td><td>OPDS consumption normalised to one content model · swappable mock and real adapters.</td></tr>
+      <tr><td><code>F3</code>–<code>F6</code></td><td>Session and entitlement context · app shell, tabs, tokens and the component library · loading/empty/error/offline everywhere · the pending-intent store.</td></tr>
+      <tr><td><code>F7</code>–<code>F10</code></td><td>Profile institution management · loan cache with invalidation · items:batch · a typed error layer over wokay's envelope.</td></tr>
+      <tr><td><code>G1</code>–<code>G4</code></td><td>Week 4: the real adapter swap · real session and entitlements · real auth routing and reader launch · BDD suite and accessibility pass.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="major" id="repos">
+  <h2>Section 3</h2>
+  <h3 class="title">GitHub flow</h3>
+  <p class="lede">Applies to all three repos and all four teams. Anything marked assumed is a default chosen so the process is usable — confirm or overwrite it.</p>
+
+  <h4>Repos and forks</h4>
+  <p>Two client surfaces, three repos.</p>
+  <table>
+    <thead><tr><th>Client</th><th>Repo</th><th>Stack</th></tr></thead>
+    <tbody>
+      <tr><td>Phone</td><td><code>tf_reader_mobile_app</code></td><td>React Native — <strong>this is ours</strong></td></tr>
+      <tr><td>Web admin</td><td><code>tf_reader_admin</code></td><td>React <span class="tag t-open">assumed</span></td></tr>
+      <tr><td>Serves both</td><td><code>tf_reader_backend</code></td><td>Spring Boot modular monolith + MongoDB + Redis</td></tr>
+    </tbody>
+  </table>
+  <p>Each upstream repo has exactly two long-lived branches. <strong><code>main</code> is production</strong> — live, protected, never pushed to directly. <strong><code>stage</code> is UAT</strong> and the integration point for all four teams. There is no <code>develop</code>.</p>
+  <p>Each team's <strong>lead forks</strong>; everyone else clones the team fork. Nobody clones upstream directly. Four forks per repo, twelve in total.</p>
+<pre><code>          tf_reader_mobile_app          <span class="c">← upstream, org-owned</span>
+          ├── main   (prod)
+          └── stage  (UAT)
+                   ▲
+   ┌─────────┬─────┴─────┬────────────┐
+  b1        b2          b3           b4        <span class="c">← team forks</span>
+(team1)   (wokay)   (flambeau) (t4targaryen)
+  │
+  └── 4 devs clone the fork  (+ lead = 5 per team)</code></pre>
+  <div class="note warn">
+    <span class="lbl">The single most confusing part of this setup</span>
+    <p><strong>In a fork, <code>main</code> is the team's dev integration line — not production.</strong> It deploys to the team dev environment. <code>stage</code> is unused in forks; do not create or track it there. State this in every fork's README, as ours does.</p>
+  </div>
+  <h6>Remotes on every dev's clone</h6>
+<pre><code>git clone git@github.com:&lt;lead&gt;/tf_reader_mobile_app.git   <span class="c"># this is b1</span>
+cd tf_reader_mobile_app
+git remote add upstream git@github.com:&lt;org&gt;/tf_reader_mobile_app.git
+
+<span class="c"># origin    b1  (fetch/push)   ← your team fork</span>
+<span class="c"># upstream  b   (fetch)        ← the real repo, read-only for you</span></code></pre>
+  <p>Only the team lead ever pushes to upstream, and only via PR.</p>
+
+  <h4 id="branches">Branch naming</h4>
+<pre><code>feature/CAP-&lt;n&gt;-&lt;slug&gt;     feature/CAP-2-institution-list
+fix/CAP-&lt;n&gt;-&lt;slug&gt;         fix/CAP-3-selection-persist
+chore/&lt;slug&gt;               chore/ci-cache-gradle
+spike/&lt;slug&gt;               spike/opds-parser
+release/&lt;yyyy-mm-dd&gt;       release/2026-08-13   <span class="c">(stage → main only)</span>
+hotfix/&lt;slug&gt;              hotfix/jwt-expiry    <span class="c">(branches off main)</span></code></pre>
+  <p>Lowercase, hyphens, no personal names in branch names.</p>
+
+  <h4 id="loop">The daily loop</h4>
+<pre><code><span class="c"># 1 · start of every session — sync down</span>
+git checkout main &amp;&amp; git pull --ff-only origin main
+git fetch upstream
+
+<span class="c"># 2 · create the feature branch</span>
+git checkout -b feature/CAP-2-institution-list
+
+<span class="c"># 3 · while working — rebase, never merge</span>
+git checkout main &amp;&amp; git pull --ff-only origin main
+git checkout - &amp;&amp; git rebase main
+
+<span class="c"># 4 · lead only, every 2–3 days — sync the fork with upstream</span>
+git checkout main &amp;&amp; git fetch upstream
+git rebase upstream/stage      <span class="c"># forks track upstream STAGE, not main</span>
+git push origin main</code></pre>
+  <p><strong>Forks rebase onto upstream <code>stage</code>, not <code>main</code></strong>, because <code>stage</code> is where the other three teams' work lands. Rebasing onto <code>main</code> would leave you a week behind. Rebase rather than merge so history stays linear and the weekly upstream PR stays reviewable.</p>
+  <div class="note">
+    <span class="lbl">Push cadence</span>
+    <p><strong>Push your feature branch to the fork every 2–3 days minimum</strong>, even if incomplete — prefix the PR <code>Draft:</code> if it is not ready. This is a hackathon-speed build, and a branch that lives five days unpushed is a conflict grenade. Our own team rule is tighter still: <strong>daily merge to <code>main</code>, and no branch lives longer than one day.</strong> Long branches plus a shared component library is the worst combination available to this team.</p>
+  </div>
+
+  <h4 id="prs">Pre-PR checklist, and review</h4>
+  <p>Run all of this <em>before</em> raising the PR:</p>
+  <ul>
+    <li><strong>Rebased</strong> on the latest fork <code>main</code></li>
+    <li><strong>Tests pass locally</strong>, and <code>npm run typecheck</code> and <code>npm run lint</code> are clean</li>
+    <li><strong>Read your own diff hunk by hunk</strong> — catch stray debug logs, commented-out blocks, a committed <code>.env</code>, accidental formatting churn</li>
+    <li>A README note if the feature warrants one — new module, new env var, non-obvious setup</li>
+    <li><strong>AI pass</strong> for optimisation, regression risk and code quality</li>
+    <li><strong>Security review</strong> on the diff — <code>/security-review</code>, every PR, not just auth or crypto work</li>
+    <li>No secrets, no tokens, no real institution or user data in the diff</li>
+  </ul>
+  <p>The PR goes to <strong>the team fork, never upstream</strong>: <code>feature/CAP-2-institution-list → b1:main</code>. It must say what changed, why, how to test, and link the CAP id, with screenshots for UI.</p>
+  <h6>Merging</h6>
+  <ul>
+    <li>Reviewers auto-requested via <code>CODEOWNERS</code> — that file is the mechanism; <code>CODE_REVIEW.md</code> and <code>CONTRIBUTORS.md</code> are the documentation</li>
+    <li>Minimum <strong>one approval</strong> from someone who is not the author. <strong>If you wrote the component being extended, you are a required reviewer.</strong></li>
+    <li>CI green, <strong>squash merge</strong>, delete the branch</li>
+    <li>Reviews turned around within one working day; Thursday PRs same day</li>
+    <li><strong>A component merges before the screen that consumes it.</strong> Changes to <code>model/</code>, <code>adapters/</code>, <code>access/</code> or <code>theme/</code> need the named owner.</li>
+  </ul>
+
+  <h4 id="cadence">Weekly cadence</h4>
+  <p>A fixed rhythm, so integration pain is bounded to two days a week.</p>
+  <table>
+    <thead><tr><th class="nowrap">Day</th><th>What happens</th><th class="nowrap">Who</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mon–Wed</strong></td><td>Feature work. PRs into fork <code>main</code>.</td><td>All devs</td></tr>
+      <tr><td><strong>Thu</strong></td><td><strong>Lead raises the upstream PR: <code>b1:main → b:stage</code>.</strong> One per repo per team. Cross-team review; contract changes flagged loudly.</td><td>Leads</td></tr>
+      <tr><td><strong>Fri</strong></td><td><strong>Conflict resolution day.</strong> Merge the stage PRs, get <code>stage</code> green, deploy and smoke-test, then freeze.</td><td>Leads + platform</td></tr>
+      <tr><td><strong>Sat–Sun</strong></td><td><code>stage</code> and <code>main</code> must be stable. No upstream merges. Emergencies via <code>hotfix/*</code> with lead approval only.</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="note stop">
+    <span class="lbl">The one hard rule</span>
+    <p><strong>If a team's fork <code>main</code> is red on Thursday, that team does not raise a PR that week.</strong> A broken stage blocks twenty people.</p>
+  </div>
+  <p><strong>Promotion to production is not part of the weekly loop.</strong> It is a deliberate release: cut <code>release/&lt;date&gt;</code> from <code>stage</code> once it has been green and smoke-tested, requiring platform owner plus one lead, a manual approval gate on the prod deploy, and a version tag on merge.</p>
+
+  <h4 id="cicd">CI/CD and environments</h4>
+  <p><strong>The cloud target is not decided, so the pipelines are provider-agnostic.</strong> Every repo has one script, <code>.ci/deploy.sh</code>, always called the same way:</p>
+<pre><code>.ci/deploy.sh --env "$ENV_NAME" --image "$IMAGE_REF" --ref "$GITHUB_SHA"</code></pre>
+  <p>The workflow contract is fixed and does not change when the cloud is chosen — <strong>only <code>deploy.sh</code> changes.</strong> Today it can be a stub that echoes and exits 0. Images go to GitHub Container Registry, which works everywhere and any cloud can pull from later.</p>
+  <table>
+    <thead><tr><th>Workflow</th><th>Trigger</th><th>Runs</th></tr></thead>
+    <tbody>
+      <tr><td><code>ci.yml</code></td><td>PR to any branch; push to <code>main</code>/<code>stage</code></td><td>lint → typecheck → test → build → security</td></tr>
+      <tr><td><code>deploy-dev.yml</code></td><td>push to <code>main</code> <strong>in a fork</strong></td><td>build → deploy <code>dev-&lt;team&gt;</code></td></tr>
+      <tr><td><code>deploy-stage.yml</code></td><td>push to <code>stage</code> upstream</td><td>build → deploy stage → smoke</td></tr>
+      <tr><td><code>deploy-prod.yml</code></td><td>push to <code>main</code> upstream, or manual</td><td>build → <strong>manual approval</strong> → deploy → smoke → tag</td></tr>
+      <tr><td><code>_build-deploy.yml</code></td><td><code>workflow_call</code></td><td>reusable build + deploy body, so the logic exists once</td></tr>
+      <tr><td><code>pr-hygiene.yml</code></td><td>PR opened / synced</td><td>CAP id in title, size warning, <strong>blocks merge commits</strong></td></tr>
+    </tbody>
+  </table>
+  <p><strong>Six environments per repo</strong> — prod, stage, and one dev per team — giving eighteen in total, plus every developer's local machine. Each gets its own MongoDB database and Redis namespace; never point a dev environment at stage data, and seed from a checked-in fixture set rather than a prod dump.</p>
+  <div class="note warn">
+    <span class="lbl">Two things that catch people out</span>
+    <p><strong>Forks run their own CI.</strong> Actions in a fork use the fork's billing and the fork's secrets — upstream secrets are never available to a fork. That is a GitHub security boundary, not a misconfiguration, so each of the twelve forks needs its own secret set. Team leads own this in Week 1.</p>
+    <p><strong>macOS runners bill at 10× Linux minutes.</strong> Run the iOS job only on PRs to <code>stage</code>/<code>main</code> and on a nightly schedule, not on every fork push, or four teams will burn the org's quota by Week 2.</p>
+  </div>
+  <h6>What "deploy" means for the mobile app <span class="tag t-open">assumed</span></h6>
+  <table>
+    <thead><tr><th>Env</th><th>What CI produces</th></tr></thead>
+    <tbody>
+      <tr><td><code>mobile-dev-&lt;team&gt;</code></td><td>Debug APK as a workflow artifact, 7-day retention. Install from the Actions run page.</td></tr>
+      <tr><td><code>mobile-stage</code></td><td>Release APK + iOS simulator build, 30-day retention. QA installs manually.</td></tr>
+      <tr><td><code>mobile-prod</code></td><td>Signed release APK/AAB attached to a GitHub Release on the version tag. No app-store submission during the build phase.</td></tr>
+    </tbody>
+  </table>
+  <p>This needs no signing certs for dev or stage and no store accounts. When store distribution is needed, <code>deploy.sh</code> gains a Firebase App Distribution or TestFlight step and the workflow does not change.</p>
+
+  <h4 id="secrets">Branch protection, secrets, hotfixes</h4>
+  <div class="cols2">
+    <div>
+      <h6>Upstream <code>main</code></h6>
+      <ul style="font-size:13.5px">
+        <li>No direct or force pushes; source must be <code>stage</code> or <code>hotfix/*</code></li>
+        <li><strong>Two approvals</strong>, one a CODEOWNER</li>
+        <li>Required checks; stale approvals dismissed on new commits</li>
+        <li>Linear history; administrators included</li>
+      </ul>
+      <h6>Upstream <code>stage</code></h6>
+      <ul style="font-size:13.5px">
+        <li>PR required, <strong>one CODEOWNER approval</strong>, same checks, linear history</li>
+      </ul>
+      <h6>Team forks <code>main</code></h6>
+      <ul style="font-size:13.5px">
+        <li>PR required <strong>even for the lead</strong>; one approval, not the author</li>
+        <li>Linear history — this is what enforces the rebase policy</li>
+      </ul>
+    </div>
+    <div>
+      <h6>Secrets</h6>
+      <p style="font-size:13.5px">Never in git: <code>.env</code>, keystores, <code>google-services.json</code>, signing keys, connection strings. Every repo commits a <code>.env.example</code> with <strong>keys only, no values</strong>, and gitleaks in CI catches slips.</p>
+      <p style="font-size:13.5px">Config precedence: repo defaults → env-specific file → environment variables from CI secrets. If it differs between the eighteen environments, it is an env var. Prod secrets are known to platform owners only — no team lead needs them.</p>
+      <h6>Hotfixes — the only path that bypasses the weekly rhythm</h6>
+      <ol style="font-size:13.5px">
+        <li>Branch <code>hotfix/*</code> off upstream <code>main</code>, minimal fix plus a test</li>
+        <li>PR to <code>main</code>: platform owner + one lead, CI green, deploy through the approval gate</li>
+        <li><strong>Immediately</strong> re-apply the same fix to <code>stage</code>. A hotfix that only exists on <code>main</code> gets reverted by the next release.</li>
+      </ol>
+    </div>
+  </div>
+  <h6>Still needing a decision</h6>
+  <p style="font-size:13.5px;color:#4a5568">Cloud target · whether artifact-only mobile deploys are acceptable · who owns platform and CI · the team-to-fork mapping · <code>stage → main</code> cadence · Gradle or Maven · whether twelve always-on dev environments are really warranted for an eight-week build · and where the shared API contract lives so mobile and backend do not drift.</p>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="major" id="tokens">
+  <h2>Section 4</h2>
+  <h3 class="title">Design</h3>
+  <p class="lede">A professional academic aesthetic — generous whitespace, clear typographic hierarchy, and a palette anchored by the T&amp;F brand teal. The frontend explicitly decouples rendering from licensing logic.</p>
+
+  <h4>Design tokens</h4>
+  <p>Written by one person on Day 1, before any component exists, so no component author ever picks a colour or a spacing value. <strong>Transcription, not interpretation</strong> — do not add a colour, adjust a size, or invent an intermediate grey.</p>
+
+  <h5>Colour — 11 values</h5>
+  <table>
+    <thead><tr><th>Role</th><th class="nowrap">Hex</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>Primary — T&amp;F Teal</td><td><code>#00A19D</code></td><td>Primary buttons, active tabs, links</td></tr>
+      <tr><td>Navigation — Deep Navy</td><td><code>#1A3A5C</code></td><td>Top bars, dark overlays</td></tr>
+      <tr><td>Text primary — Charcoal</td><td><code>#1A1A2E</code></td><td>Headings, body, primary labels</td></tr>
+      <tr><td>Text secondary — Medium Gray</td><td><code>#6B7280</code></td><td>Metadata, subtitles, disabled</td></tr>
+      <tr><td>Surface — Off-White</td><td><code>#F8F9FA</code></td><td>Cards, section backgrounds</td></tr>
+      <tr><td>Border — Light Gray</td><td><code>#E5E7EB</code></td><td>Inputs, card borders, dividers</td></tr>
+      <tr><td>Success — Green</td><td><code>#10B981</code></td><td><span class="tag t-oa">OPEN ACCESS</span> badges, successful download</td></tr>
+      <tr><td>Error — Red</td><td><code>#EF4444</code></td><td>Access restricted, destructive</td></tr>
+      <tr><td>Wait — Amber</td><td><code>#F59E0B</code></td><td>No seats, waitlist</td></tr>
+      <tr><td>Subscription — Blue</td><td><code>#2563EB</code></td><td><span class="tag t-sub">SUBSCRIPTION</span> badges</td></tr>
+      <tr><td>Elite — Purple</td><td><code>#7C3AED</code></td><td><span class="tag t-el">ELITE</span> badges</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Typography — Inter, 6 styles</h5>
+  <p><strong>Inter must be loaded on Day 1, not later.</strong> If it is deferred, all twenty-one components get built and eyeballed in the system font, and adding it in Week 3 shifts every line height and every truncation point in the library at once.</p>
+  <table>
+    <thead><tr><th>Element</th><th class="nowrap">Weight</th><th class="nowrap">Size</th><th class="nowrap">Line height</th></tr></thead>
+    <tbody>
+      <tr><td>Page title</td><td>700</td><td>24</td><td>32</td></tr>
+      <tr><td>Section header</td><td>600</td><td>18</td><td>24</td></tr>
+      <tr><td>Body</td><td>400</td><td>15</td><td>22</td></tr>
+      <tr><td>Meta / caption</td><td>400</td><td>13</td><td>18</td></tr>
+      <tr><td>Button</td><td>600</td><td>15</td><td>20</td></tr>
+      <tr><td>Small label</td><td>500</td><td>12</td><td>16</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Spacing, radius, elevation</h5>
+<pre><code><span class="k">space</span>  = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 }
+<span class="k">radius</span> = { card: 8, sheet: 16, pill: 999 }
+<span class="k">elevation.card</span> = {
+  ios:     { shadowColor: '#1A1A2E', shadowOpacity: 0.06,
+             shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
+  android: { elevation: 2 },
+}</code></pre>
+  <div class="note warn">
+    <span class="lbl">Values inferred rather than specified — flag these, do not treat them as ratified design</span>
+    <p><code>radius.card: 8</code> and <code>radius.sheet: 16</code> are <strong>specified</strong>. But <code>radius.pill</code> is inferred (the spec says only "pill-shaped"), the whole <code>space</code> scale is inferred (no spacing scale exists anywhere in the design specification), and <code>elevation.card</code> is inferred from "subtle box shadow" with no values given. React Native splits shadows by platform, so it has to be a token or five authors invent five shadows.</p>
+    <p>There is also <strong>no dark palette</strong>. The spec mentions navy for "dark mode overlays" but defines nothing else. Week 1 is light only — raise it if dark mode is expected at the demo.</p>
+  </div>
+
+  <h4 id="components">Component library — 21 components</h4>
+  <p>One component, one folder, three files: the component, its gallery entry, and a re-export. Props are declared once, as one exported interface; where the contract already defines a union, import the type rather than retyping the literals.</p>
+  <h6>The five rules everyone signs up to</h6>
+  <ol>
+    <li><strong>Props in, callbacks out.</strong> A component receives data and emits events. It does not fetch, read a store, navigate, or compute access.</li>
+    <li><strong>Naming.</strong> Visual variations are <code>variant</code>; lifecycle is <code>state</code>; handlers are <code>on&lt;Event&gt;</code>. No component invents a fourth vocabulary. Unions, never booleans — two booleans allow a fourth state that has no design.</li>
+    <li><strong>No raw values.</strong> Every colour, size, spacing and radius comes from the theme. A raw hex in <code>src/components/</code> fails review.</li>
+    <li><strong>States are built in, not added later.</strong> Anything that can load, be empty, error or go offline handles those from the first commit. Retrofitting states in Week 3 changes the prop signature, so every caller changes too.</li>
+    <li><strong>A feature may not introduce a component.</strong> If a feature needs something the library lacks, it is added <em>to the library</em>, in the library's files, reviewed by the component's original author. Never inside a feature folder. The rule being protected is <em>one implementation, one location</em> — and this is the rule most likely to break quietly under deadline pressure.</li>
+  </ol>
+  <p><strong>The gallery</strong> is a hidden route rendering every component in every variant on one scrolling screen, from static props with no provider, store, network or navigation container. It is the Friday review surface and the Week 3 state-matrix surface. A component is not done until its gallery entry renders every state it claims to support.</p>
+  <h6>What the Friday review looks for</h6>
+  <p>All twenty-one side by side: divergent spacing, off-token colours, inconsistent prop naming, missing state variants, two components that should be one. Plus the two things that compile cleanly and still drift — <strong><code>any</code> in a props interface, and a union retyped as literals instead of imported from the contract.</strong> Anything found is fixed before Monday, not logged.</p>
+
+  <h4 id="screens">All 18 screens</h4>
+  <p>Click any mockup to open it full size. Screens 07, 08 and 13 are not team1's, and are included because we hand off to them or share a shell with them.</p>
+  <div class="screens">
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/01-catalogue-home.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Catalogue home"></a><figcaption><b>01 · Catalogue home</b><span>Tabs, carousel, subject chips, cards. <span class="who w-pr">Prayas</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/02-signin-sheet.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/02-signin-sheet.png" alt="Sign-in sheet"></a><figcaption><b>02 · Sign-in sheet</b><span>Institutional entry. <span class="who w-ke">Keshav</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/03-access-gate.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/03-access-gate.png" alt="Access gate"></a><figcaption><b>03 · Access gate</b><span>Second option reopened with B2C. <span class="who w-ak">Akriti</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/04-item-detail-article.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/04-item-detail-article.png" alt="Article detail"></a><figcaption><b>04 · Article detail</b><span>DOI removed — no such field. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/05-item-detail-book.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/05-item-detail-book.png" alt="Book detail"></a><figcaption><b>05 · Book detail</b><span>The only screen that can show no-seats. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/06-institution-list.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/06-institution-list.png" alt="Institution list"></a><figcaption><b>06 · Institution list</b><span>Server-side, paged, recently used pinned. <span class="who w-ke">Keshav</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/07-reader-view.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/07-reader-view.png" alt="Reader view"></a><figcaption><b>07 · Reader view</b><span>t4targaryen. We hand off to it.</span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/08-library-downloads.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/08-library-downloads.png" alt="Library and downloads"></a><figcaption><b>08 · Library / downloads</b><span>t4targaryen — <span class="tag t-open">disputed</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/09-search-filter.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/09-search-filter.png" alt="Search and filter"></a><figcaption><b>09 · Search results</b><span>Server-side, metadata only. <span class="who w-mo">Moktik</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/10-profile.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/10-profile.png" alt="Profile"></a><figcaption><b>10 · Profile</b><span>Institution management only. <span class="who w-ke">Keshav</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/11-voice-search.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/11-voice-search.png" alt="Voice search"></a><figcaption><b>11 · Voice search</b><span>Catalogue only. Needs a dev build. <span class="who w-mo">Moktik</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/12-filter-sort-sheet.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/12-filter-sort-sheet.png" alt="Filter and sort sheet"></a><figcaption><b>12 · Filter &amp; sort sheet</b><span>Filters are query params, applied before paging. <span class="who w-mo">Moktik</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/13-email-signin.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/13-email-signin.png" alt="Email sign-in"></a><figcaption><b>13 · Email sign-in</b><span>flambeau. Reopened now B2C is retained.</span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/14-error-states.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/14-error-states.png" alt="Error states"></a><figcaption><b>14 · Error states</b><span>Copy keyed on the error code. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/15-offline-banner.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/15-offline-banner.png" alt="Offline banner"></a><figcaption><b>15 · Offline banner</b><span>Library stays usable behind it. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/16-loading-skeleton.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/16-loading-skeleton.png" alt="Loading skeletons"></a><figcaption><b>16 · Loading skeletons</b><span>Spinners are banned outright. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/17-empty-search.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/17-empty-search.png" alt="Empty search"></a><figcaption><b>17 · Empty search</b><span>Zero results is a browse-instead feed. <span class="who w-kh">Khushi</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/18-access-tiers.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/18-access-tiers.png" alt="Access tiers"></a><figcaption><b>18 · Access tiers</b><span>The badge, and only the badge. <span class="who w-ak">Akriti</span></span></figcaption></figure>
+  </div>
+
+  <h4 id="designrules">The rules that bind design to the build</h4>
+  <ul>
+    <li><strong>The UI must never calculate access rights.</strong> Every screen renders from the output of <code>resolveAccess</code>. This is what makes swapping the mock resolver for the real one a zero-UI-change operation — and it is why three contract reversals cost us nothing in the component library.</li>
+    <li><strong>Skeletons replace spinners.</strong> Rectangular placeholders at the exact dimensions of the final content, so nothing jumps. A hard design rule, not a preference.</li>
+    <li><strong>Cards are invariant across scopes.</strong> The card, badge and layout are identical in every scope; only the set of items and the single resolved action change.</li>
+    <li><strong>Errors are plain text with Retry or Learn more.</strong> No stack traces, and <code>ErrorState</code> takes a string rather than an <code>Error</code>.</li>
+    <li><strong>Offline means degraded but usable.</strong> The library and the institution list keep working behind the banner.</li>
+    <li><strong>One fixed palette.</strong> No per-institution theming in the prototype — a runtime-variable primary colour means no token is a constant, and the consistency review would have no fixed baseline to review against.</li>
+  </ul>
+  <div class="note">
+    <span class="lbl">Where the design specification is silent</span>
+    <p>No spacing scale, no pill radius value, no shadow values, no dark palette, and <strong>no institution model at all</strong> — OPDS does not model institutions and neither does the design spec, so that shape is entirely ours and is the one we sent to wokay for correction.</p>
+  </div>
+</section>
+
+<footer style="margin-top:56px;padding-top:22px;border-top:1px solid var(--border);color:var(--mute);font-size:12.5px">
+  <p><strong>Sources.</strong> Reconciled against wokay's frozen OPDS samples in <code>wokay_docs/frozen/</code> and their answers of 11 August 2026. Superseded drafts, the original briefs and the generated plan documents are in <code>_archive/</code>, which is untracked. The app itself lives in <code>TF_Reader_Mobile_team1/</code>, and its contract file <code>src/model/types.ts</code> is the authority on shapes — where this document and that file disagree, the file wins.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+  const links = [...document.querySelectorAll('nav.side a')];
+  const targets = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(l => l.classList.remove('on'));
+      const hit = links.find(l => l.getAttribute('href') === '#' + e.target.id);
+      if (hit) hit.classList.add('on');
+    });
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  targets.forEach(t => spy.observe(t));
+</script>
+</body>
+</html>

@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOURCE OF TRUTH / wokay / Taylor &amp; Francis Reader</title>
+<style>
+:root{
+  --ink:#111111; --paper:#ffffff; --soft:#f2f2f0; --soft2:#e6e6e2;
+  --mute:#6b6b66; --line:#111111; --hair:#cfcfc8;
+  --red:#bc2020; --redbg:#fbeaea;
+  --blue:#14448f; --bluebg:#e9eef8;
+  --green:#166b40; --greenbg:#e7f2eb;
+  --amber:#8a5a00; --amberbg:#faf1de;
+  --purple:#5a2d82; --purplebg:#f1eaf7;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --ink:#ececea; --paper:#0b0b0b; --soft:#181817; --soft2:#232322;
+  --mute:#96968f; --line:#ececea; --hair:#3a3a37;
+  --red:#f08a8a; --redbg:#2a1414;
+  --blue:#8fb4ee; --bluebg:#131c2c;
+  --green:#7ec9a0; --greenbg:#12241a;
+  --amber:#e0b464; --amberbg:#251d0c;
+  --purple:#c0a0dd; --purplebg:#1e1428;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.62 var(--sans);
+  -webkit-font-smoothing:antialiased}
+.layout{display:grid;grid-template-columns:262px minmax(0,1fr);max-width:1500px;margin:0 auto;
+  border-right:1px solid var(--line)}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);
+  border-left:1px solid var(--line)}
+.side-h{border-bottom:1px solid var(--line);padding:20px 18px}
+.side-h .t{font:700 20px/1 var(--sans);letter-spacing:-.5px;margin-bottom:4px}
+.side-h .s{font:11px/1.4 var(--mono);text-transform:uppercase;letter-spacing:1px;color:var(--mute)}
+.ng{border-bottom:1px solid var(--hair)}
+.ng-t{font:700 10px/1 var(--mono);text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--mute);padding:12px 18px 7px}
+.side a{display:flex;gap:9px;padding:6px 18px;text-decoration:none;color:var(--ink);
+  font-size:13px;border-left:3px solid transparent}
+.side a:hover{background:var(--soft)}
+.side a.on{background:var(--ink);color:var(--paper);border-left-color:var(--red)}
+.side a .n{font:11px/1.5 var(--mono);color:var(--mute);width:16px;flex:0 0 16px}
+.side a.on .n{color:var(--paper)}
+.tbtn{margin:14px 18px 22px;padding:7px 10px;width:calc(100% - 36px);background:var(--paper);
+  color:var(--ink);border:1px solid var(--line);font:11px/1 var(--mono);
+  text-transform:uppercase;letter-spacing:1px;cursor:pointer;text-align:left}
+.tbtn:hover{background:var(--ink);color:var(--paper)}
+main{min-width:0}
+.hero{border-bottom:1px solid var(--line);padding:44px 44px 34px}
+.hero .kicker{font:11px/1 var(--mono);text-transform:uppercase;letter-spacing:2px;
+  color:var(--mute);margin-bottom:16px}
+.hero h1{margin:0 0 13px;font:700 46px/1.02 var(--sans);letter-spacing:-2.2px}
+.hero p{margin:0;max-width:700px;font-size:16.5px;color:var(--mute)}
+.hero .bar{display:flex;flex-wrap:wrap;margin-top:24px;border:1px solid var(--line)}
+.hero .bar div{padding:8px 13px;border-right:1px solid var(--line);font:11px/1.3 var(--mono);
+  text-transform:uppercase;letter-spacing:.8px}
+.hero .bar div:last-child{border-right:none}
+.hero .bar .hl{background:var(--ink);color:var(--paper)}
+.wrap{padding:0 44px 90px;max-width:1010px}
+h2{margin:64px 0 5px;font:700 29px/1.12 var(--sans);letter-spacing:-1.1px;
+  padding-top:15px;border-top:2px solid var(--line)}
+h2 .hn{display:block;font:11px/1 var(--mono);letter-spacing:2px;color:var(--red);
+  margin-bottom:9px;text-transform:uppercase}
+.sub{color:var(--mute);margin:0 0 24px;max-width:790px;font-size:15.5px}
+h3{margin:34px 0 10px;font:700 18px/1.28 var(--sans);letter-spacing:-.35px}
+h4{margin:22px 0 8px;font:700 10.5px/1 var(--mono);text-transform:uppercase;
+  letter-spacing:1.4px;color:var(--mute)}
+p{margin:0 0 13px} ul,ol{margin:0 0 14px;padding-left:20px} li{margin-bottom:5px}
+code{font:.87em var(--mono);background:var(--soft);padding:1px 4px;border:1px solid var(--hair)}
+pre{margin:0 0 16px;padding:15px 17px;background:var(--soft);border:1px solid var(--line);
+  overflow-x:auto;font:12.5px/1.66 var(--mono)}
+pre code{background:none;border:none;padding:0;font-size:1em;white-space:pre}
+pre b{font-weight:700;background:var(--ink);color:var(--paper);padding:0 3px}
+pre i{font-style:normal;color:var(--green);font-weight:700}
+pre u{text-decoration:none;color:var(--red);font-weight:700}
+pre s{text-decoration:none;color:var(--mute)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:0 0 20px;border:1px solid var(--line)}
+th{text-align:left;padding:8px 11px;background:var(--ink);color:var(--paper);
+  font:700 10px/1.3 var(--mono);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+td{padding:8px 11px;border-top:1px solid var(--hair);vertical-align:top}
+td code{font-size:12.3px}
+.tw{overflow-x:auto;margin:0 0 20px}
+.c{text-align:center}
+.y{color:var(--green);font-weight:700} .n{color:var(--red);font-weight:700}
+.w{display:inline-block;font:700 9.5px/1.4 var(--mono);text-transform:uppercase;
+  letter-spacing:.9px;padding:2px 6px;border:1px solid var(--line);white-space:nowrap}
+.w-wk{background:var(--ink);color:var(--paper)}
+.w-fl{background:var(--purplebg);color:var(--purple);border-color:var(--purple)}
+.w-t1{background:var(--bluebg);color:var(--blue);border-color:var(--blue)}
+.w-t4{background:var(--amberbg);color:var(--amber);border-color:var(--amber)}
+.w-st{background:var(--soft2);color:var(--mute);border-color:var(--mute)}
+.tier{display:inline-block;font:700 10px/1.4 var(--mono);text-transform:uppercase;
+  letter-spacing:1px;padding:3px 8px;border:1px solid}
+.t-oa{background:var(--greenbg);color:var(--green);border-color:var(--green)}
+.t-sb{background:var(--bluebg);color:var(--blue);border-color:var(--blue)}
+.t-el{background:var(--amberbg);color:var(--amber);border-color:var(--amber)}
+.box{border:1px solid var(--line);border-left:5px solid var(--ink);padding:14px 17px;
+  margin:0 0 20px;font-size:14.5px}
+.box p:last-child{margin-bottom:0}
+.box .bt{font:700 10px/1 var(--mono);text-transform:uppercase;letter-spacing:1.4px;
+  display:block;margin-bottom:7px}
+.b-warn{border-left-color:var(--amber);background:var(--amberbg)} .b-warn .bt{color:var(--amber)}
+.b-bad{border-left-color:var(--red);background:var(--redbg)} .b-bad .bt{color:var(--red)}
+.b-ok{border-left-color:var(--green);background:var(--greenbg)} .b-ok .bt{color:var(--green)}
+.b-new{border-left-color:var(--purple);background:var(--purplebg)} .b-new .bt{color:var(--purple)}
+.b-q{border-left-color:var(--blue);background:var(--bluebg)} .b-q .bt{color:var(--blue)}
+.steps{border:1px solid var(--line);margin:0 0 22px}
+.st{display:grid;grid-template-columns:52px 1fr;border-top:1px solid var(--hair)}
+.st:first-child{border-top:none}
+.st.sk{background:var(--soft)}
+.st.sk .t1,.st.sk .t2{color:var(--mute)}
+.st-n{font:700 11.5px/1.5 var(--mono);padding:10px 6px;text-align:center;
+  border-right:1px solid var(--hair);background:var(--soft)}
+.st.us .st-n{background:var(--ink);color:var(--paper)}
+.st.ic .st-n{background:var(--green);color:#fff}
+.st.dv .st-n{background:var(--amber);color:#fff}
+.st-b{padding:10px 14px;min-width:0}
+.st-b .t1{font-size:14.2px;margin:0 0 3px}
+.st-b .t1 b{font-weight:700}
+.st-b .t1 .who{float:right;margin-left:10px}
+.st-b .t2{font-size:13px;color:var(--mute);margin:0}
+.st-b pre{margin:8px 0 0;font-size:11.8px;line-height:1.55}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);margin:0 0 22px}
+.g3>div{padding:16px;border-right:1px solid var(--hair)}
+.g3>div:last-child{border-right:none}
+.g3 h5{margin:0 0 9px;font:700 15px/1.2 var(--sans)}
+.g3 p{font-size:13.3px;color:var(--mute);margin:0 0 8px}
+.g3 p:last-child{margin-bottom:0}
+@media(max-width:860px){.g3{grid-template-columns:1fr}.g3>div{border-right:none;border-top:1px solid var(--hair)}.g3>div:first-child{border-top:none}}
+.ex{border:1px solid var(--line);margin:0 0 22px}
+.ex-r{display:grid;grid-template-columns:112px 1fr;border-top:1px solid var(--hair)}
+.ex-r:first-child{border-top:none}
+.ex-r .k{font:700 9.5px/1.5 var(--mono);text-transform:uppercase;letter-spacing:1.1px;
+  padding:13px 11px;background:var(--soft);border-right:1px solid var(--hair);color:var(--mute)}
+.ex-r .v{padding:13px 15px;min-width:0}
+.ex-r .v p:last-child{margin-bottom:0}
+.ex-r .v pre{margin:0}
+@media(max-width:700px){.ex-r{grid-template-columns:1fr}.ex-r .k{border-right:none;border-bottom:1px solid var(--hair)}}
+.tm{border:1px solid var(--line);margin:0 0 26px}
+.tm-h{background:var(--ink);color:var(--paper);padding:12px 16px;display:flex;
+  align-items:baseline;gap:12px;flex-wrap:wrap}
+.tm-h .nm{font:700 19px/1 var(--sans);letter-spacing:-.5px}
+.tm-h .cap{font:11px/1.3 var(--mono);text-transform:uppercase;letter-spacing:1.2px;opacity:.75}
+.tm-b{padding:16px}
+.tm-b>h4:first-child{margin-top:0}
+footer{border-top:2px solid var(--line);padding:22px 44px 40px;
+  font:11.5px/1.7 var(--mono);color:var(--mute);max-width:1010px}
+@media print{.side{display:none}.layout{grid-template-columns:1fr;border:none}
+  body{font-size:10.5pt}.steps,.box,table,.ex,.tm{break-inside:avoid}h2{break-after:avoid}}
+@media(max-width:1040px){.layout{grid-template-columns:1fr;border:none}
+  .side{position:static;height:auto;border-left:none}
+  .hero,.wrap,footer{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="side">
+  <div class="side-h">
+    <div class="t">SOURCE OF TRUTH</div>
+    <div class="s">wokay / CAP-1 + CAP-5</div>
+  </div>
+  <nav id="nav">
+    <div class="ng">
+      <div class="ng-t">Start here</div>
+      <a href="#whole"><span class="n">1</span>The whole thing</a>
+      <a href="#types"><span class="n">2</span>Three kinds of book</a>
+      <a href="#who"><span class="n">3</span>Who owns what</a>
+    </div>
+    <div class="ng">
+      <div class="ng-t">Between teams</div>
+      <a href="#teams"><span class="n">4</span>Team interfaces</a>
+    </div>
+    <div class="ng">
+      <div class="ng-t">Stored</div>
+      <a href="#schema"><span class="n">5</span>Seven collections</a>
+      <a href="#admin"><span class="n">6</span>The admin dashboard</a>
+      <a href="#ingest"><span class="n">7</span>Ingest and encryption</a>
+      <a href="#keys"><span class="n">8</span>The key hierarchy</a>
+      <a href="#index"><span class="n">9</span>The search index</a>
+    </div>
+    <div class="ng">
+      <div class="ng-t">Transported and read</div>
+      <a href="#reading"><span class="n">10</span>How reading works</a>
+      <a href="#seams"><span class="n">11</span>The two seams</a>
+      <a href="#api"><span class="n">12</span>App-facing API</a>
+      <a href="#security"><span class="n">13</span>Security and errors</a>
+    </div>
+    <div class="ng">
+      <div class="ng-t">The three flows</div>
+      <a href="#fa"><span class="n">A</span>Open access</a>
+      <a href="#fb"><span class="n">B</span>Subscription</a>
+      <a href="#fc"><span class="n">C</span>Elite</a>
+      <a href="#side"><span class="n">D</span>Side by side</a>
+    </div>
+    <div class="ng">
+      <div class="ng-t">Delivery</div>
+      <a href="#testing"><span class="n">14</span>Testing and setup</a>
+      <a href="#decide"><span class="n">15</span>Decide at the gate</a>
+      <a href="#limits"><span class="n">16</span>Known limits</a>
+    </div>
+  </nav>
+  <button class="tbtn" id="tb">Dark mode</button>
+</aside>
+
+<main>
+<div class="hero">
+  <div class="kicker">Taylor &amp; Francis Reader / Team wokay / CAP-1 + CAP-5</div>
+  <h1>Source of truth</h1>
+  <p>Onboarding and Admin, and the OPDS Catalogue. Flows, schemas, contracts, encryption and delivery in one document. Section 4 is what the other three teams need; everything else is how we build it.</p>
+  <div class="bar">
+    <div class="hl">Other teams: read section 4</div>
+    <div>1 process, 4 modules</div>
+    <div>7 collections</div>
+    <div>2 interface seams</div>
+    <div>3 flows</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 1 -->
+<h2 id="whole"><span class="hn">01</span>The whole thing</h2>
+<p class="sub">Everything after this is a detail of this picture.</p>
+
+<pre><code>BEFORE ANY USER EXISTS                                  our admin dashboard
+┌──────────────────────────────────────────────────────────────────┐
+│  operator creates a publisher, an institution, a collection,     │
+│  uploads a book file, then grants the institution access         │
+│                              │                                   │
+│                     the ingest pipeline                          │
+│          ┌───────────────────┴───────────────────┐               │
+│  open access, and all audio          subscription + elite        │
+│  store as-is, plaintext              encrypt the whole file      │
+│  no key                              with a book key, wrap the   │
+│                                      key, store it               │
+│          └───────────────────┬───────────────────┘               │
+│                     build a search index                         │
+└──────────────────────────────┼───────────────────────────────────┘
+                               ▼
+                        object storage
+
+THEN A STUDENT ARRIVES
+┌──────────────────────────────────────────────────────────────────┐
+│  1  find your institution               wokay, no token needed   │
+│  2  sign in                             flambeau, SAML           │
+│  3  browse and search                   wokay, OPDS feeds        │
+│  4  open a book detail                  wokay, one publication   │
+│                              │                                   │
+│          the acquisition link decides the flow                   │
+│     ┌────────────────────────┼────────────────────────┐          │
+│  open-access             acquisition               borrow        │
+│    FLOW A                  FLOW B                  FLOW C        │
+│  read or download      borrow, then read       borrow, read      │
+│  no key                or download             online only       │
+│                        key + licence           key + licence     │
+│                                                + copy limit      │
+└──────────────────────────────────────────────────────────────────┘
+                               ▼
+              bytes stream from storage straight to the
+              phone, never through one of our threads</code></pre>
+
+<div class="g3">
+  <div><h5>One process</h5><p>The backend is one Spring Boot application with four modules, so module to module is a <b>method call</b>, not an HTTP call. There is no service token to leak and no assertion to forge.</p></div>
+  <div><h5>Bytes go direct</h5><p>Storage to phone over a short-lived signed URL, so a 6 MB book never occupies one of our request threads.</p></div>
+  <div><h5>The key is wrapped</h5><p>We hand out a book key wrapped to the reader's public key, so nobody in the middle can read the book, including flambeau.</p></div>
+</div>
+
+<!-- 2 -->
+<h2 id="types"><span class="hn">02</span>Three kinds of book</h2>
+<p class="sub">The access tier is set on the item by an operator. It is what makes the three flows differ.</p>
+
+<div class="g3">
+  <div><h5><span class="tier t-oa">Open access</span></h5>
+  <p>Free to everyone. Creative Commons or similar.</p>
+  <p><b>Plaintext.</b> No key, no licence, no borrow.</p>
+  <p>Read online or download. Keep it forever.</p></div>
+  <div><h5><span class="tier t-sb">Subscription</span></h5>
+  <p>The institution pays for a package.</p>
+  <p><b>Encrypted.</b> Unlimited readers at once, so no copy counting.</p>
+  <p>Read online or download. Expires at the due date.</p></div>
+  <div><h5><span class="tier t-el">Elite</span></h5>
+  <p>Premium, sold with a copy limit.</p>
+  <p><b>Encrypted.</b> Borrow consumes one of N copies. Queue when they run out.</p>
+  <p>Online only. No download.</p></div>
+</div>
+
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Open access</th><th>Subscription</th><th>Elite</th></tr></thead>
+<tbody>
+<tr><td>Encrypted in storage</td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Audio assets encrypted</td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td></tr>
+<tr><td>Entitlement needed</td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Licence issued</td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Loan record</td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Copy limit and Redis lease</td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Hold queue</td><td class="c"><span class="n">never</span></td><td class="c"><span class="n">never</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Download for offline</td><td class="c"><span class="y">yes</span></td><td class="c"><span class="y">yes</span></td><td class="c"><span class="n">NO</span></td></tr>
+<tr><td>Search index</td><td class="c">plaintext</td><td class="c">encrypted</td><td class="c">encrypted</td></tr>
+<tr><td>OPDS acquisition rel</td><td class="c"><code>open-access</code></td><td class="c"><code>acquisition</code></td><td class="c"><code>borrow</code></td></tr>
+<tr><td>Signed URL lifetime</td><td class="c">15 min</td><td class="c">15 min stream<br>30 min download</td><td class="c">20 min stream<br>no download</td></tr>
+<tr><td>Access ends</td><td class="c">never</td><td class="c">due date</td><td class="c">1 hour licence,<br>renewable while loaned</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box b-ok">
+<span class="bt">Why open access is not encrypted</span>
+<p>An anonymous reader with no account must be able to open the book, because that is what open access means. So we would have to hand the key to anyone who asks, and a key given to anyone protects nothing. Plaintext also lets the reader pass the URL to a native viewer, which is close to zero code. We still use a short-lived signed URL, not for secrecy but to stop hotlinking and to keep usage logging.</p>
+</div>
+
+<div class="box b-warn">
+<span class="bt">Why Elite has no offline copy</span>
+<p>An offline copy means the phone holds the ciphertext and a working key for as long as the licence lasts, and expiry is then enforced by the app, which the user controls. For two-copy premium content that trade is not worth taking. Elite fetches the ciphertext into memory, decrypts, renders and discards. The lock is simply that we stop issuing the next licence, which needs no cooperation from the device.</p>
+<p><b>Say this at the showcase.</b> Read offline is one of the seven capabilities and Elite visibly does not do it. That is a deliberate trade, not an oversight.</p>
+</div>
+
+<!-- 3 -->
+<h2 id="who"><span class="hn">03</span>Who owns what</h2>
+<p class="sub">Four modules in one process. Two published interfaces between them.</p>
+
+<pre><code>                        ONE SPRING BOOT PROCESS
+┌────────────────────────────────────────────────────────────────┐
+│   wokay                            flambeau                    │
+│   ─────                            ────────                    │
+│   admin dashboard                  sign in, JWT                │
+│   catalogue and OPDS feeds         loan, lease, hold           │
+│   entitlement decisions            licence, and its signature  │
+│   ingest and encrypt               the one read endpoint       │
+│   the book-key registry            device fingerprints         │
+│   unwrap and rewrap keys                                       │
+│   signed URLs                                                  │
+│         ▲                                │                     │
+│         └──────── two interfaces ────────┘                     │
+│                   EntitlementQuery                             │
+│                   ContentAccessGrant     flambeau depends       │
+│                                          on us. We depend       │
+│                                          on nobody.             │
+└────────────────────────────────────────────────────────────────┘
+
+   team1 and t4targaryen have NO backend module. React Native only.
+   team1        find institution, browse, search, detail, my library
+   t4targaryen  the reader, the keystore, decryption, in-file search</code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Question a team might ask</th><th>Whose answer</th></tr></thead>
+<tbody>
+<tr><td>Does this book exist, and what is it called?</td><td><span class="w w-wk">wokay</span></td></tr>
+<tr><td>May this institution access it at all?</td><td><span class="w w-wk">wokay</span></td></tr>
+<tr><td>Where are the bytes, and here is the key</td><td><span class="w w-wk">wokay</span></td></tr>
+<tr><td>Who is this person?</td><td><span class="w w-fl">flambeau</span></td></tr>
+<tr><td>Do they hold it right now, and until when?</td><td><span class="w w-fl">flambeau</span></td></tr>
+<tr><td>Is a copy free, and who is next in the queue?</td><td><span class="w w-fl">flambeau</span></td></tr>
+<tr><td>Which devices has this person used?</td><td><span class="w w-fl">flambeau</span></td></tr>
+<tr><td>How do I render page 88 and highlight a word?</td><td><span class="w w-t4">t4targaryen</span></td></tr>
+<tr><td>What does the shelf screen look like?</td><td><span class="w w-t1">team1</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Package layout</h3>
+<pre><code>com.tf.reader/
+  common/     security, error, paging, audit
+  admin/      CAP-1  publisher, institution, collection, item, entitlement,
+                     user, auth, auditlog, upload, ingest-status
+  catalogue/  CAP-5  opds, fetch, resolver, publicapi
+    <b>api/</b>             EntitlementQuery + records    ← the ONLY package
+    internal/        EntitlementQueryImpl, package private   others may import
+  crypto/     MasterKeyService, BekService, DevicePublicKeyValidator
+  ingest/     IngestWorker, FileEncryptor, TextExtractor, IndexBuilder
+  content/
+    <b>api/</b>             ContentAccessGrant + records  ← the ONLY package
+    internal/        ContentAccessGrantImpl, SignedUrlService, ObjectStore</code></pre>
+
+<div class="box b-warn">
+<span class="bt">One process means the boundary is a convention, so make it a test</span>
+<p>Across HTTP, one team physically could not reach another's collections. In one Spring context, <code>@Autowired CatalogueItemRepository</code> compiles from any package and Spring wires it happily. Two mechanical fixes, both in Week 1, both about two hours:</p>
+<p><b>1.</b> Implementations are <b>package private</b> in <code>internal/</code>, interfaces are public in <code>api/</code>. The shortcut then does not compile, which beats detecting it.<br>
+<b>2.</b> An ArchUnit test in CI forbidding cross-module repository access and any import outside an <code>api/</code> package.</p>
+</div>
+
+<!-- 4 -->
+<h2 id="teams"><span class="hn">04</span>Team interfaces</h2>
+<p class="sub">What each team gets from us, what we need back, and when. If you are reading this from another team, this is your section.</p>
+
+<div class="box b-q">
+<span class="bt">The shape of every dependency</span>
+<p><b>team1</b> and <b>t4targaryen</b> are React Native clients, so everything they consume from us is <b>HTTP</b>. <b>flambeau</b> is a module in the same process, so everything they consume from us is a <b>Java interface call</b>. Nobody reads anybody else's MongoDB collections, ever.</p>
+</div>
+
+<div class="tm">
+  <div class="tm-h"><span class="nm">team1</span><span class="cap">CAP-2 institution listing / CAP-3 institute selection / catalogue UI</span></div>
+  <div class="tm-b">
+
+  <h4>What we give you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>Endpoint</th><th>What it is for</th><th>Token</th><th>Ready</th></tr></thead>
+  <tbody>
+  <tr><td><code>GET /api/v1/institutions?q=&amp;country=&amp;page=&amp;size=</code></td><td>The find-your-institution screen, with search and paging</td><td>none</td><td>Wk 2</td></tr>
+  <tr><td><code>GET /api/v1/institutions/{id}</code></td><td>Detail, branding, and <code>signIn.idpHint</code> so you can open the right sign-in</td><td>none</td><td>Wk 2</td></tr>
+  <tr><td><code>GET /opds/v1/institutions/{id}/catalogue</code></td><td>Root feed. One request draws the home screen: navigation rows and shelves</td><td>app</td><td>Wk 3</td></tr>
+  <tr><td><code>GET /opds/v1/institutions/{id}/groups/{gid}</code></td><td>A shelf, paginated and sortable</td><td>app</td><td>Wk 4</td></tr>
+  <tr><td><code>GET /opds/v1/institutions/{id}/search?query=</code></td><td>Catalogue search, entitlement-scoped</td><td>app</td><td>Wk 4</td></tr>
+  <tr><td><code>GET /opds/v1/institutions/{id}/publications/{iid}</code></td><td>Book detail. The acquisition link here decides which buttons you draw</td><td>app</td><td>Wk 3</td></tr>
+  <tr><td><code>GET /opds/v1/public/catalogue</code></td><td>Open access only, no sign-in. The second entry point into the app</td><td>none</td><td>Wk 4</td></tr>
+  <tr><td><code>POST /api/v1/catalogue/items:batch</code></td><td>Turn a list of item ids into titles and covers in one call</td><td>app</td><td>Wk 4</td></tr>
+  <tr><td>OpenAPI file, three OPDS sample fixtures, mock endpoints</td><td>So you can build screens before any of the above is real</td><td>&mdash;</td><td><b>Wk 1</b></td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <h4>Search, and who does what</h4>
+  <p>There are three different searches in this project and only two are ours.</p>
+  <div class="tw">
+  <table>
+  <thead><tr><th>Search</th><th>Runs</th><th>Owner</th></tr></thead>
+  <tbody>
+  <tr><td>Find an institution</td><td>server</td><td><span class="w w-wk">wokay</span> endpoint, <span class="w w-t1">team1</span> UI</td></tr>
+  <tr><td>Find a book in the catalogue</td><td>server</td><td><span class="w w-wk">wokay</span> endpoint, <span class="w w-t1">team1</span> UI</td></tr>
+  <tr><td>Find a word inside a book</td><td>on the device</td><td><span class="w w-wk">wokay</span> builds the index, <span class="w w-t4">t4targaryen</span> queries it</td></tr>
+  </tbody>
+  </table>
+  </div>
+  <p><b>Catalogue search has to be server-side</b>, because results are filtered by what the institution is entitled to. Searching on the client would mean shipping the whole catalogue to the phone and reimplementing entitlement rules there, and a member must never see a result they cannot open. So: <b>we filter, you render.</b></p>
+  <p><b>It searches metadata</b>, meaning title, authors, subjects and description. It does not search the text inside books. Worth reflecting in the UI copy, so a reviewer typing a phrase from page 88 does not report a bug.</p>
+
+  <h4>Filtering</h4>
+  <p>Filters are query parameters on the endpoints you already call, because filtering has to happen before pagination. Filter within a page of twenty and you show three results while the pager still says page 1 of 12.</p>
+  <pre><code>GET /opds/v1/institutions/inst_7f3/search?query=robots&amp;contentType=PDF&amp;page=0
+GET /opds/v1/institutions/inst_7f3/groups/ebooks?contentType=EPUB&amp;sort=publishedAt,desc</code></pre>
+  <div class="tw">
+  <table>
+  <thead><tr><th>Filter</th><th>Available</th><th>Why</th></tr></thead>
+  <tbody>
+  <tr><td>Content type: PDF, EPUB, audio</td><td class="c"><span class="y">yes, free</span></td><td>Fixed enum. Hardcode three chips and send the parameter</td></tr>
+  <tr><td>Access tier</td><td class="c"><span class="y">yes, free</span></td><td>Also a fixed enum</td></tr>
+  <tr><td>Subject: Law, Education, Statistics</td><td class="c"><span class="n">needs a decision</span></td><td>Subjects are dynamic, so you cannot know which exist for an institution. Needs OPDS facets, roughly half a day of ours. Decide at the gate</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <h4>Four rules for the client</h4>
+  <ol>
+  <li><b>Follow hrefs, do not build URLs.</b> The only construction you should ever do is expanding the templated search link, <code>".../search{?query}"</code>.</li>
+  <li><b>Paginate by following the <code>next</code> link until it is absent.</b> Do not count pages.</li>
+  <li><b>An empty result is not an empty array.</b> The OPDS schema forbids empty arrays, so a zero-result search returns a feed with a <code>navigation</code> entry pointing back at the catalogue. Render it as a browse-instead button, do not treat the missing <code>publications</code> key as an error.</li>
+  <li><b>The acquisition link decides the buttons</b>, not your own logic. <code>rel=open-access</code> means Read and Download. <code>rel=borrow</code> plus <code>canPersist:false</code> means Borrow with no Download. If we do not send a link, the button does not exist.</li>
+  </ol>
+
+  <h4>What we need from you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>We need</th><th>By</th><th>What we do if it is late</th></tr></thead>
+  <tbody>
+  <tr><td>Which fields the institution list screen actually needs, and how you want it sorted</td><td>Wk 1</td><td>Ship a superset and refine</td></tr>
+  <tr><td>Whether you want subject filters. Yes means we add OPDS facets</td><td>Wk 1</td><td>Ship content-type and tier filters only</td></tr>
+  <tr><td>Confirmation that you render the acquisition link rather than deciding buttons yourselves</td><td>Wk 1</td><td>Document it as a contract test on our side</td></tr>
+  <tr><td>Whether the home screen offers a browse-free-content entry alongside find-your-institution</td><td>Wk 2</td><td>We ship the public feed regardless; it costs you a button</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <div class="box b-q" style="margin-bottom:0">
+  <span class="bt">On unified search</span>
+  <p>Our endpoint gives <b>catalogue</b> search. Unified would mean one box across the catalogue, your library and inside books. The cheap version needs nothing from us: fire our search, filter the My Library list you already hold on the client, and render two sections. That is a unified experience assembled on the client, and it is yours to build.</p>
+  </div>
+
+  </div>
+</div>
+
+<div class="tm">
+  <div class="tm-h"><span class="nm">flambeau</span><span class="cap">CAP-6 authentication / CAP-4 borrow and personal library</span></div>
+  <div class="tm-b">
+
+  <h4>What we give you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>Interface or endpoint</th><th>What it is for</th><th>Ready</th></tr></thead>
+  <tbody>
+  <tr><td><code>EntitlementQuery.check(subject, itemId)</code><br><span style="color:var(--mute)">Java interface, in-process</span></td><td>May this institution access this book, and on what terms. Returns <code>accessLevel</code>, which is the only field you branch on</td><td><b>Wk 1 stub</b><br>Wk 3 real</td></tr>
+  <tr><td><code>ContentAccessGrant.grant(request)</code><br><span style="color:var(--mute)">Java interface, in-process</span></td><td>Two signed URLs and the book key wrapped to the reader's public key. You pass it through to the app unchanged</td><td><b>Wk 1 stub</b><br>Wk 4 real</td></tr>
+  <tr><td><code>POST /api/v1/catalogue/items:batch</code></td><td>Your loan records hold item ids only. This turns twelve ids into twelve titles and covers in one call</td><td>Wk 4</td></tr>
+  <tr><td>Institution records including <code>idpHint</code></td><td>So you know which mock SAML identity provider to use for a given institution</td><td>Wk 2</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <h4>The only field you branch on</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th><code>accessLevel</code></th><th>What you do</th></tr></thead>
+  <tbody>
+  <tr><td><code>OPEN_ACCESS</code></td><td>No loan needed. Pass a null <code>LoanProof</code> to the second interface</td></tr>
+  <tr><td><code>ENTITLED_UNLIMITED</code></td><td>Write the loan, skip Redis. Nothing to reserve and nothing to run out of, so no queue can form</td></tr>
+  <tr><td><code>ENTITLED_CONCURRENT</code></td><td>Acquire a Redis lease first, then write the loan. Hold if none free</td></tr>
+  </tbody>
+  </table>
+  </div>
+  <p>A denial is a return value, never an exception, and it carries an enumerated <code>reason</code> so the app can say your library's subscription expired rather than not available.</p>
+
+  <h4>What we need from you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>We need</th><th>By</th><th>What we do if it is late</th></tr></thead>
+  <tbody>
+  <tr><td><b>The JWT claim set</b>, signing algorithm, and the <code>aud</code> values separating admin from app tokens</td><td><b>Wk 1</b></td><td>Agree the shape only, and mint local tokens behind a profile flag</td></tr>
+  <tr><td>Confirmation you issue app tokens only, not admin tokens</td><td>Wk 2</td><td>We own admin sign-in</td></tr>
+  <tr><td><b>The borrow endpoint URL template.</b> It becomes the <code>href</code> in every acquisition link we emit</td><td>Wk 3</td><td>A configured placeholder. It is a property, not code</td></tr>
+  <tr><td>Confirmation of the two-path borrow flow, that <code>UNLIMITED</code> writes a loan and skips Redis</td><td>Wk 3</td><td>Document the assumption and proceed</td></tr>
+  <tr><td><b><code>POST /api/v1/reading-sessions</code></b>, the one read endpoint, calling both our interfaces</td><td>Wk 4</td><td>Keep a direct path behind a flag so reading still demos</td></tr>
+  <tr><td><b><code>GET /api/v1/availability?itemId=</code></b> for Elite copy counts. The app calls it, we never do</td><td>Wk 4</td><td>The feed ships <code>copies.total</code> only and the app shows no live count</td></tr>
+  <tr><td>A <b>signed licence</b>, RS256, covering expiry, item, rights and the key fingerprint</td><td>Wk 4</td><td>Cannot mitigate. Without it, offline expiry is a text edit away</td></tr>
+  <tr><td>A live JWKS endpoint and a real app token in a shared environment</td><td>Wk 5</td><td>Keep local-secret verification behind the config flag</td></tr>
+  <tr><td>A claim window on promoted holds, so one silent user cannot block the queue</td><td>Wk 5</td><td>Yours entirely, but a stuck queue looks broken in a demo</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <div class="box b-bad" style="margin-bottom:0">
+  <span class="bt">Two things that are yours to hold, not ours</span>
+  <p><b>Device fingerprints.</b> A record of which devices a person has used is keyed by user, and users are yours. Our grant result returns <code>keyFingerprint</code>, the SHA-256 of the device public key that was sent; record it if you want a device registry. We log it in our own audit trail and nothing more.</p>
+  <p><b>The device public key must pass through untouched.</b> You receive it from the app and hand it to our method unchanged. If you substituted your own key you would receive a book key wrapped to <i>yours</i>, and could read every title. The reader detects this by comparing the returned <code>keyFingerprint</code> against the hash of its own public key, so the pass-through is verifiable rather than merely trusted.</p>
+  </div>
+
+  </div>
+</div>
+
+<div class="tm">
+  <div class="tm-h"><span class="nm">t4targaryen</span><span class="cap">CAP-7 reader and offline</span></div>
+  <div class="tm-b">
+
+  <h4>What we give you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>What</th><th>Detail</th><th>Ready</th></tr></thead>
+  <tbody>
+  <tr><td><b>The encryption contract</b></td><td>Algorithms, the object layout, how the key is wrapped, what the response block contains. Everything you need to write decryption before any file exists</td><td><b>Wk 1</b></td></tr>
+  <tr><td><b>Real content files in the bucket</b></td><td>PDF, EPUB and audio, encrypted where the tier requires it, plus one sample wrapped key and a decryption test vector so you can verify your implementation against ours</td><td><b>Wk 2</b><br>hard deadline</td></tr>
+  <tr><td>The grant payload, via flambeau</td><td>Content URL, index URL, wrapped key, key fingerprint, and the object layout string</td><td>Wk 4</td></tr>
+  <tr><td>The search index file</td><td>A JSON map of word to page numbers, encrypted with the same key as the book</td><td>Wk 4</td></tr>
+  <tr><td>OPDS properties on every acquisition link</td><td><code>encrypted</code>, <code>hasSearchIndex</code>, <code>canPersist</code>, <code>originalLength</code>. These tell you what to expect before you ask for anything</td><td>Wk 3</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <h4>Reading a file, in five lines</h4>
+  <pre><code>1  bek       = RSA-OAEP-256-decrypt(devicePrivateKey, encryption.wrappedBek)
+2  bytes     = GET content.url                  <s>whole object, Range-resumable</s>
+3  nonce     = bytes[0 .. 11]
+4  plaintext = AES-256-GCM-decrypt(bytes[12 ..], bek, nonce)   <i>tag verified here</i>
+5  hand plaintext to the PDF, EPUB or audio renderer
+
+the index is identical: its own nonce in its own first 12 bytes, same key
+open access and ALL audio: <b>encryption is null</b>, the URL is a plain file</code></pre>
+  <p>Step 5 is the point of the design. Native PDF and EPUB renderers on both platforms want a file or a complete buffer, so you hand them decrypted bytes and they behave normally. Section 10 has the full reasoning and the three read paths.</p>
+
+  <h4>Three rules that are not negotiable</h4>
+  <div class="box b-bad">
+  <p><b>1. Never write plaintext to disk</b>, for any tier. Subscription stores the ciphertext as received; Elite stores nothing at all.<br>
+  <b>2. Never decrypt a partial object.</b> The authentication tag covers the whole ciphertext, so a partial buffer cannot be verified. Wait for the full download, then decrypt once.<br>
+  <b>3. A failed tag must fail loudly.</b> Tampered or truncated. Show an error, never render whatever came out. That is the entire reason for choosing an authenticated cipher.</p>
+  </div>
+
+  <h4>What we need from you</h4>
+  <div class="tw">
+  <table>
+  <thead><tr><th>We need</th><th>By</th><th>What we do if it is late</th></tr></thead>
+  <tbody>
+  <tr><td><b>Confirmation of the encryption contract:</b> AES-256-GCM whole file, layout <code>nonce(12) || ciphertext || tag(16)</code>, RSA-2048 with OAEP-SHA256 for the key wrap, public key sent as PEM SPKI</td><td><b>Wk 1</b></td><td>Publish our proposal and build to it</td></tr>
+  <tr><td>Which metadata your readers need: table of contents, page count, audio duration, EPUB navigation</td><td>Wk 1</td><td>Ship a superset in the OPDS link properties</td></tr>
+  <tr><td>Confirmation you generate the keypair on first launch, keep the private key non-exportable, and send only the public key</td><td>Wk 1</td><td>Validate whatever arrives and reject anything below RSA-2048</td></tr>
+  <tr><td><b>The reader checks that the returned <code>keyFingerprint</code> equals the SHA-256 of its own device public key</b>, and refuses the grant if it does not</td><td>Wk 4</td><td>Cannot mitigate from our side. This is what proves nobody in the chain substituted a key</td></tr>
+<tr><td>Confirmation you verify the licence signature before trusting expiry, and delete the wrapped key at expiry</td><td>Wk 4</td><td>Note it in the caveats as unenforced</td></tr>
+  <tr><td>Confirmation you hide the download control when <code>canPersist</code> is false</td><td>Wk 4</td><td>We refuse a download intent on the server anyway, so the worst case is a button that errors</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <div class="box b-ok" style="margin-bottom:0">
+  <span class="bt">What you do not have to build</span>
+  <p>No chunk layer, no range-to-chunk translation, no offset arithmetic, no cache of decrypted pieces, no resume at a piece boundary, and no lazy byte-source adapter into the renderer. Whole-file encryption removes all of it. Section 10 explains why we made that choice and what it costs.</p>
+  </div>
+
+  </div>
+</div>
+
+<h3>Who blocks whom</h3>
+<pre><code>WEEK 1   wokay ──► ALL      contracts, OpenAPI, OPDS fixtures, mock endpoints,
+                            the encryption contract, both interface stubs
+         ALL   ──► wokay    JWT claim set, reader metadata needs,
+                            institution list needs, facets yes or no
+
+WEEK 2   wokay ──► team1    real institution directory, so you stop using mocks
+         wokay ──► t4       real encrypted files and a decryption test vector
+
+WEEK 3   wokay ──► flambeau EntitlementQuery, real
+         wokay ──► team1    the first real entitlement-scoped feed
+         flambeau ──► wokay the borrow URL template
+
+WEEK 4   wokay ──► flambeau ContentAccessGrant, items:batch
+         wokay ──► t4       content and index URLs, wrapped keys
+         wokay ──► team1    search, shelves, the public feed
+         flambeau ──► ALL   reading-sessions, availability, signed licence
+
+WEEK 5   everyone           switch the stubs off, run each other's real
+                            call paths, freeze</code></pre>
+
+<div class="box b-warn">
+<span class="bt">The scheduling point worth making at the gate</span>
+<p>Three of the four teams cannot test anything until our data exists. That is why the two interfaces ship in Week 1 as <b>stubs with the real signatures</b>, so flambeau compiles against them on day one, and why the OpenAPI file and the OPDS fixtures matter more in Week 1 than any endpoint we could actually build.</p>
+</div>
+
+<!-- 5 -->
+<h2 id="schema"><span class="hn">05</span>Seven collections</h2>
+<p class="sub">All ours, all written only by our modules. Every id is a prefixed string, every timestamp is ISO-8601 UTC.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>Collection</th><th>Holds</th><th>Key indexes</th></tr></thead>
+<tbody>
+<tr><td><code>publishers</code></td><td>Content owner, branding, status</td><td><code>{code}</code> unique</td></tr>
+<tr><td><code>institutions</code></td><td>Customer, SAML <code>idpHint</code>, branding, <code>catalogueVersion</code></td><td><code>{code}</code> unique, <code>{name}</code> text</td></tr>
+<tr><td><code>collections</code></td><td>Sellable package of items, per publisher</td><td><code>{publisherId}</code></td></tr>
+<tr><td><code>catalogueItems</code></td><td>The book: metadata, tier, assets, encryption block, <code>contentState</code></td><td><code>{publisherId, contentType}</code>, <code>{collectionIds}</code>, text on title, authors, subjects</td></tr>
+<tr><td><code>entitlements</code></td><td>Institution &times; scope &times; access model &times; validity</td><td><code>{institutionId, status, validTo}</code></td></tr>
+<tr><td><code>adminUsers</code></td><td>Console operators, role, scope</td><td><code>{email}</code> unique</td></tr>
+<tr><td><code>auditLogs</code></td><td>Every admin write and every content access</td><td><code>{entityType, entityId}</code>, TTL 90 days on <code>at</code></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>catalogueItems, the one that matters</h3>
+<pre><code>{
+  "_id": "item_42",
+  "publisherId": "pub_rtlg",
+  "collectionIds": ["col_law2024"],
+  "title": "Rights for Robots",
+  "authors": ["Joshua C. Gellers"],
+  "isbn": "9780367211745",
+  "contentType": "PDF",                    <s>PDF | EPUB | AUDIO</s>
+  "accessTier": "ELITE",                   <s>OPEN_ACCESS | SUBSCRIPTION | ELITE</s>
+  "subjects": ["Law", "Technology"],
+  "language": "en",
+  "coverUrl": "https://cdn.tf/covers/item_42.jpg",   <s>public bucket, never signed</s>
+  "status": "PUBLISHED",                   <s>DRAFT | PUBLISHED | ARCHIVED</s>
+  "contentState": "READY",                 <s>NONE | QUEUED | ENCRYPTING | READY | FAILED</s>
+  "contentError": null,
+  "assets": [
+    { "format": "PDF",
+      "mimeType": "application/pdf",
+      "sizeBytes": 6373752,                <s>plaintext length</s>
+      "cipherLength": 6373780,             <s>12 + plaintext + 16</s>
+      "storageKey": "content/pub_rtlg/item_42/pdf/content.enc",   <u>never returned to a client</u>
+      "indexKey":   "content/pub_rtlg/item_42/pdf/index.enc",     <u>never returned to a client</u>
+      "hasSearchIndex": true,
+      "indexSkipReason": null,             <s>set when extraction failed, book still READY</s>
+      "indexTerms": 18442,
+      "encryption": {
+        "algorithm": "AES-256-GCM",
+        "layout": "nonce(12) || ciphertext || tag(16)",
+        "wrappedBek": "3sJ9k1QpV...",      <u>wrapped under the master key, never returned</u>
+        "keyId": "master-v1"
+      } }
+  ],
+  "createdAt": "2026-08-02T11:00:00Z"
+}</code></pre>
+
+<div class="box b-ok">
+<span class="bt">contentState is a gate, not a flag</span>
+<p>A book that is not <code>READY</code> is structurally unborrowable: the resolver excludes it, the feed never shows it, and the grant method refuses it. That is better than filtering defensively in five places and forgetting the sixth.</p>
+</div>
+
+<h3>entitlements</h3>
+<pre><code>{
+  "_id": "ent_5a1",
+  "institutionId": "inst_7f3",
+  "scopeType": "COLLECTION",               <s>PUBLISHER | COLLECTION | ITEM</s>
+  "scopeId": "col_law2024",
+  "accessModel": "CONCURRENT",             <s>UNLIMITED | CONCURRENT</s>
+  "copies": 2,                             <s>null when UNLIMITED</s>
+  "loanPeriodDays": 14,
+  "validFrom": "2026-01-01",
+  "validTo": "2026-12-31",                 <s>null means open ended</s>
+  "status": "ACTIVE",                      <s>ACTIVE | SUSPENDED | REVOKED</s>
+  "version": 3                             <s>optimistic locking</s>
+}</code></pre>
+
+<h3>The other five, in brief</h3>
+<pre><code>publishers    { _id, code, name, description, logoUrl, status, createdAt }
+
+institutions  { _id, code, name, type, country, city, emailDomains[],
+                idpHint, branding{logoUrl, primaryColor},
+                status, catalogueVersion, createdAt }
+              <s>institutional sign-in is ALWAYS SAML, so there is no authMethod field</s>
+
+collections   { _id, publisherId, code, name, description, itemIds[] }
+
+adminUsers    { _id, email, name, passwordHash, role, scopePublisherId,
+                scopeInstitutionId, status }
+              <s>SUPER_ADMIN | PUBLISHER_ADMIN | INSTITUTION_ADMIN | READ_ONLY</s>
+
+auditLogs     { _id, actorId, actorEmail, action, entityType, entityId,
+                before, after, meta, at }
+              <s>meta carries keyFingerprint (sha256 of the device public key),</s>
+              <s>intent and format, on CONTENT_ACCESS</s>
+              <s>TTL index on at, 90 days</s></code></pre>
+
+<h3>catalogueVersion, the only coupling between our two capabilities</h3>
+<p>Any admin write that changes what a member would see increments <code>institutions.catalogueVersion</code>. The feed cache and the ETag are both keyed on it, so bumping it invalidates everything instantly with no messaging infrastructure. That single integer is the entire integration surface between CAP-1 and CAP-5.</p>
+
+<!-- 6 -->
+<h2 id="admin"><span class="hn">06</span>The admin dashboard</h2>
+<p class="sub">Ours, and the reason nothing else can start. A React web app against our module.</p>
+
+<pre><code>LOGIN
+  │
+  ├─► PUBLISHERS ────────► create Routledge
+  │     └─► COLLECTIONS ──► create "Law and Technology 2024"
+  │           └─► CATALOGUE ITEMS ──► create "Rights for Robots"
+  │                 │                 tier = ELITE
+  │                 └─► CONTENT UPLOAD ──► the PDF
+  │                       └─► INGEST STATUS      watch it encrypt
+  │
+  ├─► INSTITUTIONS ──────► create Imperial College
+  │     ├─► ENTITLEMENTS ──► grant Imperial the Law collection,
+  │     │                    2 concurrent copies, 14 day loans
+  │     └─► CATALOGUE CONFIG ──► feed title, shelf order, page size
+  │
+  ├─► ADMIN USERS ───────► who else may operate this
+  └─► AUDIT LOG ─────────► who changed what, and every content access</code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Screen</th><th>What the operator does</th><th>Who it unblocks</th></tr></thead>
+<tbody>
+<tr><td>Login</td><td>Email and password, four roles</td><td>Everything below</td></tr>
+<tr><td>Publishers</td><td>Create the content owner, branding</td><td>An item needs an owner before role scoping works</td></tr>
+<tr><td>Institutions</td><td>Create the customer, set the SAML <code>idpHint</code></td><td><span class="w w-t1">team1</span> blocked until this exists</td></tr>
+<tr><td>Collections</td><td>Create the sellable package</td><td>Entitlements are granted per package</td></tr>
+<tr><td>Catalogue items</td><td>Title, authors, ISBN, content type, access tier</td><td>The tier is what makes the three flows differ</td></tr>
+<tr><td>Content upload</td><td>Drop the file. Returns <code>202</code>, work happens in the background</td><td><span class="w w-t4">t4targaryen</span> blocked until this finishes</td></tr>
+<tr><td>Ingest status</td><td>Watch <code>QUEUED</code> to <code>ENCRYPTING</code> to <code>READY</code>, or see why it failed</td><td>A book that is not READY never appears in a feed, so failures must be visible</td></tr>
+<tr><td>Entitlements</td><td>Grant a publisher, collection or item. Set copies, loan length, validity</td><td><span class="w w-fl">flambeau</span> blocked until this exists</td></tr>
+<tr><td>Catalogue config</td><td>Per institution: feed title, shelf order, page size</td><td>Shapes what team1 renders</td></tr>
+<tr><td>Audit log</td><td>Every admin write, plus every content access</td><td>In Week 6 the first question is always what changed</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 7 -->
+<h2 id="ingest"><span class="hn">07</span>Ingest and encryption</h2>
+<p class="sub">Subscription and Elite are encrypted as one whole file. Open access and all audio are stored as-is.</p>
+
+<h3>The object layout</h3>
+<p>Every encrypted object, content and index alike, has the same three-part shape. The nonce travels with the ciphertext, so nothing has to be derived and nothing has to be agreed beyond the first twelve bytes being the nonce.</p>
+
+<pre><code>content.enc
+┌────────────────┬──────────────────────────────────────────┬──────────┐
+│ nonce 12 bytes │ ciphertext, same length as the plaintext │ tag 16 B │
+└────────────────┴──────────────────────────────────────────┴──────────┘
+  random per                                                  authentication
+  object
+
+cipherLength = 12 + originalLength + 16
+
+index.enc       identical layout, same book key, <b>DIFFERENT random nonce</b></code></pre>
+
+<div class="box b-bad">
+<span class="bt">Why two independent random nonces</span>
+<p>The content object and the index object are encrypted under the <b>same book key</b>. If both derived their nonce from a counter, both would start at zero, and the same key with the same nonce over two different plaintexts is a total break in AES-GCM: it leaks the XOR of the plaintexts and it leaks the authentication subkey, which lets an attacker forge valid tags for the whole book. Both plaintexts begin with predictable bytes, a PDF header and a JSON header, so it would be directly exploitable.</p>
+<p>Two independent random 12-byte nonces, each stored inline, make that <b>structurally impossible</b> rather than something a test has to catch. There is no derivation rule, no byte order to agree, and nothing that fails silently.</p>
+</div>
+
+<h3>The pipeline</h3>
+<pre><code> 1  contentState = QUEUED, then ENCRYPTING
+ 2  <i>if accessTier == OPEN_ACCESS or contentType == AUDIO:</i>
+        PUT the file as-is, no key, no encryption block
+        skip to step 7
+ 3  bek = SecureRandom(32)     <u>ALWAYS fresh. never read an existing wrappedBek</u>
+ 4  nonce = SecureRandom(12)
+    PUT nonce || AES-256-GCM(plaintext, bek, nonce) → storageKey
+ 5  try {                                                       <s>non-fatal</s>
+        text       = TextExtractor.extract(plaintext)   <s>PDFBox or epublib</s>
+        index      = IndexBuilder.build(text)
+        indexNonce = SecureRandom(12)                   <u>its OWN nonce</u>
+        PUT indexNonce || AES-256-GCM(index, bek, indexNonce) → indexKey
+        hasSearchIndex = true
+    } catch (Exception e) {
+        hasSearchIndex  = false
+        indexSkipReason = e.getClass().getSimpleName()
+        log.warn(...)                                   <s>book still becomes READY</s>
+    }
+ 6  wrappedBek = AES-KW(bek, masterKey)
+ 7  save the asset, contentState = READY, bump catalogueVersion
+ 8  Arrays.fill(bek, (byte) 0) in a finally block
+
+ on any exception outside step 5: contentState = FAILED, record the cause</code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Guard</th><th>Value</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Upload cap</td><td><b>100 MB</b>, and <b>20 MB</b> for anything encrypted</td><td>An encrypted file is decrypted whole, in memory. Twenty megabytes keeps that comfortable on any phone</td></tr>
+<tr><td>Ingest concurrency</td><td><b>1</b>, with a queue</td><td>Two large books at once is the out-of-memory case</td></tr>
+<tr><td>Stuck-job watchdog</td><td>Anything in <code>QUEUED</code> or <code>ENCRYPTING</code> past 15 minutes becomes <code>FAILED</code></td><td>A crashed job otherwise leaves an item permanently invisible with no error for the operator</td></tr>
+<tr><td>Fresh book key</td><td>Unconditional, every pass</td><td>Assert the new wrapped key differs from the old. Never reuse a key across two ingests</td></tr>
+<tr><td>Audio</td><td><b>Never encrypted</b></td><td>Whole-file encryption cannot seek, and scrubbing an audiobook is required behaviour. Section 10</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="tw">
+<table>
+<thead><tr><th>Book</th><th>Tier</th><th>Plaintext</th><th>Encrypted</th><th>In storage</th></tr></thead>
+<tbody>
+<tr><td>Rights for Robots</td><td>Elite, PDF</td><td>6,373,752</td><td class="c"><span class="y">yes</span></td><td>6,373,780</td></tr>
+<tr><td>Environmental Policy and Air Pollution in China</td><td>Subscription, PDF</td><td>3,596,255</td><td class="c"><span class="y">yes</span></td><td>3,596,283</td></tr>
+<tr><td>Ethnographies of Waiting</td><td>Open access, EPUB</td><td>2,170,646</td><td class="c"><span class="n">no</span></td><td>2,170,646</td></tr>
+<tr><td>An Introduction to Statistics</td><td>Subscription, audio</td><td>18,440,112</td><td class="c"><span class="n">no</span></td><td>18,440,112</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 8 -->
+<h2 id="keys"><span class="hn">08</span>The key hierarchy</h2>
+
+<pre><code>MASTER KEY (MK)     AES-256, one per deployment, in config or env.
+    │               Never in git. Only our crypto module reads it.
+    │  wraps with AES-KW
+    ▼
+BOOK KEY (BEK)      AES-256, one per book per ingest pass, never reused.
+    │               Stored ONLY wrapped, on the item record in MongoDB,
+    │               NOT next to the book in storage.
+    │  encrypts with AES-256-GCM
+    ├──────────►  the content object   its own random 12-byte nonce, inline
+    └──────────►  the search index     a DIFFERENT random 12-byte nonce, inline
+
+AT READ TIME, inside one method call
+    1  bek       = AES-KW-unwrap(MK, wrappedBek)
+    2  forDevice = RSA-OAEP-256(devicePublicKey, bek)
+    3  sign two short-lived URLs, content and index
+    4  zero the plaintext bek in a finally block
+                  │
+                  ▼
+    5  the phone: bek = RSA-OAEP-256-decrypt(devicePrivateKey, forDevice)
+                  private key generated on first launch, non-exportable,
+                  never leaves the Keychain or Keystore</code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Purpose</th><th>Algorithm</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Book content</td><td>AES-256-GCM</td><td>Whole file, one random nonce stored as the first 12 bytes, 16 byte tag appended</td></tr>
+<tr><td>Search index</td><td>AES-256-GCM</td><td>Same book key, a <b>different</b> random nonce, same inline layout</td></tr>
+<tr><td>Book key at rest</td><td>AES-KW</td><td>RFC 3394 key wrap under the master key</td></tr>
+<tr><td>Book key to the reader</td><td>RSA-OAEP-256</td><td>Wrapped to the <b>device public key</b>, sent as PEM-encoded SPKI</td></tr>
+<tr><td>Device keypair</td><td>RSA-2048 minimum</td><td>Generated on the device. The <b>private key</b> never leaves the keystore; only the <b>public key</b> is ever sent</td></tr>
+<tr><td>Device public key fingerprint</td><td>SHA-256</td><td>Over the DER-encoded SPKI of the device public key. Carried as <code>keyFingerprint</code></td></tr>
+<tr><td>Admin passwords</td><td>BCrypt strength 10</td><td>Deliberately slow, so a stolen hash costs real time</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Why this shape</h4>
+<ul>
+<li><b>One key per book</b> so a leaked key exposes one title, not the library.</li>
+<li><b>Wrapped by a master key</b> so a stolen database dump is useless without it.</li>
+<li><b>Stored apart from the book</b> so a stolen storage bucket is useless too.</li>
+<li><b>Rewrapped per reader</b> so the same ciphertext serves everyone, and only that device can open its copy of the key.</li>
+<li><b>Rotatable</b> because the item records which master key wrapped it, so changing the master key rewraps 400 bytes per book rather than re-encrypting 6 MB.</li>
+</ul>
+
+<div class="box b-warn">
+<span class="bt">Be precise about two things</span>
+<p><b>RSA direction.</b> We encrypt with the public key, the phone decrypts with its private key. It is safe to accept a public key in a request precisely because possession of the private key is what grants access.</p>
+<p><b>We never verify that possession.</b> Anyone can send any device public key, so this binds a <b>keypair</b>, not a device. We have chosen not to add a possession proof for the prototype, so <b>do not describe it as device binding</b>. The field is called <code>keyFingerprint</code>, not <code>deviceId</code>, for that reason.</p>
+</div>
+
+<!-- 9 -->
+<h2 id="index"><span class="hn">09</span>The search index</h2>
+<p class="sub">How find-this-word-in-this-book works with no server call.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Catalogue search</th><th>In-file search</th></tr></thead>
+<tbody>
+<tr><td>Question</td><td>Find me books about robots</td><td>Find robots inside this book</td></tr>
+<tr><td>Runs</td><td>Server, MongoDB text index</td><td>Phone, against a downloaded file</td></tr>
+<tr><td>HTTP calls</td><td>One per search</td><td>None</td></tr>
+<tr><td>Works offline</td><td class="c"><span class="n">no</span></td><td class="c"><span class="y">yes</span></td></tr>
+<tr><td>Built by</td><td><span class="w w-wk">wokay</span></td><td><span class="w w-wk">wokay</span> builds it, <span class="w w-t4">t4</span> queries it</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>What comes out of ingest</h3>
+<pre><code>{
+  "version": 1,
+  "itemId": "item_42",
+  "locator": "page",                  <s>"page" for PDF, "href" for EPUB</s>
+  "termCount": 18442,
+  "terms": {
+    "robot": [ 1, 14, 88 ],
+    "right": [ 1, 4, 9, 33 ]
+  }
+}
+  <s>word to page numbers. roughly 150 KB for a 6 MB book.</s>
+  <s>a 30-word stop list is applied, and each word is capped at 200 pages.</s></code></pre>
+
+<div class="box b-ok">
+<span class="bt">The index stores pages, never byte positions</span>
+<p>A PDF is a compressed container. The text of page 88 is not at file byte 2,000,000 and no formula turns one into the other, because only a PDF parser can answer where page 88 is. So the index stops at the page. Turning a page into a rendered view is the reader engine's job, and it already knows how.</p>
+</div>
+
+<h3>One key unlocks both, and that is deliberate</h3>
+<p>The index contains the book's words, so an unencrypted index is a searchable copy of the book. An index under a <i>different</i> key would let a device search a book it is not licensed to read. One key, one thing to wrap, one thing to destroy at expiry. Open access is the exception: the book is plaintext, so its index is too.</p>
+
+<h3>A search, end to end</h3>
+<pre><code>1  user types "robots"
+2  app lowercases and strips a trailing s        <s>no stemmer to agree on</s>
+3  looks up "robot" in the in-memory index       <s>no I/O, instant</s>
+4  gets [ 1, 14, 88 ]
+5  app tells its PDF engine: render page 88
+6  page 88 renders
+   <b>no server call at any point</b></code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Case</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td>Scanned PDF, no text layer</td><td>Extraction fails, index skipped, <b>book still becomes READY</b> with <code>hasSearchIndex: false</code>. A scanned book must be unsearchable, not unreadable</td></tr>
+<tr><td>Audiobook</td><td>No text, so no index. <code>hasSearchIndex: false</code></td></tr>
+<tr><td>Reader does not want it</td><td><code>wantSearchIndex: false</code> skips the download</td></tr>
+<tr><td>Content replaced</td><td>Not supported. Re-ingest as a new item, which makes a stale index impossible rather than merely detectable</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 10 -->
+<h2 id="reading"><span class="hn">10</span>How reading works</h2>
+<p class="sub">Why there is no chunking, what that costs, and exactly what the reader does instead.</p>
+
+<h3>The choice</h3>
+<p>An earlier version cut every encrypted book into fixed 64 KB pieces and encrypted each separately, so piece 30 could be opened without touching pieces 0 to 29. It buys real seeking. It also buys a great deal of machinery on both sides, and it is where the nonce collision came from.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Chunked, 64 KB pieces</th><th>Whole file, chosen</th></tr></thead>
+<tbody>
+<tr><td><b>Our code</b></td><td>Chunk encryptor, nonce derivation, per-piece tags, piece bookkeeping</td><td>One encrypt call</td></tr>
+<tr><td><b>Reader code</b></td><td>A whole piece layer: range to piece translation, offset arithmetic, a clamp on the last short piece, a cache of decrypted pieces, resume at a piece boundary, and a lazy byte-source adapter into the renderer</td><td>Decrypt a buffer, hand it to the renderer</td></tr>
+<tr><td><b>Nonce rules</b></td><td>Derived from the piece index. Order-sensitive, and wrong silently</td><td><b>Two random nonces, stored inline.</b> Nothing to derive, nothing to agree</td></tr>
+<tr><td><b>Failure mode</b></td><td>A byte-order disagreement fails at piece 256 and not before. Storage backends disagree on whether a clamped range is a 206 or a 416</td><td>It decrypts, or the tag fails and you show an error</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>What we lose, honestly</h3>
+<div class="tw">
+<table>
+<thead><tr><th>Lost</th><th>Effect</th><th>Bought back by</th></tr></thead>
+<tbody>
+<tr><td>Rendering before the file has fully arrived</td><td>Page 1 appears only after the whole object downloads and decrypts. A 6 MB PDF is about 2 seconds on wifi, roughly 30 seconds at 200 KB/s</td><td>A determinate progress bar, and a 20 MB cap on encrypted assets</td></tr>
+<tr><td>Seeking inside an encrypted file</td><td>Jumping to page 400 needs the whole file, not one small request</td><td>Nothing, and it does not matter: once decrypted, the renderer seeks freely in memory</td></tr>
+<tr><td><b>Audio scrubbing</b></td><td>Dragging to minute 45 of a two-hour audiobook would need the entire file first. <b>The only serious loss</b></td><td><b>Audio is never encrypted.</b> Plain signed URL and native Range, so scrubbing works exactly as before</td></tr>
+<tr><td>Whole plaintext in memory at once</td><td>Fine at 6 MB. Not fine at 100 MB</td><td>The 20 MB cap on encrypted assets, and audio being the only naturally large format</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box b-ok">
+<span class="bt">One thing that is NOT lost</span>
+<p><b>Download resume still works normally.</b> Ciphertext is just bytes, so a broken transfer resumes with <code>Range: bytes=&lt;received&gt;-</code> like any HTTP download. What whole-file encryption removes is partial <i>decryption</i>, not partial <i>download</i>. This is the point most often got backwards.</p>
+</div>
+
+<h3>What we hand over</h3>
+<pre><code>{
+  "content": {
+    "url":            "https://storage.tf/...?X-Amz-Signature=...",
+    "expiresAt":      "2026-08-09T10:30:00Z",
+    "cipherLength":   6373780,          <s>what you will download</s>
+    "originalLength": 6373752,          <s>what you get after decrypting</s>
+    "mimeType":       "application/pdf"
+  },
+  "index": { "url": "...", "encrypted": true, "termCount": 18442 },
+  "encryption": {
+    "algorithm":     "AES-256-GCM",
+    "layout":        "nonce(12) || ciphertext || tag(16)",
+    "wrappedBek":    "3sJ9k1QpV...",     <i>RSA-OAEP-256 to the reader's public key</i>
+    "wrapAlgorithm": "RSA-OAEP-256",
+    "keyId":         "master-v1",
+    "keyFingerprint":"sha256:3b1f9a2c..."
+  }
+}
+
+open access, and ALL audio:   <b>"encryption": null</b>   the URL is a plain file</code></pre>
+
+<h3>The three read paths</h3>
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Open access and all audio</th><th>Subscription</th><th>Elite</th></tr></thead>
+<tbody>
+<tr><td>Intent</td><td>stream or download</td><td>stream or download</td><td>stream only</td></tr>
+<tr><td>Fetch</td><td>Native, ranged, lazy</td><td>Whole ciphertext</td><td>Whole ciphertext</td></tr>
+<tr><td>Decrypt</td><td>None</td><td>Once, into memory</td><td>Once, into memory</td></tr>
+<tr><td>Written to disk</td><td>The plain file, if downloaded</td><td><b>The ciphertext, as received</b>, plus the wrapped key and the licence</td><td><b>Nothing at all</b></td></tr>
+<tr><td>Key held</td><td>None</td><td>Wrapped, in the keystore, beside the file</td><td>Plaintext, in memory only, dropped on close</td></tr>
+<tr><td>Seeking</td><td>Native Range, so scrubbing works</td><td>Free, in memory, after decrypt</td><td>Free, in memory, after decrypt</td></tr>
+<tr><td>At expiry</td><td>Never expires</td><td>Delete the wrapped key. Ciphertext becomes noise</td><td>Nothing to delete</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Download, subscription</h4>
+<pre><code>fetch    GET content.url, whole object
+         on interruption:  Range: bytes=&lt;received&gt;-
+         on 403:           re-session for a fresh URL, the key is unchanged,
+                           then resume from the same byte
+store    content.enc      exactly as received, do NOT decrypt to disk
+         index.enc        exactly as received
+         wrappedBek       in the keystore
+         licence.json     signed by flambeau, verify before trusting it
+read     unwrap → decrypt into memory → render → discard the plaintext
+expiry   delete wrappedBek. instant, and works with no network</code></pre>
+
+<h4>Stream, elite</h4>
+<pre><code>fetch    GET content.url into MEMORY. never to disk.
+decrypt  once, in memory
+render   from the in-memory buffer, seek freely
+close    zero the buffer and the key
+expiry   nothing to delete, because nothing was written
+renew    when the 20 minute URL expires and the user is still reading,
+         call reading-sessions again. no new lease, no copy consumed.</code></pre>
+
+<!-- 11 -->
+<h2 id="seams"><span class="hn">11</span>The two seams</h2>
+<p class="sub">The backend is one process, so these are Java interfaces rather than endpoints. <b>They freeze at the gate as code</b>, not as endpoint JSON.</p>
+
+<h3>Seam 1 &middot; EntitlementQuery</h3>
+<pre><code>// com.tf.reader.catalogue.api   flambeau may import this and nothing else of ours
+public interface EntitlementQuery {
+    EntitlementDecision check(SubjectRef subject, String itemId);
+}
+
+public record EntitlementDecision(
+    boolean     entitled,
+    AccessLevel accessLevel,     <s>OPEN_ACCESS | ENTITLED_UNLIMITED | ENTITLED_CONCURRENT</s>
+    String      entitlementId,   <s>null when not entitled</s>
+    Integer     copies,          <s>null unless ENTITLED_CONCURRENT</s>
+    int         loanPeriodDays,
+    Instant     validTo,         <s>null means open ended</s>
+    DenyReason  reason           <s>null when entitled</s>
+) {}
+
+public enum DenyReason { NO_ENTITLEMENT, ENTITLEMENT_EXPIRED, ENTITLEMENT_SUSPENDED,
+                         ITEM_ARCHIVED, INSTITUTION_INACTIVE, CONTENT_NOT_READY }</code></pre>
+
+<h3>Seam 2 &middot; ContentAccessGrant</h3>
+<pre><code>// com.tf.reader.content.api
+public interface ContentAccessGrant {
+    ContentGrant grant(ContentGrantRequest request);
+}
+
+public record ContentGrantRequest(
+    String     itemId,
+    Format     format,            <s>PDF | EPUB | AUDIO</s>
+    Intent     intent,            <s>STREAM | DOWNLOAD</s>
+    byte[]     devicePublicKey,   <s>PEM-decoded SPKI. null for open access and audio</s>
+    SubjectRef subject,
+    LoanProof  loanProof,         <s>null ONLY when accessLevel is OPEN_ACCESS</s>
+    boolean    wantSearchIndex
+) {}
+
+public record LoanProof(String loanId, Instant dueAt) {}
+
+public record ContentGrant(
+    SignedUrl  content,           <s>url, expiresAt, cipherLength, originalLength, mimeType</s>
+    SignedUrl  index,             <s>null when absent or not wanted</s>
+    Encryption encryption         <s>null for open access and audio</s>
+) {}
+
+public record Encryption(
+    String algorithm,             <s>"AES-256-GCM"</s>
+    String layout,                <s>"nonce(12) || ciphertext || tag(16)"</s>
+    String wrappedBek,            <s>base64, RSA-OAEP-256 to the device public key</s>
+    String wrapAlgorithm,         <s>"RSA-OAEP-256"</s>
+    String keyId,                 <s>"master-v1"</s>
+    String keyFingerprint         <s>sha256 of the DEVICE PUBLIC KEY that was sent</s>
+) {}</code></pre>
+
+<h4>What grant() does, in order</h4>
+<pre><code> 1  load the asset for {itemId, format}                  <s>else NOT_FOUND</s>
+ 2  contentState must be READY                           <s>else CONTENT_NOT_READY</s>
+ 3  re-resolve the entitlement from MongoDB              <u>never trust the caller</u>
+        OPEN_ACCESS  -> loanProof must be null, and is ignored
+        otherwise    -> loanProof must be non null
+ 3b <b>intent check</b>
+        DOWNLOAD + ENTITLED_CONCURRENT  -> DOWNLOAD_NOT_PERMITTED
+ 4  plaintext tier?  -> presign the plain content and index URLs, return, done
+ 5  validate devicePublicKey: SPKI, RSA-2048+     <s>else INVALID_DEVICE_PUBLIC_KEY</s>
+ 6  bek     = AES-KW-unwrap(masterKey, asset.wrappedBek)
+ 7  wrapped = RSA-OAEP-256(devicePublicKey, bek)
+ 8  presign the content URL, and the index URL if wantSearchIndex
+        <s>STREAM 15 min / DOWNLOAD 30 min / ELITE STREAM 20 min</s>
+ 9  audit CONTENT_ACCESS with meta.keyFingerprint, intent, format
+10  zero the plaintext bek in a finally block</code></pre>
+
+<div class="box b-ok">
+<span class="bt">Two things that look redundant and are not</span>
+<p><b>Step 3</b> re-resolves the entitlement even though flambeau called <code>check()</code> a moment earlier. In one process that looks wasteful. It is the invariant that makes the interface safe to expose: a future caller who forgets step one cannot obtain a key. The resolver is cache-backed, so it costs microseconds.</p>
+<p><b><code>LoanProof</code> needs no signature.</b> Across HTTP we would have to trust a JSON assertion we could not verify. In-process, flambeau constructs the object itself immediately after reading its own repository and hands it to our method. There is no wire, so there is nothing to forge. Keeping it a distinct type rather than two loose strings is what documents the trust boundary for whoever reads this in Week 7.</p>
+</div>
+
+<div class="box b-warn">
+<span class="bt">There is no third seam</span>
+<p>We do not call flambeau while building a feed. That would make our module depend on theirs, which makes the dependency circular and kills the splittable-later property the brief asks for. The app calls <code>GET /api/v1/availability?itemId=</code> on the detail screen instead: one book, one call, at the moment the user is deciding. Our module compiles with no knowledge that flambeau exists.</p>
+</div>
+
+<!-- 12 -->
+<h2 id="api"><span class="hn">12</span>App-facing API</h2>
+<p class="sub">Module to module is a method call. Client to backend is still HTTP, because the app is a separate process.</p>
+
+<h3>12.1 Institution listing, the only unauthenticated endpoints</h3>
+<pre><code>GET /api/v1/institutions?q=&amp;country=&amp;page=&amp;size=          <i>no token</i>
+
+200 OK
+{ "items": [ { "id": "inst_7f3", "code": "imperial",
+               "name": "Imperial College London", "type": "UNIVERSITY",
+               "country": "UK", "city": "London",
+               "logoUrl": "https://cdn.tf/logos/imperial.png" } ],
+  "page": 0, "size": 20, "total": 3 }</code></pre>
+<p>Public fields only: no entitlements, no publisher links, no counts. Only <code>ACTIVE</code> institutions appear, and an inactive one returns <code>404</code> not <code>403</code>, so its existence is not disclosed.</p>
+
+<pre><code>GET /api/v1/institutions/{id}                              <i>no token</i>
+
+200 OK
+{ "id": "inst_7f3", "name": "Imperial College London",
+  "branding": { "logoUrl": "...", "primaryColor": "#003E74" },
+  "signIn": { "method": "SAML", "idpHint": "imperial-saml-mock" },
+  "catalogueUrl": "https://api.tf/opds/v1/institutions/inst_7f3/catalogue" }</code></pre>
+<p><code>method</code> is always <code>SAML</code>. It stays in the payload so the client needs no special case, but there is no field on the institution record to configure. <code>catalogueUrl</code> is handed over so the client never builds our URLs.</p>
+
+<h3>12.2 OPDS feeds</h3>
+<div class="tw">
+<table>
+<thead><tr><th>Endpoint</th><th>Shape</th><th>Content-Type</th></tr></thead>
+<tbody>
+<tr><td><code>GET /opds/v1/institutions/{id}/catalogue</code></td><td>navigation + groups</td><td><code>application/opds+json</code></td></tr>
+<tr><td><code>GET /opds/v1/institutions/{id}/groups/{gid}</code></td><td>publications + paging links</td><td><code>application/opds+json</code></td></tr>
+<tr><td><code>GET /opds/v1/institutions/{id}/search?query=</code></td><td>publications</td><td><code>application/opds+json</code></td></tr>
+<tr><td><code>GET /opds/v1/institutions/{id}/publications/{iid}</code></td><td>one publication</td><td><code>application/opds-publication+json</code></td></tr>
+<tr><td><code>GET /opds/v1/public/catalogue</code></td><td>open access only, no token</td><td><code>application/opds+json</code></td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>The acquisition link, in full</h4>
+<pre><code>{ "rel": "http://opds-spec.org/acquisition/borrow",
+  "href": "https://api.tf/api/v1/loans?itemId=item_42",
+  "type": "application/pdf",
+  "properties": {
+    "licenceModel": "CONCURRENT",
+    "copies": { "total": 2 },              <u>total only, see below</u>
+    "encrypted": { "algorithm": "AES-256-GCM", "originalLength": 6373752 },
+    "hasSearchIndex": true,
+    "canPersist": false                    <s>false for Elite, hides the Download button</s>
+  } }</code></pre>
+
+<div class="box b-warn">
+<span class="bt">The feed carries copies.total, never copies.available</span>
+<p>We do not call flambeau while building a feed, so we cannot know how many copies are free. <code>total</code> comes from our own entitlement record. The app fetches <code>available</code> from <code>GET /api/v1/availability?itemId=</code> on the detail screen, where it is actually decision-relevant and costs one call rather than twenty.</p>
+</div>
+
+<p><code>href</code> points at flambeau, taken from the <code>tf.catalogue.borrow-url</code> config template so their path can change without a rebuild.</p>
+
+<h4>Feed errors</h4>
+<p><code>401 UNAUTHENTICATED</code>, <code>401 TOKEN_EXPIRED</code>, <code>403 FORBIDDEN_INSTITUTION_MISMATCH</code>, <code>404 NOT_FOUND</code> for an unknown or inactive institution. A <b>group</b> the institution is not entitled to returns <code>403</code>, because it is already named in the root feed's navigation so hiding it is pointless. A <b>publication</b> it is not entitled to returns <code>404</code>, identical to unknown or archived, so the catalogue cannot be probed by walking ids.</p>
+
+<h3>12.3 Catalogue fetch and batch</h3>
+<pre><code>POST /api/v1/catalogue/items:batch                         <i>app token</i>
+
+→ { "ids": ["item_42", "item_77", "item_bogus"] }
+
+200 OK
+{ "items": [ { "id": "item_42", "title": "Rights for Robots",
+               "authors": ["Joshua C. Gellers"], "coverUrl": null,
+               "contentType": "PDF", "accessTier": "ELITE",
+               "totalCopies": 2, "hasSearchIndex": true } ],
+  "notFound": ["item_bogus"],
+  "denied":   ["item_77"] }</code></pre>
+<p>Loan records carry item ids only, so a My Library screen needs metadata for twelve titles in one call rather than twelve. <code>notFound</code> and <code>denied</code> are separate so one bad id does not break the screen, and so the client can tell gone from not yours. Capped at 100 ids.</p>
+
+<h3>12.4 Admin API, ours alone</h3>
+<pre><code>/api/admin/v1/auth/login              /api/admin/v1/auth/me
+/api/admin/v1/publishers              /publishers/{id}          CRUD + status
+/api/admin/v1/publishers/{pid}/collections                      CRUD
+/api/admin/v1/collections/{cid}/items                           PUT membership
+/api/admin/v1/catalogue-items         /catalogue-items/{id}     CRUD
+/api/admin/v1/catalogue-items/{id}/content       POST upload, returns 202
+/api/admin/v1/catalogue-items/{id}/ingest-status GET
+/api/admin/v1/institutions            /institutions/{id}        CRUD + status
+/api/admin/v1/institutions/{iid}/entitlements    CRUD
+/api/admin/v1/institutions/{iid}/catalogue-config GET, PUT
+/api/admin/v1/admin-users                                       CRUD
+/api/admin/v1/audit-logs                                        GET, filtered</code></pre>
+
+<!-- 13 -->
+<h2 id="security"><span class="hn">13</span>Security and errors</h2>
+
+<h3>Two token audiences, and no third</h3>
+<div class="tw">
+<table>
+<thead><tr><th></th><th>Admin token</th><th>App token</th></tr></thead>
+<tbody>
+<tr><td>Issued by</td><td>us, <code>/api/admin/v1/auth/login</code></td><td>flambeau</td></tr>
+<tr><td><code>aud</code></td><td><code>tf-admin</code></td><td><code>tf-app</code></td></tr>
+<tr><td>Accepted on</td><td><code>/api/admin/v1/**</code></td><td><code>/opds/v1/**</code>, <code>/api/v1/**</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>The <code>aud</code> claim is checked on every request, so an admin token cannot read a catalogue feed and an app token cannot reach the admin API. <b>There is no service audience</b>, because module to module calls are method calls and carry no token at all.</p>
+
+<h3>RBAC</h3>
+<div class="tw">
+<table>
+<thead><tr><th>Action</th><th class="c">SUPER</th><th class="c">PUBLISHER</th><th class="c">INSTITUTION</th><th class="c">READ ONLY</th></tr></thead>
+<tbody>
+<tr><td>Publishers</td><td class="c"><span class="y">yes</span></td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td><td class="c">view</td></tr>
+<tr><td>Catalogue items, collections, upload</td><td class="c"><span class="y">yes</span></td><td class="c">own publisher</td><td class="c">view</td><td class="c">view</td></tr>
+<tr><td>Institutions</td><td class="c"><span class="y">yes</span></td><td class="c"><span class="n">no</span></td><td class="c">own, edit only</td><td class="c">view</td></tr>
+<tr><td>Entitlements, catalogue config</td><td class="c"><span class="y">yes</span></td><td class="c">view</td><td class="c">own institution</td><td class="c">view</td></tr>
+<tr><td>Admin users</td><td class="c"><span class="y">yes</span></td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td><td class="c"><span class="n">no</span></td></tr>
+</tbody>
+</table>
+</div>
+<p><b>Role is not enough.</b> <code>@PreAuthorize</code> checks the role at the controller; a service-layer check then confirms the admin's scoped publisher or institution actually matches the record. Both, always.</p>
+
+<h3>Error envelope</h3>
+<pre><code>{ "timestamp": "2026-08-09T14:00:00Z",
+  "status": 403,
+  "code": "DOWNLOAD_NOT_PERMITTED",
+  "message": "Elite titles are available online only",
+  "path": "/api/v1/content/item_42/access-url",
+  "traceId": "b7c1f2a9" }</code></pre>
+
+<div class="tw">
+<table>
+<thead><tr><th>Code</th><th>Status</th><th>When</th></tr></thead>
+<tbody>
+<tr><td><code>NO_ENTITLEMENT</code> &middot; <code>ENTITLEMENT_EXPIRED</code> &middot; <code>ENTITLEMENT_SUSPENDED</code></td><td>403</td><td>Denial reasons, so the app can say something useful</td></tr>
+<tr><td><code>CONTENT_NOT_READY</code></td><td>409</td><td>Ingest has not finished, or failed</td></tr>
+<tr><td><code>DOWNLOAD_NOT_PERMITTED</code></td><td>403</td><td>Elite plus a download intent</td></tr>
+<tr><td><code>INVALID_DEVICE_PUBLIC_KEY</code></td><td>400</td><td>Not a well-formed SPKI device public key, or weaker than RSA-2048</td></tr>
+<tr><td><code>FORBIDDEN_INSTITUTION_MISMATCH</code></td><td>403</td><td>Path institution does not match the token</td></tr>
+<tr><td><code>NOT_FOUND</code></td><td>404</td><td>Unknown, archived, or not entitled. Deliberately indistinguishable</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box b-ok">
+<span class="bt">One rule for unauthenticated callers</span>
+<p>With no token, content access returns <b>the same 404</b> whether the item is licensed, unknown or archived. Three distinguishable answers would let anyone walk the id space and map the catalogue, including which titles are premium. Authenticated callers still get the specific 403, because existence is already known to them.</p>
+</div>
+
+<!-- FLOW A -->
+<h2 id="fa"><span class="hn">Flow A</span>Open access</h2>
+<p class="sub">Plaintext. Read online or download. No entitlement, no licence, no key.</p>
+
+<div class="steps">
+  <div class="st us"><div class="st-n">1</div><div class="st-b">
+    <p class="t1"><b>Find and select an institution</b> <span class="w w-wk who">wokay</span></p>
+    <p class="t2"><code>GET /api/v1/institutions</code> then <code>/{id}</code>. Optional for this flow: an anonymous reader can go straight to the public feed.</p></div></div>
+  <div class="st dv"><div class="st-n">2</div><div class="st-b">
+    <p class="t1"><b>Generate the device keypair</b>, first launch only <span class="w w-t4 who">t4</span></p>
+    <p class="t2">RSA-2048 in the Keychain or Keystore. Not needed for this flow, but generated once for all flows.</p></div></div>
+  <div class="st us"><div class="st-n">3</div><div class="st-b">
+    <p class="t1"><b>Browse</b> <span class="w w-wk who">wokay</span></p>
+    <p class="t2"><code>/opds/v1/institutions/{id}/catalogue</code> or <code>/opds/v1/public/catalogue</code>. Open access items appear for every institution regardless of entitlement, so a customer who bought nothing still sees a catalogue.</p></div></div>
+  <div class="st us"><div class="st-n">4</div><div class="st-b">
+    <p class="t1"><b>Book detail</b> <span class="w w-wk who">wokay</span></p>
+    <p class="t2"><code>rel</code> is <code>open-access</code> and there is no <code>encrypted</code> block, which tells the app this is a plain file. Buttons: Read and Download.</p></div></div>
+  <div class="st"><div class="st-n">5</div><div class="st-b">
+    <p class="t1"><b>Ask for the content</b> <span class="w w-fl who">flambeau</span></p>
+    <p class="t2">The one read endpoint, for all three tiers. Works with or without a token.</p>
+<pre><code>→ { "itemId": "item_ab6", "format": "PDF", "intent": "DOWNLOAD" }
+    <s>no device public key needed: there is no book key to wrap</s></code></pre></div></div>
+  <div class="st ic"><div class="st-n">5a</div><div class="st-b">
+    <p class="t1"><b>EntitlementQuery.check(...)</b> returns OPEN_ACCESS <span class="w w-wk who">wokay</span></p>
+    <p class="t2">Method call, not HTTP. flambeau skips the loan lookup entirely: nothing to borrow, no copy to reserve, no permission to expire.</p></div></div>
+  <div class="st ic"><div class="st-n">5b</div><div class="st-b">
+    <p class="t1"><b>ContentAccessGrant.grant(...)</b> <span class="w w-wk who">wokay</span></p>
+<pre><code>{ "content": { "url": "https://storage.tf/oa/...pdf?X-Amz-Sig=...",
+               "expiresAt": "+15 min", "length": 2170646 },
+  "index":   { "url": "...index.json", "encrypted": false },
+  "encryption": null }</code></pre></div></div>
+  <div class="st"><div class="st-n">6</div><div class="st-b">
+    <p class="t1"><b>Fetch and read</b> <span class="w w-st who">storage</span></p>
+    <p class="t2">Plain JSON and a plain PDF, native Range requests, no decryption at all. Read online, or write the file to app storage and keep it. <b>No key to store, nothing to expire.</b></p></div></div>
+</div>
+
+<!-- FLOW B -->
+<h2 id="fb"><span class="hn">Flow B</span>Subscription</h2>
+<p class="sub">Encrypted. Read online or download. Entitlement and licence required, unlimited concurrent readers.</p>
+
+<div class="steps">
+  <div class="st sk"><div class="st-n">1-4</div><div class="st-b">
+    <p class="t1">Same as flow A, but sign-in is required</p>
+    <p class="t2">The book appears in the feed only if an active entitlement covers it.</p></div></div>
+  <div class="st us"><div class="st-n">5</div><div class="st-b">
+    <p class="t1"><b>Book detail</b> <span class="w w-wk who">wokay</span></p>
+<pre><code>"properties": { "licenceModel": "UNLIMITED",
+                "encrypted": { "algorithm": "AES-256-GCM",
+                               "originalLength": 3596255 },
+                "hasSearchIndex": true,
+                "canPersist": true }          <i>download allowed</i></code></pre>
+    <p class="t2"><code>rel</code> is <code>acquisition</code>, generic rather than <code>borrow</code>, because there is no copy limit.</p></div></div>
+  <div class="st"><div class="st-n">6</div><div class="st-b">
+    <p class="t1"><b>Borrow</b> <span class="w w-fl who">flambeau</span></p>
+    <p class="t2"><code>POST /api/v1/loans?itemId=</code>. Our check returns <code>ENTITLED_UNLIMITED</code>, so <b>no Redis lease</b>: nothing to reserve and nothing to run out of, so no queue can ever form. A loan is still written, because access is time-bounded even without a copy limit. An idempotency key stops a retry creating two loans.</p></div></div>
+  <div class="st"><div class="st-n">7</div><div class="st-b">
+    <p class="t1"><b>Open the book, every time it is opened</b> <span class="w w-fl who">flambeau</span></p>
+    <p class="t2">A signed URL lives minutes while a loan lives weeks, so this is per-open, not per-loan.</p>
+<pre><code>→ { "itemId": "item_c25", "format": "PDF", "intent": "DOWNLOAD",
+    "devicePublicKey": "-----BEGIN PUBLIC KEY-----...",
+    "wantSearchIndex": true }</code></pre></div></div>
+  <div class="st ic"><div class="st-n">7a</div><div class="st-b">
+    <p class="t1"><b>Both interfaces, in order</b> <span class="w w-wk who">wokay</span></p>
+    <p class="t2">The entitlement is checked again, not reused from step 6, which catches a revocation since the loan was written. Then unwrap, rewrap to the reader's key, sign two URLs, zero the key.</p>
+<pre><code>{ "content": { "cipherLength": 3596283, "expiresAt": "+30 min" },
+  "index":   { "encrypted": true, "termCount": 11840 },
+  "encryption": { "algorithm": "AES-256-GCM",
+                  "layout": "nonce(12) || ciphertext || tag(16)",
+                  "wrappedBek": "...", "wrapAlgorithm": "RSA-OAEP-256",
+                  "keyId": "master-v1", "keyFingerprint": "sha256:3b1f..." } }</code></pre></div></div>
+  <div class="st"><div class="st-n">8</div><div class="st-b">
+    <p class="t1"><b>flambeau adds the licence</b> <span class="w w-fl who">flambeau</span></p>
+<pre><code>"licence": { "licenceId": "lic_4a1", "itemId": "item_c25",
+             "keyFingerprint": "sha256:3b1f...",
+             "expiresAt": "2026-08-23T10:00:00Z",
+             "canPersist": true, "rights": { "print": false },
+             "signature": { "alg": "RS256", "kid": "lic-v1", "value": "..." } }</code></pre>
+    <p class="t2"><b>The signature is required.</b> Without it the reader enforces expiry against a JSON file the user can edit in a text editor.</p></div></div>
+  <div class="st dv"><div class="st-n">9</div><div class="st-b">
+    <p class="t1"><b>Fetch, store, read</b> <span class="w w-t4 who">t4</span></p>
+    <p class="t2">Store the ciphertext exactly as received, with the wrapped key and the licence beside it. Decrypt in memory when read. No second encryption on the device: the bytes arrived protected. On a 403 mid-download, re-session and resume from the same byte.</p></div></div>
+  <div class="st dv"><div class="st-n">10</div><div class="st-b">
+    <p class="t1"><b>At return or at the due date</b> <span class="w w-t4 who">t4</span></p>
+    <p class="t2">Delete the wrapped key. Works with no network, instant regardless of file size, and reliable in a way deleting a 3.6 MB file is not, because flash wear levelling can leave recoverable blocks. Without the key, both ciphertext and index are noise.</p></div></div>
+</div>
+
+<!-- FLOW C -->
+<h2 id="fc"><span class="hn">Flow C</span>Elite</h2>
+<p class="sub">Encrypted, copy-limited, online only. Fetched into memory and never written to storage.</p>
+
+<div class="steps">
+  <div class="st us"><div class="st-n">1</div><div class="st-b">
+    <p class="t1"><b>Book detail</b> <span class="w w-wk who">wokay</span></p>
+<pre><code>"properties": { "licenceModel": "CONCURRENT",
+                "copies": { "total": 2 },        <s>available comes from the next call</s>
+                "encrypted": { "originalLength": 6373752 },
+                "canPersist": false }            <u>no download</u></code></pre>
+    <p class="t2">Then <code>GET /api/v1/availability?itemId=</code> on flambeau. Elite only, and <b>the app asks, not us</b>. One book costs one call, on the screen where the user is deciding. Scrolling a shelf costs nothing.</p></div></div>
+  <div class="st"><div class="st-n">2</div><div class="st-b">
+    <p class="t1"><b>Borrow, the only place a copy is consumed</b> <span class="w w-fl who">flambeau</span></p>
+<pre><code>Redis:  lease:inst_7f3:item_42        TTL = loan length
+        ├─ acquired  → write the loan → 201
+        └─ none free → write a hold   → 202 { position: 3 }
+
+Lease first, then loan. A leaked lease self-heals via TTL.
+A loan with no lease is silent over-lending.</code></pre></div></div>
+  <div class="st us"><div class="st-n">3</div><div class="st-b">
+    <p class="t1"><b>Refresh the detail</b> <span class="w w-wk who">wokay</span></p>
+    <p class="t2">The button flips from Borrow to Read and available drops from 1 to 0. <b>Only this flow needs this refresh</b>, because only this flow has a counter that moves.</p></div></div>
+  <div class="st"><div class="st-n">4</div><div class="st-b">
+    <p class="t1"><b>Read</b> <span class="w w-fl who">flambeau</span></p>
+    <p class="t2">Same handshake as flow B, with <code>intent: STREAM</code>. A download intent is refused inside <code>grant()</code>, so the rule lives on the server and not just in the UI. URL lifetime 20 minutes, licence lifetime 1 hour with <code>canPersist: false</code>.</p></div></div>
+  <div class="st dv"><div class="st-n">5</div><div class="st-b">
+    <p class="t1"><b>Fetch into memory, decrypt, render, discard</b> <span class="w w-t4 who">t4</span></p>
+    <p class="t2">The key is held in memory only, never in the keystore, because <code>canPersist</code> is false. The decrypted bytes live in RAM for the session and are dropped on close. <b>Nothing is written to storage</b>, which is the whole point of the tier. A 6 MB PDF takes about two seconds on wifi.</p></div></div>
+  <div class="st"><div class="st-n">6</div><div class="st-b">
+    <p class="t1"><b>Keep reading, and end</b> <span class="w w-fl who">flambeau</span></p>
+    <p class="t2">Re-session when the URL expires: the loan is still active, so no new lease and no copy consumed. On return, release the lease and promote the head of the queue. On expiry with no return, the lease TTL frees the copy on its own. <b>There is no offline file to lock</b>, so the lock is simply that we stop issuing the next licence.</p></div></div>
+</div>
+
+<div class="box b-warn">
+<span class="bt">Honest caveat</span>
+<p><code>canPersist: false</code> is enforced by the reader. A modified client could keep the bytes it has fetched. The one-hour licence is what actually bounds the exposure, and that is true of all DRM.</p>
+</div>
+
+<!-- SIDE -->
+<h2 id="side"><span class="hn">Flow D</span>Side by side</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th>Stage</th><th>A. Open access</th><th>B. Subscription</th><th>C. Elite</th></tr></thead>
+<tbody>
+<tr><td>Find, sign in</td><td>optional</td><td>required</td><td>required</td></tr>
+<tr><td>Book detail</td><td><code>rel=open-access</code></td><td><code>rel=acquisition</code></td><td><code>rel=borrow</code> + availability call</td></tr>
+<tr><td>Borrow</td><td class="c">none</td><td>loan, no lease</td><td>loan + Redis lease, or hold</td></tr>
+<tr><td>Read request</td><td>reading-session, no key</td><td>reading-session + key</td><td>reading-session + key, every 20 min</td></tr>
+<tr><td>Licence</td><td class="c">none</td><td>14 days, signed</td><td>1 hour, signed, no persist</td></tr>
+<tr><td>Fetch</td><td>plain index + plain file</td><td>index + whole ciphertext, to disk</td><td>index + whole ciphertext, to memory</td></tr>
+<tr><td>On the device</td><td>plain file, kept</td><td>ciphertext + wrapped key, kept</td><td><b>nothing written</b></td></tr>
+<tr><td>Ends</td><td class="c">never</td><td>return or due date, delete the key</td><td>return, or stop issuing licences</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 14 -->
+<h2 id="testing"><span class="hn">14</span>Testing and setup</h2>
+
+<h3>The tests that must exist</h3>
+<div class="tw">
+<table>
+<thead><tr><th>Test</th><th>Proves</th><th>When</th></tr></thead>
+<tbody>
+<tr><td>ArchUnit: no cross-module repository access</td><td>The module boundary is real, not a convention</td><td>Week 1</td></tr>
+<tr><td>ArchUnit: only <code>api/</code> packages imported across modules</td><td>The splittable-later property survives</td><td>Week 1</td></tr>
+<tr><td>The local-token bean is absent outside the <code>local</code> profile</td><td>An integration environment is not an open token factory</td><td>Week 1</td></tr>
+<tr><td>Round trip: encrypt then decrypt a real 6 MB PDF</td><td>The inline nonce layout and the tag check agree end to end</td><td>ingest build</td></tr>
+<tr><td>Content nonce differs from index nonce, asserted every ingest</td><td>The nonce rule cannot regress</td><td>ingest build</td></tr>
+<tr><td>Re-ingest produces a different wrapped key</td><td>No key reuse across passes</td><td>ingest build</td></tr>
+<tr><td><b>Leak suite: institution A cannot reach institution B</b> through any endpoint or parameter</td><td>The highest-severity defect class we could ship</td><td>catalogue build</td></tr>
+<tr><td>OPDS output validates against the OPDS 2.0 schema</td><td>The app can actually parse our feeds</td><td>catalogue build</td></tr>
+<tr><td>Plain JSON item set matches the OPDS item set</td><td>Two read paths cannot disagree</td><td>catalogue build</td></tr>
+<tr><td>Elite plus a download intent is refused</td><td>The rule is on the server, not in the UI</td><td>grant build</td></tr>
+<tr><td>Byte-level resume after an interrupted ciphertext download</td><td>A broken download does not restart from zero</td><td>content build</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Stack</h3>
+<pre><code>Java 17 · Spring Boot 3.2 · Spring Security 6.2 · Spring Data MongoDB 4.2
+MongoDB 7 · MinIO or any S3-compatible store · Maven 3.9
+React 18 · Vite 5 · TypeScript · TanStack Query · React Hook Form + Zod
+JUnit 5 · Testcontainers · MockMvc · ArchUnit · networknt json-schema-validator
+PDFBox 3 for PDF text · epublib for EPUB · springdoc-openapi</code></pre>
+
+<h3>Config that matters</h3>
+<pre><code>tf.crypto.master-key            base64 AES-256. env var, never in git
+tf.crypto.key-id                master-v1
+tf.content.upload-max-bytes     104857600            100 MB
+tf.content.encrypted-max-bytes  20971520             20 MB
+tf.content.encrypt-audio        false
+tf.ingest.concurrency           1
+tf.ingest.stuck-after           15m
+tf.url.ttl.stream               15m
+tf.url.ttl.stream-elite         20m
+tf.url.ttl.download             30m
+tf.catalogue.borrow-url         https://api.tf/api/v1/loans?itemId={itemId}
+spring.profiles.active          local        enables the local token endpoint</code></pre>
+
+<!-- 15 -->
+<h2 id="decide"><span class="hn">15</span>Decide at the gate</h2>
+<p class="sub">Short on purpose. Everything else in this document is ours to build.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>#</th><th>Decision</th><th>Who</th><th>Our recommendation</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Freeze <code>EntitlementQuery</code> and <code>ContentAccessGrant</code> as the contract, <b>as code</b>, not as endpoint JSON</td><td>all four teams</td><td>Publish in Week 1 with stubs, so flambeau compiles on day one</td></tr>
+<tr><td>2</td><td>Agree the <code>api/</code> and <code>internal/</code> package convention across all four modules</td><td>Architecture Lead</td><td>Adopt. It is what makes the wrong thing not compile</td></tr>
+<tr><td>3</td><td>The licence is signed by flambeau and verified by the reader</td><td>flambeau, t4</td><td>Yes. Without it, offline expiry is a text edit away</td></tr>
+<tr><td>4</td><td><b>No chunking.</b> Whole-file AES-256-GCM, layout <code>nonce(12) || ciphertext || tag(16)</code>, a different random nonce per object, audio never encrypted</td><td>t4, us</td><td>Adopt. It removes several days from the reader as well as from us</td></tr>
+<tr><td>5</td><td>Open access stays plaintext</td><td>Architecture Lead</td><td>Yes. A key given to anonymous readers protects nothing</td></tr>
+<tr><td>6</td><td>Elite has no offline copy</td><td>Product Owner</td><td>Yes, and say it at the showcase</td></tr>
+<tr><td>7</td><td>Individual subscribers are out of scope. Institutional members plus open access demonstrate the licensing model completely</td><td>Product Owner</td><td>Cut. The resolver is keyed by institution and changing that adds no capability to the demo</td></tr>
+<tr><td>8</td><td>We say keypair binding, not device binding</td><td>t4, us</td><td>Reword. Do not ship a claim without the control</td></tr>
+<tr><td>9</td><td>Subject filters in the catalogue, which need OPDS facets</td><td>team1, us</td><td>Only if team1 wants them. Content type and tier filters are free</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 16 -->
+<h2 id="limits"><span class="hn">16</span>Known limits</h2>
+<p class="sub">This is a prototype. These are deliberate, and saying them plainly at the showcase reads as engineering judgement rather than oversight.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th>Limit</th><th>Why we accepted it</th><th>What production would do</th></tr></thead>
+<tbody>
+<tr><td>The device public key is not proven. A stolen session can be read on a laptop</td><td>A possession proof does not stop a rooted device anyway, so we reworded rather than built</td><td>Sign the request with the private key and verify before wrapping</td></tr>
+<tr><td>A leaked book key cannot be revoked. That title stays readable forever</td><td>True of all offline DRM. Re-encryption does not reach copies already on devices</td><td>Per-session key derivation, so a dumped key expires with the session</td></tr>
+<tr><td>Offline expiry is client-enforced</td><td>The device holds a key that works. Signing the licence raises the bar from editing JSON to patching a binary</td><td>Hardware attestation and mandatory check-in</td></tr>
+<tr><td>Encrypted files are decrypted whole, so there is no render-before-download</td><td>A 6 MB PDF is about 2 seconds on wifi, and chunking would have cost two teams several days</td><td>Chunked encryption with per-piece tags and a piece table</td></tr>
+<tr><td>Audio is not encrypted</td><td>Whole-file encryption cannot seek, and scrubbing is required behaviour. The URL still expires in minutes</td><td>Chunked encryption, or per-segment keys as streaming formats do</td></tr>
+<tr><td>Master key lives in config, not a managed key service</td><td>No key management service in the prototype environment</td><td>KMS or Vault with automatic rotation</td></tr>
+<tr><td>Four clocks decide access and time sync is assumed, not enforced</td><td>Documentation is the cheap mitigation. The reader keeps an hour of grace before deleting a key</td><td>Enforced time sync and server-time headers</td></tr>
+<tr><td>No rate limit on content access</td><td>Prototype traffic, and repeat calls are cheap because the resolver is cached</td><td>Per-user and per-IP limits, plus a wrapped-key cache for the URL lifetime</td></tr>
+<tr><td>Elite needs the network every 20 minutes</td><td>The trade for having no offline copy of premium content</td><td>Longer licences with a revocation check</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box b-ok">
+<span class="bt">What this design does achieve</span>
+<p>Content is encrypted at rest. The key is never transmitted in the clear and is never visible to flambeau, team1 or the storage provider. A stolen bucket dump is useless without the master key, and a leaked signed URL yields ciphertext only. Offline reading works with no network. Entitlement is resolved from the database on every request, never from a token claim, so revocation takes effect on the next request rather than at token expiry.</p>
+</div>
+
+</div>
+
+<footer>
+TEAM WOKAY / Abhishek R Nair / Akshay V Athreya / Ashwin Sudhakar / Kashish Prasad / Anusripriya S<br>
+Taylor &amp; Francis Reader prototype / CAP-1 Onboarding and Admin + CAP-5 OPDS Catalogue<br>
+Source of truth. Section 04 is the cross-team contract. Everything else is how we build it.
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('tb'),r=document.documentElement,s=null;
+  try{s=localStorage.getItem('wk-theme');}catch(e){}
+  if(s)r.setAttribute('data-theme',s);
+  function lab(){b.textContent=r.getAttribute('data-theme')==='dark'?'Light mode':'Dark mode';}
+  lab();
+  b.addEventListener('click',function(){
+    var nx=r.getAttribute('data-theme')==='dark'?'light':'dark';
+    r.setAttribute('data-theme',nx);
+    try{localStorage.setItem('wk-theme',nx);}catch(e){}
+    lab();
+  });
+  var links=[].slice.call(document.querySelectorAll('#nav a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));}).filter(Boolean);
+  function spy(){
+    var p=window.scrollY+120,cur=secs[0];
+    for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=p)cur=secs[i];}
+    links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur.id);});
+  }
+  var t=false;
+  window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){spy();t=false;});t=true;}},{passive:true});
+  spy();
+})();
+</script>
+</body>
+</html>
