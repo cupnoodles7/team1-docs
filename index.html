@@ -285,7 +285,7 @@
     <div class="step"><b>4 · Browse</b><span>One request draws the home screen: tabs from navigation rows, sections from groups.</span><span class="owner"><span class="who w-pr">Prayas</span></span></div>
     <div class="step"><b>5 · Search</b><span>Server-side and entitlement-scoped. Metadata only, never inside books.</span><span class="owner"><span class="who w-mo">Moktik</span></span></div>
     <div class="step"><b>6 · Detail</b><span>Article or book detail, plus the availability call that only detail can make.</span><span class="owner"><span class="who w-kh">Khushi</span></span></div>
-    <div class="step"><b>7 · Resolve</b><span>The acquisition link decides which buttons exist. Borrow, read, download, or nothing.</span><span class="owner"><span class="who w-ak">Akriti</span></span></div>
+    <div class="step"><b>7 · Resolve</b><span>The acquisition link decides which buttons exist. Read, download, borrow, add me to queue, or nothing at all.</span><span class="owner"><span class="who w-ak">Akriti</span></span></div>
     <div class="step"><b>8 · Hand off</b><span>Read passes the item to t4targaryen's reader.</span><span class="owner"><span class="who w-all">t4targaryen</span></span></div>
   </div>
   <p><strong>The path that has to survive interruption.</strong> A reader taps a locked title while signed out. The access gate rises, they sign in, authentication leaves the app entirely, and they come back. The <em>pending intent</em> store holds that tapped item across the whole round trip and persists to disk, because we do not know whether the app stays alive during SAML.</p>
@@ -399,6 +399,7 @@
 <pre><code><span class="k">rel = open-access</span>                        → read, download
 <span class="k">rel = acquisition</span>, canPersist true       → borrow, then read + download
 <span class="k">rel = borrow</span>,      canPersist false      → borrow, then read only
+<span class="k">rel = borrow</span>,      no seats free        → add me to queue
 <span class="k">no acquisition link</span>                      → no actions at all</code></pre>
   <ul>
     <li><strong>session</strong> decides signed-in versus needs-sign-in. Open Access resolves the same either way.</li>
@@ -407,6 +408,29 @@
     <li><strong>tier</strong> decides the badge and nothing else.</li>
   </ul>
   <p><code>availability</code> is null on every list surface. That is why a <code>ContentCard</code> can never show a no-seats state — structural, rather than something a reviewer has to remember.</p>
+
+  <h5>What the reader actually sees</h5>
+  <table>
+    <thead><tr><th class="nowrap">Tier</th><th>Buttons</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-oa">OPEN ACCESS</span></td><td><strong>Read</strong> · <strong>Download</strong></td><td>Same signed in or out. The download is theirs to keep.</td></tr>
+      <tr><td><span class="tag t-sub">SUBSCRIPTION</span></td><td><strong>Borrow</strong> → then <strong>Read</strong> · <strong>Download</strong></td><td>The download is a loan and expires. Wording must not read as permanent.</td></tr>
+      <tr><td><span class="tag t-el">ELITE</span></td><td><strong>Borrow</strong> → then <strong>Read</strong></td><td>Never a Download. Copies are limited.</td></tr>
+      <tr><td><span class="tag t-el">ELITE</span> — no seats</td><td><strong>Add me to queue</strong></td><td>Detail screen only, because <code>availability</code> is null in every list.</td></tr>
+      <tr><td>No entitlement</td><td><em>Nothing at all</em></td><td>No button, no gate, no message. See below.</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <span class="lbl">Why the no-entitlement state is nearly dead code in B2B</span>
+    <p>The signed-in feed is scoped by wokay to what the institution is entitled to, so a B2B reader should never reach a title they cannot act on. <code>resolveAccess</code> still has to return the empty case — a malformed link or a stale deep link can produce it — but <strong>it renders as no buttons, not as an error or an upsell.</strong> Do not invent a "request access" affordance for it; there is no endpoint behind one.</p>
+  </div>
+  <div class="note stop">
+    <span class="lbl">When the resolve cannot be trusted</span>
+    <p>If the detail fetch or the availability call fails or times out, <strong>fall back to Read disabled with a retry — never to Download.</strong> Guessing towards the more generous button hands an unentitled reader a file. The three states are distinct and must look distinct on screen: <em>loading</em> (buttons skeletoned), <em>failed</em> (retry), <em>resolved to nothing</em> (no buttons).</p>
+    <p>Tier and links come down with the feed, so list surfaces render their buttons without a second call. Only the Elite no-seats check is a separate request, and only on detail — which is why it is the only button that can arrive late.</p>
+    <p><strong>Every access-bearing request carries the chosen institution.</strong> The same publication resolves differently for two institutions, so a cached resolve is keyed on institution id, not just item id. If no institution is selected there is no signed-in feed to be on, and the reader belongs in the picker.</p>
+  </div>
+  <p style="font-size:13px;color:var(--mute)">Hiding Download is a UI decision, not a protection — the download endpoint enforces entitlement itself. That is wokay's and flambeau's side, noted here so nobody assumes the button is the control.</p>
   <div class="note warn">
     <span class="lbl">Building against an unratified correction</span>
     <p>The signed design specification's access matrix contradicts wokay's on two of the three tiers — it said Open Access needs a loan once signed in, and that Elite never borrows. wokay say the opposite on both, and we believe wokay. The design spec is corrected to v0.3 and <strong>that correction is not yet ratified.</strong> Anyone reverting to the older table produces a wrong demo.</p>
@@ -629,8 +653,8 @@
       <tr><td><code>C6</code></td><td>Route to sign-in by passing <code>signIn.idpHint</code> to flambeau. Always SAML.</td></tr>
       <tr><td><code>C7</code>–<code>C9</code></td><td>Entry choice on the home screen · institution list works offline from cache · 404 not 403 on an inactive institution.</td></tr>
       <tr><td><code>D1</code>–<code>D4</code></td><td><code>resolveAccess</code> as a link interpreter · one correct action per item · the tier badge · Elite offers no Download.</td></tr>
-      <tr><td><code>D6</code>–<code>D8</code></td><td>Read handoff to the reader team · Download on Open Access and Subscription only · the not-entitled state.</td></tr>
-      <tr><td><code>D9</code>–<code>D12</code></td><td>Borrow through flambeau · loan state joined to each item · the optimistic flip · no-seats and waitlist (Elite, detail only).</td></tr>
+      <tr><td><code>D6</code>–<code>D8</code></td><td>Read handoff to the reader team · Download on Open Access and Subscription only · the not-entitled state renders as no buttons.</td></tr>
+      <tr><td><code>D9</code>–<code>D12</code></td><td>Borrow through flambeau · loan state joined to each item · the optimistic flip · no-seats becomes <strong>Add me to queue</strong> (Elite, detail only).</td></tr>
       <tr><td><code>D13</code>–<code>D14</code></td><td>Borrow failure handling driven by the error codes · one copy map keyed on code, not status.</td></tr>
       <tr><td><code>E1</code>–<code>E5</code></td><td>Book detail · article detail (no DOI) · journal and audio through the same model · identical access model to the list, plus the availability call · screens 04 and 05 differ by work type.</td></tr>
       <tr><td><code>F1</code>–<code>F2</code></td><td>OPDS consumption normalised to one content model · swappable mock and real adapters.</td></tr>
