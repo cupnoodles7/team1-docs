@@ -614,7 +614,7 @@
     <div class="day">
       <div class="hd">Day 3 · Wed<small>Library completion</small></div>
       <ul>
-        <li><span class="who w-pr">Prayas</span> 4 components — SectionHeader, SubjectChip, Carousel + PageDots, Tabs</li>
+        <li><span class="who w-pr">Prayas</span> 4 components — SectionHeader, SubjectChip, CategoryCard, Tabs</li>
         <li><span class="who w-ke">Keshav</span> 3 — BottomSheet, InstitutionRow, ListRow</li>
         <li><span class="who w-mo">Moktik</span> 2 — FilterChip, VoiceOverlay</li>
         <li><span class="who w-ak">Akriti</span> 2 — ActionButton, ActionBar</li>
@@ -703,7 +703,7 @@
   <table>
     <thead><tr><th class="nowrap">Person</th><th class="nowrap">Count</th><th>Components</th></tr></thead>
     <tbody>
-      <tr><td><span class="who w-pr">Prayas</span></td><td>5</td><td><strong>ContentCard</strong> · SectionHeader · SubjectChip · Carousel + PageDots · Tabs</td></tr>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>5</td><td><strong>ContentCard</strong> · SectionHeader · SubjectChip · CategoryCard · Tabs</td></tr>
       <tr><td><span class="who w-ke">Keshav</span></td><td>4</td><td><strong>TopAppBar</strong> · BottomSheet · InstitutionRow · ListRow</td></tr>
       <tr><td><span class="who w-kh">Khushi</span></td><td>5 <span style="color:var(--mute)">+1</span></td><td><strong>Skeleton</strong> · EmptyState · ErrorState · OfflineBanner · FormatSelector <span class="tag t-open">under review</span> · QueueNotification <span class="tag t-open">added Week 2</span></td></tr>
       <tr><td><span class="who w-mo">Moktik</span></td><td>3</td><td><strong>SearchInput</strong> · FilterChip · VoiceOverlay</td></tr>
@@ -723,7 +723,7 @@
       <tr><td><code>A2</code></td><td>Signed-in feed, scoped by the backend to what the institution is entitled to, plus open access.</td></tr>
       <tr><td><code>A3</code></td><td>Item card — title, publisher, file format, access-tier badge.</td></tr>
       <tr><td><code>A4</code></td><td>Pagination by following the next link. Two models, split by endpoint family.</td></tr>
-      <tr><td><code>A5</code></td><td>Featured carousel and Browse-by-Subject chips (screen 01). Chips need facets.</td></tr>
+      <tr><td><code>A5</code></td><td>Category cards across the top of screen 01 — one per navigation row, so eBooks/Audiobooks/Open access come from the feed and never from a list in code — and Browse-by-Subject chips. Chips need facets. <span class="tag t-open">Revised: replaced the featured carousel and its page dots</span></td></tr>
       <tr><td><code>A6</code></td><td>Access Gate raised when a locked item is opened while anonymous.</td></tr>
       <tr><td><code>A7</code></td><td>Feed re-scopes and re-resolves on sign-in and sign-out without a full reload.</td></tr>
       <tr><td><code>A8</code>–<code>A9</code></td><td>Follow hrefs, never build URLs · zero results is a navigation feed, not an empty array.</td></tr>
@@ -1001,7 +1001,7 @@ git push origin main</code></pre>
   <h4 id="screens">All 18 screens</h4>
   <p>Click any mockup to open it full size. Screens 07, 08 and 13 are not team1's, and are included because we hand off to them or share a shell with them.</p>
   <div class="screens">
-    <figure class="scr"><a href="TF_Reader_Design_Package/screens/01-catalogue-home.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Catalogue home"></a><figcaption><b>01 · Catalogue home</b><span>Tabs, carousel, subject chips, cards. <span class="who w-pr">Prayas</span></span></figcaption></figure>
+    <figure class="scr"><a href="TF_Reader_Design_Package/screens/01-catalogue-home.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Catalogue home"></a><figcaption><b>01 · Catalogue home</b><span>Tabs, category cards, subject chips, cards. <span class="who w-pr">Prayas</span></span></figcaption></figure>
     <figure class="scr"><a href="TF_Reader_Design_Package/screens/02-signin-sheet.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/02-signin-sheet.png" alt="Sign-in sheet"></a><figcaption><b>02 · Sign-in sheet</b><span>Institutional entry. <span class="who w-ke">Keshav</span></span></figcaption></figure>
     <figure class="scr"><a href="TF_Reader_Design_Package/screens/03-access-gate.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/03-access-gate.png" alt="Access gate"></a><figcaption><b>03 · Access gate</b><span>Second option reopened with B2C. <span class="who w-ak">Akriti</span></span></figcaption></figure>
     <figure class="scr"><a href="TF_Reader_Design_Package/screens/04-item-detail-article.png" target="_blank"><img loading="lazy" src="TF_Reader_Design_Package/screens/04-item-detail-article.png" alt="Article detail"></a><figcaption><b>04 · Article detail</b><span>DOI removed — no such field. <span class="who w-kh">Khushi</span></span></figcaption></figure>
