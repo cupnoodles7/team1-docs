@@ -167,6 +167,59 @@
   figure.scr figcaption b{display:block; font-size:12.5px; margin-bottom:2px}
   figure.scr figcaption span{color:var(--mute); font-size:11.5px}
 
+  /* ---------- week 2 plan ---------- */
+  .pcard{
+    border-left:3px solid var(--teal); background:var(--surface);
+    border-radius:0 6px 6px 0; padding:14px 16px; margin:16px 0 20px;
+  }
+  .pcard > h5{margin:0 0 2px; font-size:15.5px}
+  ol.taskl{list-style:none; counter-reset:tk; padding:0; margin:10px 0 0}
+  ol.taskl > li{
+    counter-increment:tk; position:relative; padding:11px 0 11px 34px;
+    border-top:1px solid var(--border); margin:0;
+  }
+  ol.taskl > li::before{
+    content:counter(tk); position:absolute; left:0; top:12px;
+    width:22px; height:22px; border-radius:999px; background:var(--teal); color:#fff;
+    font-size:11.5px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  ol.taskl .tt{font-weight:600; display:block; margin-bottom:3px}
+  ol.taskl p{margin:0 0 8px; font-size:14px}
+  .builds{
+    display:flex; align-items:center; gap:9px; margin-top:8px;
+    font-size:12.5px; line-height:1.45; color:var(--mute);
+  }
+  .builds img{width:38px; border:1px solid var(--border); border-radius:3px; background:#fff; flex:0 0 auto}
+  .builds b{color:var(--navy); font-weight:600}
+  .blocks{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    padding:2px 8px; border-radius:999px; white-space:nowrap; vertical-align:1px;
+    background:rgba(239,68,68,.1); border:1px solid #f0a9a4; color:#b3261e;
+  }
+  .firstup{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    padding:2px 8px; border-radius:999px; white-space:nowrap; vertical-align:1px;
+    background:rgba(16,185,129,.12); border:1px solid #7fd4b3; color:#0b6b4f;
+  }
+  /* paste-ready messages */
+  .qcard{border:1px solid var(--border); border-radius:6px; margin:18px 0 22px; overflow:hidden}
+  .qcard .qhead{background:var(--navy); color:#fff; padding:9px 15px; font-size:14.5px; font-weight:600}
+  .qcard .qhead .to{
+    display:block; font-size:10.5px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.1em; color:#9fc0d8; margin-bottom:2px;
+  }
+  .qcard .qbody{padding:14px 15px}
+  .why{
+    font-size:13px; color:var(--mute); border-left:2px solid var(--border);
+    padding-left:11px; margin:0 0 13px;
+  }
+  .msg{
+    background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--teal);
+    border-radius:0 5px 5px 0; padding:13px 15px; font-size:13.5px;
+  }
+  .msg p{margin:0 0 9px} .msg p:last-child{margin-bottom:0}
+  .msg ol{margin:0 0 9px}
+
   /* ---------- misc ---------- */
   .kv{display:grid; grid-template-columns:auto 1fr; gap:4px 16px; font-size:13.5px; margin:12px 0 20px}
   .kv dt{font-weight:600; color:#3d4a5c; white-space:nowrap}
@@ -214,6 +267,17 @@
   <a href="#week3" class="sub">Week 3</a>
   <a href="#week4" class="sub">Week 4</a>
   <a href="#codes" class="sub">Deliverable reference</a>
+
+  <div class="grp">Week 2 · working plan</div>
+  <a href="#wk2why" class="sub">Why this week differs</a>
+  <a href="#wk2sun" class="sub">Sunday</a>
+  <a href="#wk2mon" class="sub">Monday — the planned day</a>
+  <a href="#wk2after" class="sub">After Monday, per person</a>
+  <a href="#wk2gaps" class="sub">Mockup gaps to raise</a>
+  <a href="#wk2spare" class="sub">Unclaimed — if you finish early</a>
+  <a href="#wk2w3" class="sub">Moved to Week 3</a>
+  <a href="#wk2q" class="sub">Questions to send</a>
+  <a href="#wk2rules" class="sub">How we work this week</a>
 
   <div class="grp">3 · GitHub Flow</div>
   <a href="#repos" class="sub">Repos &amp; forks</a>
@@ -401,6 +465,26 @@
     </tbody>
   </table>
   <p>They can overlap: in the sample, one navigation row and one group point at the same URL under different names. <strong>Dedupe by URL</strong> or the same shelf appears twice.</p>
+
+  <div class="note">
+    <span class="lbl">Shelves are configured by an administrator — confirmed 16 August</span>
+    <p>The sample's three rows are not a fixed set and never were. An administrator builds the shelves for their institution and names them: <em>All titles</em>, <em>eBooks</em>, <em>Nineteenth-century criticism</em>, anything they like. Two institutions signing in to the same app can see completely different rows.</p>
+    <p><strong>So there is no list of shelf names anywhere in the app, and there never will be.</strong> The row renders whatever array arrives, in the order it arrives, with the titles it carries. This is what <code>L-5</code> was hedging against, and the hedge was right — the answer costs us no rework, only some cases we had not thought to cover.</p>
+    <p>What the app must survive: <strong>any number of shelves</strong> including one, <strong>none at all</strong>, titles far longer than "eBooks", and shelf ids that mean nothing to a reader. Do not sort them, do not relabel them, do not assume the first one is the general one.</p>
+  </div>
+
+  <h5>Shelves are not filters — keep the two apart</h5>
+  <p>They look alike on screen and come from opposite places. Conflating them is the easiest mistake available this week, because an administrator will often name a shelf after a content type.</p>
+  <table>
+    <thead><tr><th></th><th>Shelves — screen 01's category row</th><th>Filters — screen 12's chips</th></tr></thead>
+    <tbody>
+      <tr><td>Comes from</td><td>The feed's <code>navigation</code> array</td><td>A fixed enum in the contract</td></tr>
+      <tr><td>Who decides</td><td>The institution's administrator</td><td>wokay, frozen</td></tr>
+      <tr><td>Changes</td><td>Per institution, and whenever they edit it</td><td>Only when the contract changes</td></tr>
+      <tr><td>Tapping it</td><td>Opens that shelf's own feed</td><td>Narrows the current result set</td></tr>
+    </tbody>
+  </table>
+  <p>A shelf called "eBooks" and the <code>contentType=EPUB</code> filter may return the same titles today. They are still different things and neither may be built from the other.</p>
   <p><strong>Two pagination models, split cleanly.</strong> OPDS feeds use <code>next</code> links only; the institutions endpoint uses page/size/total. They belong to different endpoint families, so build both plainly rather than abstracting over them. Note that shelves and search <em>do</em> carry a result count (<code>metadata.numberOfItems</code>), so "3 results" is available even though page numbers are not.</p>
 
   <h4 id="access">Access resolution — the spine</h4>
@@ -494,7 +578,8 @@
   <p style="font-size:13px;color:var(--mute)">Hiding Download is a UI decision, not a protection — the download endpoint enforces entitlement itself. That is wokay's and flambeau's side, noted here so nobody assumes the button is the control.</p>
   <div class="note warn">
     <span class="lbl">Building against an unratified correction</span>
-    <p>The signed design specification's access matrix is now <strong>two revisions behind</strong>, and neither correction is ratified. It first disagreed with wokay on two of the three tiers; the table above then replaced Borrow entirely with generate-on-first-tap, check-on-every-tap-after. Anyone working from the signed spec builds a Borrow button that no longer exists. <strong>The table above is the one to build.</strong></p>
+    <p>The signed design specification's access matrix is now <strong>two revisions behind</strong>, and neither correction is ratified. It first disagreed with wokay on two of the three tiers; the table above then replaced Borrow entirely with generate-on-first-tap, check-on-every-tap-after. <strong>The table above is still the one to build</strong> — the reader is shown Read and Download, with no borrow step in front of them.</p>
+    <p><strong>Updated 15 August — the word came back.</strong> flambeau's published contract has <code>POST /api/v1/loans</code>, called <em>borrow</em>, frozen. So "generate a licence" was never a separate thing; it was borrow the whole time under a name we invented. Nothing about the screens changes — the reader still never sees a borrow step — but the call behind the first tap has their name on it, and that is the name to use in our code and in every message to them. The same applies to the other three: <em>check</em> is opening a reading session, <em>revoke</em> is returning, <em>join queue</em> is placing a hold.</p>
     <p><strong>Elite and Download is settled — 13 Aug, and the answer is no.</strong> The prediction held: it was a one-line change in <code>resolveAccess</code> and nothing else moved. Elite stays read-only, the limited copy stays on the shelf, and <code>download</code> remains in the action vocabulary because Open Access and Subscription both still use it. Not one component changed.</p>
     <p><strong>The field that disagreed with us no longer does.</strong> The acquisition link carries <code>canPersist</code> — wokay saying whether a title may be kept on the device — and it maps to <code>CONCURRENT</code>, which is Elite. With Elite offering no Download, there is nothing for the field to contradict. The rule stands anyway as a belt-and-braces line (<code>canPersist: false</code> hides Download whatever the tier), so it costs nothing to honour and it stops mattering which order the two are read in.</p>
   </div>
@@ -531,16 +616,18 @@
   <table>
     <thead><tr><th class="nowrap">Waiting on</th><th>Item</th><th>Why it matters</th></tr></thead>
     <tbody>
-      <tr><td>wokay</td><td>Sample shapes for the empty-search result, an error response, and <strong>the institution list and detail</strong></td><td>The institution one is Keshav's whole block and those endpoints land Week 2. Chase it first.</td></tr>
-      <tr><td>wokay</td><td><code>@type</code> values for <strong>journal and article</strong></td><td>Two marked guesses stand in. Decides which detail screen renders — Week 2 work.</td></tr>
-      <tr><td>wokay</td><td><strong>Can access tier still be used as a filter</strong>, with no tier field?</td><td>The filter chips were designed assuming it was free. Moktik builds them Day 3. <span class="tag t-risk">Same-week</span></td></tr>
-      <tr><td>wokay</td><td>Subject facets</td><td>Their default is not to build them, which would delete Browse-by-Subject. We answered yes.</td></tr>
+      <tr><td>wokay</td><td>Sample shapes for the empty-search result, an error response, and the institution list and detail</td><td>✅ <strong>Answered 15 Aug</strong> — the published API document carries worked examples for all four. They are what Sunday's mock-data rebuild is copied from.</td></tr>
+      <tr><td><strong>wokay</strong></td><td><code>@type</code> values for <strong>journal and article</strong></td><td><span class="tag t-risk">Still open, and now urgent</span> The published enum contains <strong>only</strong> <code>schema.org/Book</code> and <code>schema.org/Audiobook</code>. If that is the complete list then <strong>nothing in the feed distinguishes screen 04 from screen 05</strong> — but it may simply be that the enum has not caught up with the plan. Two marked guesses still stand in. Khushi builds the shared model first and picks the screen off work type last, so this can land mid-week without costing her the screens.</td></tr>
+      <tr><td>wokay</td><td>Can access tier still be used as a filter, with no tier field?</td><td>✅ <strong>Answered 15 Aug — yes.</strong> <code>?accessTier=</code> and <code>?contentType=</code> are both real, frozen query parameters with fixed enums, and sort has exactly four values. Moktik's B5 is unblocked.</td></tr>
+      <tr><td>wokay</td><td>Is <code>navigation</code> a fixed set of shelves?</td><td>✅ <strong>Answered 16 Aug — no, an administrator configures them.</strong> Shelves are per-institution and admin-named, so the category row is feed-driven and no shelf may be named in code. <code>L-5</code> is settled, and settled in favour of what we already built. <strong>One thing still to confirm:</strong> the published <code>groupId</code> enum is closed at <code>shelf_1</code>, <code>shelf_2</code>, <code>shelf_3</code>, <code>all</code> — so either there is a cap of three shelves, or the enum is illustrative. Also unknown whether an id survives a rename. Both matter for caching and deep links, neither blocks this week.</td></tr>
+      <tr><td><strong>wokay</strong></td><td>Subject facets</td><td><span class="tag t-open">Still open — feature held, not cut</span> We cannot find anything in the published document that returns the list of subjects a catalogue contains; they appear on individual publications only. But <strong>we asked for facets in Week 1 and they said yes</strong>, so the promise stands and the document may simply not reflect it. <strong>Browse-by-Subject and the subject filter stay in the UI</strong>, unpopulated, until they answer. Chasing Monday.</td></tr>
       <tr><td>wokay</td><td>B2C details</td><td>✅ <strong>Answered 13 Aug.</strong> <code>subscribe</code> is the B2C entry point: the reader taps it, and afterwards any title inside their licence resolves to Read and Download like a Subscription title. Enough to build the button and the resolve against; the payment surface itself is still theirs.</td></tr>
-      <tr><td>flambeau</td><td>Sign-in handoff; bulk licence-state lookup; the session payload shape</td><td>Narrow now — always SAML, payload is <code>idpHint</code>. But the payload question reopens with B2C retained: a B2C session may carry no institution at all.</td></tr>
-      <tr><td><strong>flambeau</strong></td><td><strong>The four licence calls</strong> — generate, check, revoke, join queue — and their error codes</td><td>This is now the whole of Akriti's block rather than a part of it. Every tier but Open Access goes through at least two of the four. <span class="tag t-risk">Chase alongside the institution samples</span></td></tr>
-      <tr><td><strong>flambeau</strong></td><td><strong>How a queue offer reaches the app</strong>, and how long it stands before it expires</td><td>Push, socket or polling are three different jobs, and only polling is entirely ours to build. Decides whether the notification is a Week 2 task or a Week 3 one.</td></tr>
-      <tr><td>Design</td><td>A mockup for the queue notification, and copy for Accept / Reject</td><td>Nothing in the eighteen screens covers it. It is a new component either way, so agree the shape before it is built rather than after.</td></tr>
+      <tr><td><strong>flambeau</strong></td><td><strong>How the app receives the token after sign-in</strong></td><td><span class="tag t-risk">The biggest genuine hole in either document</span> Sign-in opens a browser and leaves the app; the token is minted on their server at the end and nothing says how a phone gets it back. Deep link, polling with the <code>authTxnId</code>, or something else — three different amounts of work. <strong>Keshav's, and only his.</strong> Partly answered elsewhere: sign-in is SAML <em>and</em> OIDC, chosen per institution at <code>/auth/methods</code>, and <code>idpHint</code> is accepted but deliberately ignored.</td></tr>
+      <tr><td>flambeau</td><td>The four licence calls — generate, check, revoke, join queue — and their error codes</td><td>✅ <strong>Answered 15 Aug.</strong> They exist under different names: <strong>borrow</strong>, <strong>open a reading session</strong>, <strong>return</strong>, <strong>place a hold</strong>. All error codes are published, so Akriti's copy map is buildable — five of them are new and still need ratifying at the Contracts Gate. One live disagreement: <code>DOWNLOAD_NOT_PERMITTED</code> is 403 in wokay's document and 422 in flambeau's own reference. We key on <code>code</code>, so it costs us nothing.</td></tr>
+      <tr><td>flambeau</td><td>How a queue offer reaches the app, and how long it stands</td><td>✅ <strong>Answered 15 Aug — polling.</strong> <code>GET /api/v1/loans/changes?since=</code> carries hold promotions, offers lapsing and entitlement revocations, and <code>GET /api/v1/library</code> hands back a cursor so the two chain with no gap. <strong>No push, no socket, no certificates.</strong> The risk we carried all of Week 1 is closed and D16 is small. The offer's expiry arrives as an absolute <code>expiresAt</code> — render it against their <code>serverTime</code>, never the device clock.</td></tr>
+      <tr><td><strong>Design</strong></td><td>A mockup for the queue notification, and copy for Accept / Reject</td><td>Nothing in the eighteen screens covers it. It is a new component either way, so agree the shape before it is built rather than after. <strong>Khushi shows them the built version this week.</strong></td></tr>
       <tr><td>t4targaryen</td><td>Screen 08 ownership; who renders the downloaded indicator</td><td>Re-cuts a week if it moves.</td></tr>
+      <tr><td><strong>t4targaryen</strong></td><td><strong>Who calls the reading-session endpoint</strong> — us or them?</td><td>New, found 15 Aug. Opening a book means calling <code>POST /api/v1/reading-sessions</code>, which needs a <code>devicePublicKey</code> — the reader team's keystore, not ours. Either we ask them for the key and call it, or we hand them the item and they call it. Not blocking this week, but right now each side probably assumes the other has it.</td></tr>
       <tr><td>Leadership</td><td>Ratify the licence flow above; ratify that the logged-out feed is open-access only<br><span style="color:var(--mute)">✅ <span class="tag t-el">ELITE</span> Download — <strong>answered 13 Aug: no.</strong> Elite is read-only.</span></td><td>Three rule sets are now in circulation — the signed spec, wokay's correction, and this. Until one is ratified, two of the three produce a wrong demo. The Elite question is off this list, but ratification of the flow as a whole is not.</td></tr>
     </tbody>
   </table>
@@ -664,14 +751,15 @@
   </ul>
 
   <h4 id="week2">Week 2 — features</h4>
+  <p>Re-cut on 15 August after wokay and flambeau published their API documents. <a href="#wk2plan">The full working plan is below</a> — this table is the summary of it.</p>
   <table>
     <thead><tr><th class="nowrap">Person</th><th>Deliverables</th><th>Watch out for</th></tr></thead>
     <tbody>
-      <tr><td><span class="who w-pr">Prayas</span></td><td>A0 shelf tabs from the root feed's navigation rows · A1, A3, A5, A7, A9 catalogue home · D10, F8 licence-state fetching and caching · F9 items:batch</td><td>The shelf set is per-institution configuration and wokay can re-cut it without a rebuild, so <strong>the tab bar is data, not code</strong> — mandatory rather than prudent. On F8, the cache has to be <strong>invalidated by Akriti's four calls</strong>, not just by time: a revoke that leaves a stale licence in the cache shows a reader a title they no longer hold.</td></tr>
-      <tr><td><span class="who w-mo">Moktik</span></td><td>B3, B4, B6, B7, B8 filters, sort, result count, combined-state persistence · B11 voice input</td><td>B5 access-tier filter depends on the open question about filtering without a tier field. Subject filters depend on facets we asked for in Week 1.</td></tr>
-      <tr><td><span class="who w-ke">Keshav</span></td><td>C3–C8 selection, persistence, offline institution cache · screens 02, 06, 10</td><td>Two areas converging: authentication churn alongside detail work. Persist pending intent <strong>to disk</strong>, since authentication leaves the app.</td></tr>
-      <tr><td><span class="who w-kh">Khushi</span></td><td>E1–E4 item detail across work types · D3 tier badges · <strong>the <code>QueueNotification</code> component</strong> — the 22nd, added this week · screens 04, 05</td><td>Work type is derived until wokay confirm the journal and article values. Metadata may be incomplete — render what exists and leave gaps blank rather than blocking. The notification goes to her because it is a banner with two buttons and she already owns <code>OfflineBanner</code>, <code>EmptyState</code> and <code>ErrorState</code> — <strong>it takes an offer and two callbacks and knows nothing about licences.</strong></td></tr>
-      <tr><td><span class="who w-ak">Akriti</span></td><td>D1, D2, D4, D6–D9, D11, A2, A6, F3 — the link interpreter, generate-on-first-tap and check-on-every-tap-after, Revoke licence, Add me to queue, and the optimistic flip · <strong>D15 the queue offer</strong> — the store, the accept and reject calls, and what the app does with the answer · screens 03, 18</td><td><span class="tag t-risk">Largest stub in the plan, and it grew.</span> Still the most externally blocked block by a wide margin, and now blocked on four calls rather than one. <strong>Build the notification against a fake trigger</strong> — a button in the gallery that fires an offer — so it is finished and reviewed before the transport question is answered.</td></tr>
+      <tr><td><span class="who w-pr">Prayas</span></td><td><strong>Sunday:</strong> rebuild all mock data from the API documents and fix the adapter · the conformance check · A5, A3 catalogue home — cards and sections · A4 shelf paging with A9 zero-results · A1 public catalogue · A7 re-scope on sign-in and out, against a mocked session · the Library tab cleanup</td><td><strong>A0 is confirmed, 16 Aug.</strong> Shelves are configured per institution by an administrator, so the category row reads from the feed's <code>navigation</code> array and no shelf is ever named in code — which is what we already built. The filter-shortcut fallback is dropped. What the answer does add is the dynamic cases: no shelves, one shelf, many, and long admin-typed titles. <strong>F9 moved to Week 3</strong> — its only consumers are screen 08 and the real Library screen, neither of which is built this week. <strong>D10 and F8 moved to Akriti</strong>, because the cache invalidation is driven by her four calls. Prayas also carries Sunday's rebuild plus being the person everyone asks about the new data all week.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>Mock fix · <strong>the shared query helper</strong> — search and screen 12 only, since the 16 Aug answer took Prayas's category row off it · B3, B5, B6, B7 filters, sort, result count · <strong>D14 the error-code copy map</strong>, taken from Akriti · the URL audit · the home-feed cache tag, taken from Prayas · B12 recent searches · screen 12</td><td><strong>B5 is answered</strong> — <code>accessTier</code> and <code>contentType</code> are real, frozen filter parameters, and sort has exactly four values. <strong>B4 subject filters are on hold, not cut</strong>: we cannot find a facet endpoint, but wokay promised them in Week 1, so leave the UI in place and wait. Screen 12's mockup also offers Video, a Date Range row, and Relevance and Most Cited sorts, none of which we can find — <strong>build them visibly disabled rather than removing them</strong>, so the sheet survives either answer. <strong>B11 voice is no longer yours</strong> — screen 11 is unclaimed, open to whoever finishes first, you included.</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td><strong>The institution shape rewrite</strong> — blocks Khushi and keeps main red until it lands · C3–C5 selection and persistence · screens 02, 06</td><td><code>crestUrl</code> → <code>branding.logoUrl</code>, add <code>code</code>/<code>city</code>/<code>catalogueUrl</code>, list wraps in page info, and <strong><code>authType</code> leaves the institution entirely</strong> — sign-in method is flambeau's, not wokay's. Khushi's detail test hardcodes the old shape in five places. <span class="tag t-open">Token return after sign-in still unanswered</span> — build the sheet, stub the return. C8 offline cache moved to Week 3; <strong>screen 10 is no longer yours</strong> — it is unclaimed, open to whoever finishes first, you included.</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td><strong>The <code>QueueNotification</code> component</strong> — the 22nd, and Akriti is blocked on it · E1–E4 item detail, shared model first · D3 tier badges · screens 04, 05</td><td><strong><code>FormatSelector</code> — the contract confirms one format per title</strong>, so there is nothing to select between. That is a positive statement in their schema, not an absence, so it is safe to act on: it becomes a single-format display strip rather than a control. <strong>Not deleted</strong> — that call is still open from 12 Aug. Screen 04 has four elements and screen 05 two that we cannot find data for; <strong>leave the space and raise them</strong> rather than removing. <span class="tag t-risk">Work type is the real problem</span> — the published <code>@type</code> enum has only Book and Audiobook, so nothing currently tells us whether to render screen 04 or 05.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td><strong>The access rules</strong> — add the new <code>subscribe</code> case, apply the Elite decision · repoint the four calls at the endpoints that actually exist · <strong>D15 the queue offer</strong> — the store, accept and reject, against a fake trigger · screen 03 · <strong>D10, F8 licence state and caching</strong>, taken from Prayas — the invalidation is driven by her four calls, so the two belong together</td><td><strong>Nothing to undo</strong> — her tier names already match the published contract by luck, so her components and <code>resolveAccess</code> survive untouched. The four calls exist under different names: borrow, open a reading session, return, place a hold. <span class="tag t-risk">Blocked until the Elite question is answered</span> — flambeau built borrow-then-queue, our 13 Aug rule says always-queue. D14 moved to Moktik.</td></tr>
     </tbody>
   </table>
 
@@ -679,11 +767,11 @@
   <table>
     <thead><tr><th class="nowrap">Person</th><th>Deliverables</th><th>Watch out for</th></tr></thead>
     <tbody>
-      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 — begin the real adapter swap; catalogue and pagination hardening</td><td>If endpoints are late, do fixture-parity work instead so the swap is shorter when it comes.</td></tr>
-      <tr><td><span class="who w-mo">Moktik</span></td><td>Search hardening and query-state depth</td><td><strong>Not</strong> a ranking pass — ranking is wokay's. The real endpoint does not arrive until Week 4, so everything here runs on fixtures.</td></tr>
-      <tr><td><span class="who w-ke">Keshav</span></td><td>Item detail hardening · offline institution cache · authentication round-trip hardening</td><td>If flambeau's mock is late, exercise the full round trip against our own placeholder.</td></tr>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 — begin the real adapter swap; catalogue and pagination hardening · <strong>F9 items:batch</strong>, moved from Week 2 · finishing A7 against the <em>real</em> session once flambeau answer the token question</td><td>G1 will have almost nothing to swap — flambeau has built two of their calls and wokay's catalogue endpoints arrive this week at the earliest, so expect fixture-parity work instead. F9 landed here because its only consumers are screen 08 and the real Library screen, and neither is built in Week 2. A7 is built in Week 2 against a hand-toggled session; only the real-sign-in half waits.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>Search hardening and query-state depth · <strong>B11 voice input</strong> — only if it is still unclaimed by Friday</td><td><strong>Not</strong> a ranking pass — ranking is wokay's. The real endpoint does not arrive until Week 4, so everything here runs on fixtures. Voice needs a dev build, which is why it slipped; it now sits in the unclaimed pool, so it may already be gone by Week 3.</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>Item detail hardening · <strong>C8 offline institution cache</strong>, moved from Week 2 · <strong>screen 10</strong> only if it is still unclaimed by Friday · authentication round-trip hardening</td><td>If flambeau's mock is late, exercise the full round trip against our own placeholder. C8 is small — it was cut because Wednesday's holiday took a day out of Week 2, not because it is hard. Screen 10 is now in the unclaimed pool and may already be gone.</td></tr>
       <tr><td><span class="who w-kh">Khushi</span></td><td>F5 states everywhere · D8, D12, B10 rendered states · screens 14, 17 · the state-matrix pass — <strong>her largest week</strong></td><td>Scheduled here precisely because it is the one block that cannot slip on somebody else's account. The matrix gained a row: <strong>a tap that is waiting on flambeau</strong>. Read and Download can now sit in flight for a second or two, and a button with no busy state gets tapped four times.</td></tr>
-      <tr><td><span class="who w-ak">Akriti</span></td><td>D13 licence failure handling — generate refused, check refused, revoke refused · D14 the error-code copy map · <strong>D16 wiring the queue offer to whatever flambeau actually sends</strong> · supporting Khushi through the state-matrix pass</td><td>Build the copy map against wokay's published code enumeration <em>and</em> flambeau's licence codes, and confirm with both that the codes reach us unchanged. D16 sits here rather than Week 2 on purpose: the component and the store are done by then, so this is one adapter, not a feature.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>D13 licence failure handling — borrow refused, read refused, return refused · <strong>D16 wiring the queue offer to whatever flambeau actually sends</strong> · supporting Khushi through the state-matrix pass</td><td>D14 moved to Moktik in Week 2, because the error codes are published now and it is a lookup table rather than logic. D16 sits here rather than Week 2 on purpose: the component and the store are done by then, so this is one adapter, not a feature. <strong>The transport is answered</strong> — it is polling <code>GET /api/v1/loans/changes</code>, not push and not a socket, so this is smaller than we feared.</td></tr>
     </tbody>
   </table>
 
@@ -705,7 +793,7 @@
     <tbody>
       <tr><td><span class="who w-pr">Prayas</span></td><td>5</td><td><strong>ContentCard</strong> · SectionHeader · SubjectChip · CategoryCard · Tabs</td></tr>
       <tr><td><span class="who w-ke">Keshav</span></td><td>4</td><td><strong>TopAppBar</strong> · BottomSheet · InstitutionRow · ListRow</td></tr>
-      <tr><td><span class="who w-kh">Khushi</span></td><td>5 <span style="color:var(--mute)">+1</span></td><td><strong>Skeleton</strong> · EmptyState · ErrorState · OfflineBanner · FormatSelector <span class="tag t-open">under review</span> · QueueNotification <span class="tag t-open">added Week 2</span></td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>5 <span style="color:var(--mute)">+1</span></td><td><strong>Skeleton</strong> · EmptyState · ErrorState · OfflineBanner · FormatSelector <span class="tag t-open">display strip, not a control</span> · QueueNotification <span class="tag t-open">added Week 2</span></td></tr>
       <tr><td><span class="who w-mo">Moktik</span></td><td>3</td><td><strong>SearchInput</strong> · FilterChip · VoiceOverlay</td></tr>
       <tr><td><span class="who w-ak">Akriti</span></td><td>3</td><td><strong>AccessTierBadge</strong> · ActionButton · ActionBar</td></tr>
       <tr><td><span class="who w-all">Shell</span></td><td>1</td><td>BottomTabBar — navigation wiring, built in the all-hands phase</td></tr>
@@ -718,12 +806,12 @@
   <table>
     <thead><tr><th class="nowrap">Code</th><th>What it is</th></tr></thead>
     <tbody>
-      <tr><td><code>A0</code></td><td>Shelf tabs read from the root feed's navigation rows. Data, never a hardcoded list.</td></tr>
+      <tr><td><code>A0</code></td><td>Shelf tabs read from the root feed's navigation rows. Data, never a hardcoded list. <span class="tag t-oa">Confirmed 16 Aug</span> Administrators configure the shelves per institution, so the count, the names and the ids are all theirs. Handle none, one and many.</td></tr>
       <tr><td><code>A1</code></td><td>Anonymous browse via the public catalogue. <strong>Open access only</strong>, not the full catalogue.</td></tr>
       <tr><td><code>A2</code></td><td>Signed-in feed, scoped by the backend to what the institution is entitled to, plus open access.</td></tr>
       <tr><td><code>A3</code></td><td>Item card — title, publisher, file format, access-tier badge.</td></tr>
       <tr><td><code>A4</code></td><td>Pagination by following the next link. Two models, split by endpoint family.</td></tr>
-      <tr><td><code>A5</code></td><td>Category cards across the top of screen 01 — one per navigation row, so eBooks/Audiobooks/Open access come from the feed and never from a list in code — and Browse-by-Subject chips. Chips need facets. <span class="tag t-open">Revised: replaced the featured carousel and its page dots</span></td></tr>
+      <tr><td><code>A5</code></td><td>Category cards across the top of screen 01 — one per navigation row, so the shelves come from the feed and never from a list in code. eBooks/Audiobooks/Open access were only ever one institution's example; an administrator picks their own. And Browse-by-Subject chips. Chips need facets. <span class="tag t-open">Revised: replaced the featured carousel and its page dots</span></td></tr>
       <tr><td><code>A6</code></td><td>Access Gate raised when a locked item is opened while anonymous.</td></tr>
       <tr><td><code>A7</code></td><td>Feed re-scopes and re-resolves on sign-in and sign-out without a full reload.</td></tr>
       <tr><td><code>A8</code>–<code>A9</code></td><td>Follow hrefs, never build URLs · zero results is a navigation feed, not an empty array.</td></tr>
@@ -753,6 +841,557 @@
 </section>
 
 <!-- ============================================================ 3 -->
+<section class="major" id="wk2plan">
+  <h2>Week 2 · working plan</h2>
+  <h3 class="title">Week 2 — what everyone is doing</h3>
+  <p class="lede">Monday 17 to Friday 21 August. <strong>Wednesday 19th is a holiday</strong> — four working days. Supersedes the Week 2 table above, which predates the API contracts.</p>
+
+  <h4 id="wk2why">Why the plan changed</h4>
+  <p>wokay and flambeau published their API contracts on 15 August. They disagree with the three sample feeds our Week 1 mock data and adapter were built from.</p>
+  <table>
+    <thead><tr><th>Thing</th><th>Week 1 sample</th><th>Published contract</th></tr></thead>
+    <tbody>
+      <tr><td>Tier names</td><td><code>CONCURRENT</code>, <code>UNLIMITED</code>, key absent for open access</td><td><code>ELITE</code>, <code>SUBSCRIPTION</code>, <code>OPEN_ACCESS</code> — always present</td></tr>
+      <tr><td>File type</td><td>On the acquisition link's own <code>type</code></td><td>Link type is <code>application/json</code>; real type in <code>properties.indirectAcquisition[0].type</code></td></tr>
+      <tr><td>Navigation rows</td><td>Three: eBooks, Audiobooks, Open access</td><td>One: <em>All titles</em> — <strong>both are just examples.</strong> Answered 16 Aug: an administrator configures the shelves, so the count and the names are whatever that institution chose</td></tr>
+      <tr><td>Group ids</td><td><code>/groups/ebooks</code> and similar</td><td>Enum: <code>shelf_1</code>, <code>shelf_2</code>, <code>shelf_3</code>, <code>all</code> — treat ids as opaque strings either way</td></tr>
+      <tr><td>Acquisition rels</td><td>Three</td><td>Four — <code>subscribe</code> is new and currently throws in our adapter</td></tr>
+    </tbody>
+  </table>
+  <p>The week opens by rebuilding the mock data from the contracts, then builds screens on it. <strong>No component changes</strong> — the mismatch is confined to the adapter and the mock data files.</p>
+
+  <div class="note">
+    <span class="lbl">The two contracts</span>
+    <p><strong>wokay</strong> — <a href="https://abhishek-tf.github.io/tf_reader_backend_temp/api-docs/wokay-api.html">api-docs/wokay-api.html</a>, contract at <a href="https://abhishek-tf.github.io/tf_reader_backend_temp/api-docs/wokay-api.yaml"><code>wokay-api.yaml</code></a><br>
+    <strong>flambeau</strong> — <a href="https://deepu1004.github.io/flambeau-api-contracts/">flambeau-api-contracts</a>, contract at <a href="https://deepu1004.github.io/flambeau-api-contracts/flambeau-api.yaml"><code>flambeau-api.yaml</code></a></p>
+    <p>Read the YAML. Both <code>.html</code> pages are Swagger shells that render nothing without JavaScript, and the worked examples our mock data comes from are in the YAML only.</p>
+    <p>Sunday's rebuild pins a dated copy of both under <code>docs/contracts/</code>.</p>
+  </div>
+
+  <h4 id="wk2sun">Sunday — Prayas</h4>
+  <p>Rebuild the mock data from the contracts' worked examples, replacing the hand-written fixtures. Then update the adapter to read the new shape:</p>
+  <ul>
+    <li>Tier names → <span class="tag t-oa">OPEN ACCESS</span> <span class="tag t-sub">SUBSCRIPTION</span> <span class="tag t-el">ELITE</span></li>
+    <li>File type → read from <code>properties.indirectAcquisition[0].type</code></li>
+    <li>Handle the <code>subscribe</code> acquisition rel instead of throwing on it</li>
+    <li><strong>Make the shelves look administrator-made.</strong> See below — this is new, from the 16 August answer.</li>
+  </ul>
+
+  <div class="note">
+    <span class="lbl">The mock shelves have to stop looking like a fixed set</span>
+    <p>Today's home fixture carries exactly three navigation rows — <em>eBooks</em>, <em>Audiobooks</em>, <em>Open access</em> — with ids to match. That is the most misleading data we could hand the team: it looks like a content-type vocabulary, so it invites someone to hardcode against it, and it hides every case an admin-configured list actually produces.</p>
+    <p>Rebuild it so the dynamism is impossible to miss:</p>
+    <ul>
+      <li><strong>Five or six rows, not three</strong>, including an <em>All titles</em> entry and at least one long, subject-flavoured title an administrator would plausibly type.</li>
+      <li><strong>Ids that carry no meaning</strong> — follow the contract's <code>shelf_1</code> style rather than <code>ebooks</code>. If someone can guess the content from the id, someone will branch on it.</li>
+      <li><strong>Titles that do not match their shelf's own feed title</strong> for at least one entry. That is real behaviour and the code already allows it; the fixture should prove it.</li>
+      <li><strong>A second institution fixture with no shelves at all</strong>, so the empty case is reachable without editing a file.</li>
+    </ul>
+    <p><strong>And give more than one shelf real page fixtures.</strong> Right now only <code>ebooks</code> has them, so every other card leads to a not-found. That was defensible when the row was a fixed three; with admin shelves it just reads as a broken demo. Two or three shelves with pages, the rest deliberately absent so the not-found path stays exercised.</p>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Also Sunday: retire the L-5 hedge in the code — about fifteen minutes</span>
+    <p>Eight files still carry comments saying <code>L-5</code> is unsettled and that the tab vocabulary might change — <code>types.ts</code>, <code>CatalogueScreen</code>, <code>CategoryCard</code>, <code>Tabs</code>, <code>LibraryScreen</code> and three test files. It is settled now, and settled in favour of what they do, so the comments are no longer a warning about an open question; they are just wrong.</p>
+    <p><code>CLAUDE.md</code> has already been updated — L-5 moved out of the unsettled table into a settled-decisions section, so the comments now point at something that says the opposite of what they claim. Worth clearing while the same files are already open, because a comment saying "this might reverse" invites someone to build a switch for a reversal that is not coming.</p>
+  </div>
+
+  <div class="note stop">
+    <span class="lbl">Green before Monday</span>
+    <p>Every screen reads this data. New mock files without the matching adapter change turns main red and blocks four people harder than doing nothing.</p>
+    <p>If it is not green: Monday morning is all-hands on the mock data, every Monday task shifts to Tuesday, and the merge gate shifts with it.</p>
+  </div>
+
+  <h4 id="wk2mon">Monday — the only scheduled day</h4>
+  <p>Each person clears the one item another person is blocked on. No screen work. <strong>Done means merged</strong> — a finished branch still blocks the person waiting.</p>
+
+  <div class="days">
+    <div class="day">
+      <div class="hd">Prayas<small>Conformance check</small></div>
+      <ul>
+        <li>Extend the conformance suite so every mock file is tested against the contract example it came from. A future contract change then fails a test instead of silently rendering wrong.</li>
+        <li>Answer questions about the new mock data as they come. That takes priority over the suite.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Keshav<small>Institution shape</small></div>
+      <ul>
+        <li><span class="blocks">blocks Khushi + main</span></li>
+        <li><code>crestUrl</code> → <code>branding.logoUrl</code></li>
+        <li>Add <code>code</code>, <code>city</code>, <code>catalogueUrl</code></li>
+        <li>List wraps in page info, not a bare array</li>
+        <li>Remove <code>authType</code> — sign-in method is flambeau's, not wokay's</li>
+        <li>Khushi's institution detail test carries the old shape in five places. Pair with her.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Khushi<small>QueueNotification</small></div>
+      <ul>
+        <li><span class="blocks">blocks Akriti</span></li>
+        <li>Banner, one message, two buttons: Accept and Reject.</li>
+        <li>Props in, callbacks out. Takes an offer and two handlers; knows nothing about licences. Same shape as <code>OfflineBanner</code>.</li>
+        <li>No mockup exists. Design have not seen it.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Akriti<small>Access rules</small></div>
+      <ul>
+        <li><span class="blocks">blocks Khushi</span></li>
+        <li>Add the <code>subscribe</code> case — a link meaning <em>not available to you, here is how to get access</em>. Currently throws.</li>
+        <li>Apply the Elite decision.</li>
+      </ul>
+    </div>
+    <div class="day">
+      <div class="hd">Moktik<small>Mock fix + query helper</small></div>
+      <ul>
+        <li><span class="blocks">no longer blocks Prayas</span></li>
+        <li>Two search mock files carry the old tier names. ~2 hours.</li>
+        <li>Shared query helper: turns a filter selection into a catalogue URL — <code>contentType</code>, <code>accessTier</code>, <code>sort</code>, <code>page</code>.</li>
+        <li><strong>Search and screen 12 only, now.</strong> The 16 August answer took screen 01's category row off this helper — the row reads shelves from the feed, and a shelf is not a filter. The helper is still Monday's job because Moktik's own filters need it, but nobody else is waiting on it.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="lbl">Prayas, Monday morning</span>
+    <p>Settle the Elite decision · send the six questions · ask the other leads whether they are off Wednesday.</p>
+  </div>
+
+  <h4 id="wk2after">Tuesday to Friday</h4>
+  <p>No schedule. Each list below is in a suggested order; order is otherwise free.</p>
+
+  <div class="note warn">
+    <span class="lbl">Two exceptions</span>
+    <p>Khushi builds the shared detail model before screens 04 and 05 — both are built on it.<br>
+    Moktik does the error message list early. Every screen's error state reads from it.</p>
+  </div>
+
+  <div class="note stop">
+    <span class="lbl">Definition of done for a screen</span>
+    <p>Loading, empty, error and offline states, from the first commit. Same rule the component library already carries: retrofitting a state changes the prop signature, so every caller changes with it.</p>
+    <p>Screens shipped happy-path-only turn Khushi's Week 3 state pass into a rewrite of everyone's work.</p>
+  </div>
+
+  <!-- ============ Prayas ============ -->
+  <div class="pcard">
+    <h5><span class="who w-pr">Prayas</span></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Screen 01 — category row</span>
+        <p><strong>Read the labels from the feed.</strong> One card per <code>navigation</code> entry, in feed order, titled with whatever the entry says. An administrator configures these per institution, so nothing here may be named in code — this was confirmed on 16 August and it reverses the filter-shortcut plan.</p>
+        <p>The wiring already exists and does not change: <code>CatalogueScreen</code> maps over <code>catalogue.navigation</code>, the strip scrolls horizontally, and accents cycle by index. <strong>The work is the cases an admin-driven list creates and a three-item list never did:</strong></p>
+        <ul>
+          <li><strong>No shelves at all.</strong> Today the strip renders as an invisible empty row. Decide with Khushi whether it hides or says something, then build that.</li>
+          <li><strong>One shelf.</strong> A single card must not look like a failed load.</li>
+          <li><strong>Many shelves.</strong> The scroll already handles it; check ten cards actually feel right and the last one is reachable.</li>
+          <li><strong>Long admin-typed titles.</strong> The card wraps to two lines already — confirm against a real mouthful, not against "eBooks".</li>
+        </ul>
+        <p>Do not sort the array, do not relabel an entry, and do not treat the first one as special.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Screen 01"><span><b>Screen 01</b> — the row where the Featured carousel used to sit</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 01 — sections</span>
+        <p>Render the curated shelves as sections. Three at most. A shelf with nothing in it is absent from the feed, not empty — handle a missing shelf, not an empty one.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Screen 01"><span><b>Screen 01</b> — everything below the category row</span></div>
+      </li>
+      <li>
+        <span class="tt">Shelf paging, and the empty case</span>
+        <p>Page by following the <code>next</code> link until it is absent. Do not count pages or build the URL.</p>
+        <p>Same parser handles the empty case: a feed with no results carries a <em>browse the full catalogue</em> link where the publications array would be. Treat a missing array as that, not as an error.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/17-empty-search.png" alt="Screen 17"><span><b>Screen 17</b> and the shelf screen. Rendering the empty state is Khushi's in Week 3; this is the parsing beneath it</span></div>
+      </li>
+      <li>
+        <span class="tt">Public catalogue — anonymous browse</span>
+        <p>Second entry point, for a reader with no institution. Separate endpoint, no token, open access titles only.</p>
+        <p>Flat list, not a home screen. No curated shelves — shelves belong to an institution.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Screen 01"><span><b>Screen 01</b> — signed-out variant</span></div>
+      </li>
+      <li>
+        <span class="tt">Feed re-scopes on sign-in and sign-out</span>
+        <p>On sign-in the catalogue changes from open-access-only to the institution's. On sign-out it reverts. No full reload, no scroll reset.</p>
+        <p>Key any cached feed on institution id, not on item id alone — the same publication resolves differently per institution.</p>
+        <p>Build against a hand-toggled session. Real sign-in is blocked on question 5; the re-scoping logic is ours regardless.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/01-catalogue-home.png" alt="Screen 01"><span><b>Screen 01</b> — signed-out to signed-in transition</span></div>
+      </li>
+      <li>
+        <span class="tt">Library tab cleanup <span style="color:var(--mute);font-weight:400">— half a day</span></span>
+        <p><code>LibraryScreen</code> holds a temporary component-preview harness. Its own comment sets the removal condition: <em>"when the Gallery route becomes reachable"</em>. The gallery now opens from Profile, so the condition is met.</p>
+        <p>Move the block into the gallery verbatim; return the file to a stub.</p>
+        <p>Until then the Library tab shows a component harness with non-functional subject chips. The gallery is also the Friday review surface and the surface Khushi's Week 3 state pass runs through.</p>
+        <div class="builds"><span>Library tab, and the gallery</span></div>
+      </li>
+    </ol>
+    <div class="note" style="margin-bottom:0">
+      <span class="lbl">Load</span>
+      <p>Six tasks, plus Sunday and Monday. Started at nine and ran about a third over four days. Licence caching moved to Akriti and the home-feed cache tag to Moktik, both on ownership grounds; the get-many-books call deferred to Week 3.</p>
+      <p>If the week runs tight, drop the Library cleanup first — it is housekeeping.</p>
+    </div>
+  </div>
+
+  <!-- ============ Keshav ============ -->
+  <div class="pcard">
+    <h5><span class="who w-ke">Keshav</span></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Select and persist an institution</span>
+        <p>Tap a row, write the choice to storage, restore it on next launch.</p>
+        <p>Storage rehydrates asynchronously, so the root navigator must wait before choosing between the picker and the catalogue. Without the wait, a returning reader sees the picker flash on every launch. Zustand exposes <code>persist.hasHydrated()</code> for this.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/06-institution-list.png" alt="Screen 06"><span><b>Screen 06</b> row tap, and the cold-start path</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 06 — institution list</span>
+        <p>Search field, <em>Recently used</em> pinned above <em>All institutions</em>, rows showing crest, name and country. Paged.</p>
+        <p>Recently-used is client-side and lives on the phone. The list itself arrives sorted from the server; do not re-sort it.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/06-institution-list.png" alt="Screen 06"><span><b>Screen 06</b></span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 02 — sign-in sheet</span>
+        <p>The sheet, and the handoff to flambeau.</p>
+        <p>Stub the return path. Sign-in opens a browser and leaves the app; neither contract states how the token comes back. Question 5 is open and blocks only this.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/02-signin-sheet.png" alt="Screen 02"><span><b>Screen 02</b></span></div>
+      </li>
+    </ol>
+    <p style="font-size:13px;color:var(--mute);margin:12px 0 0">Three tasks, but all large, and Monday's is the heaviest on the board and blocks main.</p>
+  </div>
+
+  <!-- ============ Khushi ============ -->
+  <div class="pcard">
+    <h5><span class="who w-kh">Khushi</span></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Shared detail model <span class="firstup">first</span></span>
+        <p>Screens 04 and 05 are one screen with different fields. Build the common part once; both screens depend on it.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/04-item-detail-article.png" alt="Screen 04"><img loading="lazy" src="TF_Reader_Design_Package/screens/05-item-detail-book.png" alt="Screen 05"><span><b>Screens 04 &amp; 05</b></span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 04 — article detail</span>
+        <p>Title, authors, page range, published date, access badge, abstract, and the action buttons from Akriti's rules.</p>
+        <p>Render whatever fields are present; leave gaps blank rather than blocking. Metadata is frequently incomplete.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/04-item-detail-article.png" alt="Screen 04"><span><b>Screen 04</b> — four elements have no data behind them. Read the gaps section first</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 05 — book detail</span>
+        <p>Cover, title, authors, ISBN, page count, publisher, date, action buttons.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/05-item-detail-book.png" alt="Screen 05"><span><b>Screen 05</b> — two elements have no data behind them</span></div>
+      </li>
+      <li>
+        <span class="tt">Show QueueNotification to design</span>
+        <p>No mockup exists for it and no copy has been agreed for Accept and Reject. Show them the built component this week rather than at the demo.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============ Akriti ============ -->
+  <div class="pcard">
+    <h5><span class="who w-ak">Akriti</span></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Repoint the four calls</span>
+        <p>All four exist in flambeau's contract under different names. Use their names in our code and in messages to them.</p>
+        <table style="margin:8px 0 10px">
+          <thead><tr><th>Our name</th><th>Their endpoint</th></tr></thead>
+          <tbody>
+            <tr><td>Generate a licence</td><td><code>POST /api/v1/loans</code> — borrow</td></tr>
+            <tr><td>Check a licence</td><td><code>POST /api/v1/reading-sessions</code> — once per book open</td></tr>
+            <tr><td>Revoke</td><td><code>POST /api/v1/loans/{loanId}/return</code></td></tr>
+            <tr><td>Join queue</td><td><code>POST /api/v1/holds</code></td></tr>
+          </tbody>
+        </table>
+        <p>Nothing in the components or <code>resolveAccess</code> needs rework — our tier names already match the contract.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/18-access-tiers.png" alt="Screen 18"><span><b>Screens 04, 05, 18</b> — what each button does</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 03 — access gate</span>
+        <p>Raised when a locked title is opened while signed out. Two routes forward: through an institution, or a personal account.</p>
+        <p>Persist the tapped item to disk. Sign-in leaves the app entirely, so the pending intent must survive the round trip.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/03-access-gate.png" alt="Screen 03"><span><b>Screen 03</b> — the two option cards, and the resumed tap</span></div>
+      </li>
+      <li>
+        <span class="tt">Queue offer store</span>
+        <p>Where a pending offer lives, and what Accept and Reject do.</p>
+        <p>One offer slot only — a second offer must not silently replace the first. Countdowns render against the server's <code>serverTime</code>, never the device clock.</p>
+        <p>Wire to a fake trigger in the gallery. flambeau has not built the real one.</p>
+        <div class="builds"><span>Drives Khushi's QueueNotification</span></div>
+      </li>
+      <li>
+        <span class="tt">Licence state and caching <span class="firstup">from Prayas</span></span>
+        <p>Join the reader's current holdings onto each item so a card knows whether to show Read or Add to queue. Cache it — a list of forty items must not make forty calls.</p>
+        <p>Invalidate on the four calls above, not on time alone. A revoke that leaves a stale entry shows a title the reader no longer holds, and they will tap it. It sits with you because the invalidation is yours.</p>
+        <p>Do this last; it needs the four calls in place.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/18-access-tiers.png" alt="Screen 18"><span><b>Screens 04, 05, 18</b> — button state accuracy</span></div>
+      </li>
+    </ol>
+    <p style="font-size:13px;color:var(--mute);margin:12px 0 0">Most externally blocked block on the board. If the Elite decision or flambeau's answers slip, licence caching is the first item to drop.</p>
+  </div>
+
+  <!-- ============ Moktik ============ -->
+  <div class="pcard">
+    <h5><span class="who w-mo">Moktik</span></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Error message list <span class="firstup">early</span></span>
+        <p>One sentence per error code. Key on <code>code</code>, never on HTTP status. Codes are published in both contracts.</p>
+        <p>Every screen's error state reads from this, so it is worth having in place before the screens land.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/14-error-states.png" alt="Screen 14"><span><b>Screen 14</b>, and every screen that can fail</span></div>
+      </li>
+      <li>
+        <span class="tt">Filters</span>
+        <p>Content type and access type, through the query helper. Both are frozen parameters with fixed enums; sort has exactly four values — newest, oldest, A–Z, Z–A.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/12-filter-sort-sheet.png" alt="Screen 12"><span><b>Screen 12</b> — the Content Type and Access Type rows</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 12 — filter and sort sheet</span>
+        <p>Filter rows, sort options, Apply Filters, Clear All.</p>
+        <p>Build every row the mockup shows. Render the unsupported ones — Video, Date Range, Relevance, Most Cited, subject filter — as disabled rather than removing them. See the gaps section.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/12-filter-sort-sheet.png" alt="Screen 12"><img loading="lazy" src="TF_Reader_Design_Package/screens/09-search-filter.png" alt="Screen 09"><span><b>Screens 12 &amp; 09</b></span></div>
+      </li>
+      <li>
+        <span class="tt">URL audit <span style="color:var(--mute);font-weight:400">— ~1 hour</span></span>
+        <p>Check every screen for hand-built URLs. We follow the links the API supplies; the only string we construct is expanding the search template.</p>
+        <p>Hand-built URLs work against mock data and fail against the real API, so this is cheaper now than in Week 4.</p>
+        <div class="builds"><span>All screens</span></div>
+      </li>
+      <li>
+        <span class="tt">Home-feed cache tag <span class="firstup">from Prayas</span> <span style="color:var(--mute);font-weight:400">— ~2 hours</span></span>
+        <p>The root feed sends an <code>ETag</code> and accepts <code>If-None-Match</code>. On an unchanged feed the server answers 304 and the download is skipped.</p>
+        <div class="builds"><span>No visible change</span></div>
+      </li>
+      <li>
+        <span class="tt">Recent searches</span>
+        <p>Client-side. If there is time.</p>
+      </li>
+    </ol>
+  </div>
+
+  <h4 id="wk2gaps">Mockup elements with no data behind them</h4>
+  <p>Found by comparing every mockup against the two contracts. <strong>None of these is a decision.</strong></p>
+
+  <div class="note">
+    <span class="lbl">Rule: absence is a question, not an answer</span>
+    <p>A field present in a contract is evidence and can be built on. A field absent from one proves nothing — it may be unbuilt, undocumented, or somewhere we have not looked.</p>
+    <p><strong>Nothing below is deleted this week.</strong> Build around it, leave the space, wait for the answer.</p>
+    <p>The Week 1 samples looked authoritative and were superseded. Deleting a designed feature on the strength of a two-day-old document is the same error inverted.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Screen 01 — Browse by Subject chips <span class="tag t-open">question 3</span></span>
+    <p>No endpoint returns the list of subjects a catalogue contains; subjects appear on individual publications only.</p>
+    <p>Keep the chip row. wokay agreed to facets in Week 1, so a promise exists that the contract does not yet reflect.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Screen 04 — four elements <span class="tag t-open">question 4</span></span>
+    <ul>
+      <li><strong>DOI link</strong> — settled separately. Recorded decision, DOI is removed for good. Still drawn in the mockup; design needs telling</li>
+      <li><strong>Download citation</strong> — no citation data found</li>
+      <li><strong>Five tabs</strong> — Full Article, Figures &amp; data, Citations, Metrics, PDF. No data found for four of them; PDF is the file we already have</li>
+      <li><strong>"Research article" label</strong> — depends on <code>@type</code>, whose published enum holds only Book and Audiobook. As it stands nothing distinguishes an article from a book, which decides <em>which detail screen renders</em></li>
+    </ul>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Screen 05 — two elements <span class="tag t-open">question 4</span></span>
+    <p><strong>Paperback / eBook price pair</strong> and <strong>Table of Contents</strong>. Neither field appears in either contract. Prices would imply a commerce surface nobody has mentioned.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Screen 12 — three elements <span class="tag t-open">question 4</span></span>
+    <ul>
+      <li><strong>Video</strong> content type — enum is PDF, EPUB, AUDIO</li>
+      <li><strong>Date Range row</strong> — no date parameter on any catalogue endpoint</li>
+      <li><strong>Relevance and Most Cited sorts</strong> — sort enum holds four values, neither among them. Most Recent and Alphabetical map cleanly</li>
+    </ul>
+    <p>Render all of them disabled rather than removing them.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Screen 03 — "Jazz Perspectives, 2007, Volume 1, Issue 1" <span class="tag t-open">question 4</span></span>
+    <p>No volume or issue field. Render the fields we have.</p>
+  </div>
+
+  <h4 id="wk2spare">Unclaimed — if you finish early</h4>
+  <p>Two screens, nobody's. They are the last two team1 screens in the whole set: everything else is either built this week, a state rather than a destination, or another team's. If they land in Week 2 the app is screen-complete against mock data a week early. If they do not, they are Week 3 and nothing is lost.</p>
+
+  <div class="note">
+    <span class="lbl">How to take one</span>
+    <ul>
+      <li><strong>Your own Week 2 list is merged first.</strong> Not written, not in review — merged. A half-finished screen 10 next to a half-finished screen 04 is worse than either alone.</li>
+      <li><strong>Say in the channel that you are taking it before you start.</strong> Both are unassigned, so two people picking the same one is the obvious failure and the only one we cannot recover cheaply.</li>
+      <li><strong>Same definition of done as everything else</strong> — loading, empty, error and offline from the first commit. Taking one of these is not a licence to ship a happy path.</li>
+      <li>If you start one and run out of week, say so on Friday and leave it on a branch. Handing it over half-done is fine; discovering it half-done in Week 3 is not.</li>
+    </ul>
+  </div>
+
+  <div class="pcard">
+    <h5>Unclaimed <small>anyone, once their own work is merged</small></h5>
+    <ol class="taskl">
+      <li>
+        <span class="tt">Screen 10 — profile and settings</span>
+        <p><strong>It is a stub, not a nearly-finished screen.</strong> <code>ProfileScreen.tsx</code> is 76 lines: a centred "Profile" heading and a dev-only link into the gallery. Everything in the mockup is still to build. An earlier note in this document called it "largely exists" — that was wrong, and this line is the correction.</p>
+        <p>Good news is that the parts exist. <code>ListRow</code> already has <code>chevron</code>, <code>toggle</code>, <code>value</code> and <code>destructive</code> variants, which covers every row on the screen. This is assembly and wiring, not new components.</p>
+        <p><strong>Real, wire them:</strong> name, email and avatar from flambeau's <code>GET /api/v1/auth/me</code> — one of only two endpoints they have actually built, so this part works against a real call. Institution crest and name from the store. <em>Change institution</em> pushes screen 06. <em>Sign out</em> clears the session and lands on the signed-out catalogue, which is the other half of Prayas's A7.</p>
+        <p><strong>Not real, and that is fine:</strong> Reading Preferences and Download Settings belong to t4targaryen's reader and have no sub-screen on our side. Notifications has no backing setting anywhere. Privacy &amp; Security has no destination. <strong>Build the rows, disable them visibly</strong> — same rule as screen 12's greyed filters. Do not silently drop a row because it has nowhere to go.</p>
+        <p>Keep the gallery link exactly as it is: <code>__DEV__</code>-gated so the bundler strips it from release builds. That is a deliberate guarantee, not a placeholder.</p>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/10-profile.png" alt="Screen 10"><span><b>Screen 10</b> — the whole screen</span></div>
+      </li>
+      <li>
+        <span class="tt">Screen 11 — voice search</span>
+        <p><strong>The screen is already built.</strong> <code>VoiceOverlay</code> is the entire dark listening surface — mic disc, pulsing ring, transcript, Search and Clear — and <code>SearchScreen</code> already opens it when the mic is tapped. What is missing is that <em>nothing listens</em>. The overlay is a pure view over <code>state</code> and <code>transcript</code>, deliberately, so it renders in the gallery where there is no microphone.</p>
+        <p>The work is the recogniser, and it goes <strong>in the search pipeline, not in the overlay</strong>. The Foundation Spec's line is that voice is "simply a second way to produce a query string" — so speech becomes text, text goes through the same search path as typing, and the overlay stays a view. Feed <code>transcript</code> as it comes and drive <code>voiceState</code> through listening → processing → done.</p>
+        <p>Also needed: the microphone permission prompt and its refusal path, and what happens when speech recognition returns nothing or fails. Those are the states the overlay already has slots for.</p>
+        <div class="note warn" style="margin:.6rem 0">
+          <span class="lbl">This one needs a development build — check before you claim it</span>
+          <p>Speech recognition does not work in Expo Go. Whoever takes this needs a working dev build first, and that is the actual risk in the task, not the recogniser.</p>
+          <p>On Android the build fails with <em>"restricted method in java.lang.System"</em> during <code>configureCMakeDebug</code> if the JDK is wrong. That is <strong>JBR 21</strong>, not JDK 25 — it is not a CMake problem however much it looks like one. Budget for losing an afternoon here if the build is not already set up.</p>
+        </div>
+        <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/11-voice-search.png" alt="Screen 11"><span><b>Screen 11</b> — already rendered; this makes it listen</span></div>
+      </li>
+    </ol>
+  </div>
+
+  <h4 id="wk2w3">Moved to Week 3</h4>
+  <table>
+    <thead><tr><th class="nowrap">What</th><th class="nowrap">Whose</th><th>Reason</th></tr></thead>
+    <tbody>
+      <tr><td>Screen 10 — profile</td><td><strong>Unclaimed</strong></td><td>Taken off Keshav and left open — see <a href="#wk2spare">unclaimed</a>. Anyone whose own list is merged can take it in Week 2. <strong>Correction:</strong> this row previously said "largely exists", which was wrong — the file is a 76-line stub and the whole screen is still to build.</td></tr>
+      <tr><td>Offline institution list</td><td><span class="who w-ke">Keshav</span></td><td>No demo depends on it</td></tr>
+      <tr><td>Screen 11 — voice search</td><td><strong>Unclaimed</strong></td><td>Taken off Moktik and left open — see <a href="#wk2spare">unclaimed</a>. The overlay is already built; only the recogniser is missing. Still needs a dev build, which is the part to check before claiming it.</td></tr>
+      <tr><td>Get-many-books call</td><td><span class="who w-pr">Prayas</span></td><td>Consumers are screen 08 and the real Library screen; neither is built in Week 2</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Nothing is cut.</strong> Subject filters, the disabled screen 12 rows, and the screen 04 and 05 elements are held — the UI stays, the data waits.</p>
+  <p>Week 3's G1 will have little to swap: flambeau has built two of their calls, and wokay's catalogue endpoints arrive Week 3 at the earliest. The four items above fill a week that was otherwise thin.</p>
+
+  <h5>Decision required — Elite</h5>
+  <p>Do Elite titles always join a queue, or attempt to borrow first and queue only when refused? flambeau built the second. Our 13 August rule says the first. <span class="tag t-risk">Blocks Akriti</span></p>
+  <p><strong>Recommendation: adopt flambeau's.</strong> It is built and frozen in their contract; ours is a product decision with no endpoint behind it. Changing ours costs one branch in <code>resolveAccess</code>. Changing theirs costs another team their frozen contract in week two of four.</p>
+  <p>Safe to decide from the contract because it rests on something present in it: <code>POST /api/v1/loans</code> answers <code>409 NO_COPIES_AVAILABLE</code> and names the hold endpoint in the message.</p>
+
+  <h4 id="wk2q">Six questions, ready to send</h4>
+  <p>Send question 1 alone and first — it is the only one that affects this weekend. The rest can go together.</p>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To wokay · first, alone</span>1 — Are the old samples dead?</div>
+    <div class="qbody">
+      <p class="why"><strong>Decides Sunday.</strong> The adapter was built from their Week 1 samples, and the contract contradicts those samples in two places. If the contract is right, the adapter throws on the first publication of any real feed.</p>
+      <div class="msg">
+        <p>Hi — we've read the published API doc and it disagrees with the three sample feeds you gave us on 11 August. Two places:</p>
+        <p><strong>1. Tier names.</strong> Your samples use <code>"licenceModel": "CONCURRENT"</code> and <code>"UNLIMITED"</code>, and leave the field out entirely for open access. The doc says the values are <code>OPEN_ACCESS</code>, <code>SUBSCRIPTION</code> and <code>ELITE</code>, and that it is always present including on open access.</p>
+        <p><strong>2. File type.</strong> In the samples the acquisition link's own <code>type</code> is the real format — <code>application/pdf</code>, <code>audio/mpeg</code>. The doc says the link's <code>type</code> is <code>application/json</code> because it points at flambeau, and the real format lives in <code>properties.indirectAcquisition[0].type</code>.</p>
+        <p>We're assuming the published doc supersedes the samples and rebuilding against it this weekend. Can you confirm? If the samples are still correct we need to know today.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To wokay</span>2 — Is <code>navigation</code> always just "All titles"? <span class="tag t-oa">Answered 16 Aug</span></div>
+    <div class="qbody">
+      <p class="why"><strong>Answered: no, and neither example was the real shape.</strong> An administrator configures the shelves for their institution and names them, so the row is whatever they built. The category row reads from the feed and no shelf name lives in our code — which is what Week 1 already did under <code>L-5</code>. Do not send this one; send 2b below instead.</p>
+      <div class="msg" style="opacity:.55">
+        <p><em>Sent and answered — kept for the record.</em></p>
+        <p>Second — the root feed's <code>navigation</code> array.</p>
+        <p>Your sample has three rows: eBooks, Audiobooks, Open access, pointing at <code>/groups/ebooks</code>, <code>/groups/audiobooks</code> and <code>/groups/open-access</code>.</p>
+        <p>Your published doc says navigation "always contains one entry, <em>All titles</em>", and restricts <code>groupId</code> to <code>shelf_1</code>, <code>shelf_2</code>, <code>shelf_3</code> and <code>all</code> — which means those three sample URLs are not valid paths any more.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To wokay</span>2b — How many shelves can an administrator make, and do ids survive a rename?</div>
+    <div class="qbody">
+      <p class="why"><strong>Neither answer blocks this week</strong>, which is why it is worth asking now rather than in a hurry later. The cap decides whether the category row ever needs to handle a long list; id stability decides whether we can cache a shelf or deep-link to one. Getting the second one wrong is the kind of bug that only shows up after an administrator edits something, weeks later.</p>
+      <div class="msg">
+        <p>Thanks — that clears up the navigation array. Two follow-ups so we build the right thing.</p>
+        <p>First, is there a limit on how many shelves an administrator can create? Your <code>groupId</code> enum lists <code>shelf_1</code>, <code>shelf_2</code>, <code>shelf_3</code> and <code>all</code>, which reads like a cap of three plus the catch-all — but it might just be an example. We render however many arrive, so either is fine; we would just like to know whether a long row is a real case.</p>
+        <p>Second, if an administrator renames a shelf or reorders the row, does the <code>groupId</code> stay the same? We would like to cache a shelf and link straight to one, and both depend on the id being stable across edits. If it is not, we will treat every id as throwaway and skip the caching.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To wokay</span>3 — Is there any way to get the list of subjects?</div>
+    <div class="qbody">
+      <p class="why"><strong>Two features depend on it</strong> — the chip row on screen 01 and the subject filter on screen 12. Both need to know what subjects exist. wokay agreed to facets in Week 1; the contract does not show them.</p>
+      <div class="msg">
+        <p>Third — subject browsing.</p>
+        <p>We need a list of what subjects exist in a catalogue, so we can show subject chips on the home screen and a subject filter in search. Right now subjects only come back attached to individual publications, and there's no call that returns the full list.</p>
+        <p>We asked for this in Week 1 and you said yes, but we can't find it in the published doc. Is it coming? If not we'll drop both features — we don't want to build the list from whatever's on the current page, because it would change every time you scroll.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To wokay</span>4 — Six fields the designs need that we cannot find</div>
+    <div class="qbody">
+      <p class="why"><strong>All six are drawn in signed mockups with no field behind them.</strong> One message rather than six. Until it is answered the UI stays and the data waits; item 1 decides which detail screen renders and is the only urgent one.</p>
+      <div class="msg">
+        <p>Fourth, and this is one list rather than six questions — six things our signed designs show that we can't find a field for. For each: does it exist somewhere we've missed, is it coming, or was it never planned?</p>
+        <ol>
+          <li><strong>Journal and article <code>@type</code> values.</strong> The enum has <code>schema.org/Book</code> and <code>schema.org/Audiobook</code> only. We have two detail screens — one for articles, one for books — and right now nothing in the feed tells us which to render. This is the one we most need an answer to</li>
+          <li><strong>Volume and issue.</strong> Our article screens show "Jazz Perspectives, 2007, Volume 1, Issue 1"</li>
+          <li><strong>Table of contents.</strong> An expandable section on the book detail screen</li>
+          <li><strong>Citation data.</strong> There is a "Download citation" action on the article screen</li>
+          <li><strong>Prices.</strong> The book screen shows a Paperback / eBook price pair. We suspect this one is a leftover from a commerce design and not something you own — worth confirming rather than assuming</li>
+          <li><strong>Three filter options.</strong> Our filter sheet offers a <em>Video</em> content type, a <em>Date range</em> filter, and <em>Relevance</em> and <em>Most cited</em> sorts. The enums we can see are PDF/EPUB/AUDIO, no date parameter, and four sorts that don't include those two</li>
+        </ol>
+        <p>We're building all of it with the space left in place and the unsupported options disabled rather than removed, so whichever way you answer it's a small change on our side. No rush on any of it except the first.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To flambeau</span>5 — How does the app get the token after sign-in?</div>
+    <div class="qbody">
+      <p class="why"><strong>The largest gap in either contract.</strong> Sign-in opens a browser and leaves the app; the token is minted server-side at the end. Neither contract says how a mobile client receives it. Blocks screen 02's return path only.</p>
+      <div class="msg">
+        <p>Hi — one gap we can't close from the doc.</p>
+        <p><code>POST /api/v1/auth/saml/start</code> returns an <code>authorizationUrl</code> and an <code>authTxnId</code>, and the doc says clearly that no token comes back down that call — the assertion goes to your ACS and the token is minted at <code>POST /login/saml2/sso/tf-reader</code>.</p>
+        <p>That's fine for a web client. On mobile, sign-in opens a browser and leaves our app entirely. <strong>How does the app get the token back?</strong></p>
+        <p>Three options we can see, and they're very different amounts of work for us:</p>
+        <ol>
+          <li>You redirect to a deep link with the token in it</li>
+          <li>We poll something with the <code>authTxnId</code> until the token is ready</li>
+          <li>Something else you had in mind</li>
+        </ol>
+        <p>Only option 2 is entirely ours to build. We're building the sign-in sheet this week with the return path stubbed, so an answer any time this week is fine — but we can't finish it without one.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To flambeau, wokay and t4targaryen · not blocking</span>6 — Who calls the reading-session endpoint?</div>
+    <div class="qbody">
+      <p class="why"><strong>Unassigned boundary.</strong> Opening a book calls <code>POST /api/v1/reading-sessions</code>, which requires a device public key held in the reader team's keystore. Neither side has claimed the call.</p>
+      <div class="msg">
+        <p>Question for both of you plus t4targaryen —</p>
+        <p><code>POST /api/v1/reading-sessions</code> needs a <code>devicePublicKey</code>, which is the reader team's keystore, not ours.</p>
+        <p>So who makes that call? Either we ask t4targaryen for the key and call it ourselves, or we hand them the item and they call it. We've got "hand off to the reader" written down as our step, but that doesn't say which side of this line it falls on.</p>
+        <p>Not blocking us this week — flagging it now because right now I think each of us assumes the other has it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="lbl">For the other team leads</span>
+    <p>Are the other three teams off on Wednesday? If so the weekly cadence shifts and the Thursday upstream PR moves with it. If not, raise ours Thursday as a draft and update it Friday — otherwise Friday's work misses the week.</p>
+  </div>
+
+  <h4 id="wk2rules">Working rules</h4>
+  <ul>
+    <li>Monday is scheduled. Everything after it is self-ordered</li>
+    <li>One line per person at end of day naming what was closed. With no daily plan this is the only progress signal</li>
+    <li>Friday afternoon is the consistency review, as in Week 1</li>
+    <li>Order is free; scope is not. Anything that needs to drop goes to Prayas first</li>
+    <li>Blocked? Say so the same day</li>
+  </ul>
+
+  <div class="note warn">
+    <span class="lbl">Expect a second, smaller reconciliation</span>
+    <p>Roughly half the endpoints we need are marked <strong>draft</strong> in flambeau's contract — the hold surface, the library read model and the change feed. Those will move. The mock data sits behind the adapter for exactly this reason.</p>
+    <p>Both backends are contract-ahead-of-code: flambeau has built two of their calls. Week 3 is realistically another mock week, which puts real integration, the test suite, the accessibility pass and the arriving search endpoint all in Week 4.</p>
+  </div>
+</section>
+
 <section class="major" id="repos">
   <h2>Section 3</h2>
   <h3 class="title">GitHub flow</h3>
