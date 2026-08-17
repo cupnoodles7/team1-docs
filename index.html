@@ -316,7 +316,7 @@
 <div class="note stop">
   <span class="lbl">Changed 12 August — the borrow step is gone</span>
   <p>A reader no longer borrows anything. <strong>Read and Download are the buttons on Open Access and Subscription, from the first time a title is opened.</strong> On Subscription the first tap quietly generates a licence; every tap after that passes a licence check to flambeau first. Open Access does neither — no licence, no check, no call.</p>
-  <p><strong>Updated 13 August — Elite is not like the other two.</strong> It has <strong>no Download at all</strong>, and it <strong>always starts at the queue</strong> whether or not a seat is free: <strong>Add me to queue</strong>, which becomes <strong>Added to queue</strong> once tapped, and then <strong>Read</strong> · <strong>Revoke licence</strong> once a licence is actually held. When a queued reader's turn comes, <strong>a notification appears inside the app with Accept and Reject.</strong></p>
+  <p><strong>Updated 16 August — Elite is not like the other two.</strong> It has <strong>no Download at all</strong>, and it starts at one button: <strong>Grant access</strong>. Tapping it either offers the copy straight away — <em>"You're in the reading queue"</em>, with <strong>Accept</strong> and <strong>Reject</strong> — or, if others are ahead, puts them in the queue and shows <strong>their position</strong> until their turn comes, at which point the same Accept / Reject pair arrives as an in-app notification. Once a copy is held it is <strong>Read</strong> · <strong>Revoke licence</strong>.</p>
   <p>Full detail in <a href="#access">Access resolution</a>. <strong>Week 1 is unchanged</strong> — none of the twenty-one components knows what a licence is, so the change lands in Week 2 and after.</p>
 </div>
 
@@ -357,7 +357,7 @@
     <div class="step"><b>4 · Browse</b><span>One request draws the home screen: tabs from navigation rows, sections from groups.</span><span class="owner"><span class="who w-pr">Prayas</span></span></div>
     <div class="step"><b>5 · Search</b><span>Server-side and entitlement-scoped. Metadata only, never inside books.</span><span class="owner"><span class="who w-mo">Moktik</span></span></div>
     <div class="step"><b>6 · Detail</b><span>Article or book detail. The availability call survives 13 Aug but no longer gates a button — it is fetched for <code>queuePosition</code>, so a queued reader can be told where they stand.</span><span class="owner"><span class="who w-kh">Khushi</span></span></div>
-    <div class="step"><b>7 · Resolve</b><span>The acquisition link decides which buttons exist. Read and Download on Open Access and Subscription; Add me to queue then Read and Revoke licence on Elite, which never gets a Download; sometimes nothing at all.</span><span class="owner"><span class="who w-ak">Akriti</span></span></div>
+    <div class="step"><b>7 · Resolve</b><span>The acquisition link decides which buttons exist. Read and Download on Open Access and Subscription; Grant access, then Accept or Reject, then Read and Revoke licence on Elite, which never gets a Download; sometimes nothing at all.</span><span class="owner"><span class="who w-ak">Akriti</span></span></div>
     <div class="step"><b>8 · Hand off</b><span>Read passes the item to t4targaryen's reader.</span><span class="owner"><span class="who w-all">t4targaryen</span></span></div>
   </div>
   <p><strong>The path that has to survive interruption.</strong> A reader taps a locked title while signed out. The access gate rises, they sign in, authentication leaves the app entirely, and they come back. The <em>pending intent</em> store holds that tapped item across the whole round trip and persists to disk, because we do not know whether the app stays alive during SAML.</p>
@@ -427,7 +427,7 @@
     <li><strong>DOI is gone for good.</strong> There is no DOI field and there never will be — only wokay's own identifier. <strong>Drop DOI from screen 04.</strong> A design change to make, not an answer to wait for.</li>
     <li><strong>One format per title.</strong> A publication has exactly one acquisition link. <strong>Consequence: <code>FormatSelector</code> has nothing to select between</strong> — decide whether to drop it or keep it as a single-format display strip.</li>
     <li><strong>B2C is retained.</strong> wokay recommended cutting individual subscribers at their own gate; that recommendation is not being taken and they will supply the details later. So <code>subscribe</code> stays in the action vocabulary, <code>Session.type</code> stays, and screen 03's second option is reopened rather than settled.</li>
-    <li><strong>The action vocabulary is still six words, but not the same six.</strong> <code>borrow</code> is gone; <code>revokeLicence</code> takes its place. The set is <code>read</code> · <code>download</code> · <code>addToQueue</code> · <code>revokeLicence</code> · <code>subscribe</code> · <code>signIn</code>. <code>ActionButton</code> keeps its six variants and its props do not change — which is the whole reason a flow change this size costs the component library nothing.</li>
+    <li><strong>The action vocabulary is eight words as of 16 Aug</strong>, and this is the first flow change that does not come free. <code>addToQueue</code> is gone — a queue position is a status, not a button — and three arrive in its place: <code>grantAccess</code>, <code>acceptOffer</code>, <code>rejectOffer</code>. The full set is <code>read</code> · <code>download</code> · <code>grantAccess</code> · <code>acceptOffer</code> · <code>rejectOffer</code> · <code>revokeLicence</code> · <code>subscribe</code> · <code>signIn</code>. <strong><code>ActionButton</code>'s props still do not change</strong> — only its label-and-emphasis table grows by three rows — so the cost lands in one file rather than across the screens.</li>
   </ul>
 
   <h4 id="adapter">The adapter, and when each endpoint arrives</h4>
@@ -488,32 +488,37 @@
   <p><strong>Two pagination models, split cleanly.</strong> OPDS feeds use <code>next</code> links only; the institutions endpoint uses page/size/total. They belong to different endpoint families, so build both plainly rather than abstracting over them. Note that shelves and search <em>do</em> carry a result count (<code>metadata.numberOfItems</code>), so "3 results" is available even though page numbers are not.</p>
 
   <h4 id="access">Access resolution — the spine</h4>
-  <p><code>resolveAccess(item, session, licence, availability)</code> lives in <code>src/access/</code> and is the only place access logic may exist. It interprets the feed; it is not a rules engine.</p>
+  <p><code>resolveAccess(item, session, loan, hold)</code> lives in <code>src/access/</code> and is the only place access logic may exist. It interprets the feed; it is not a rules engine.</p>
 <pre><code><span class="k">open access</span>                     → read, download        <span class="c">no licence, ever</span>
-<span class="k">subscription</span>, no licence yet   → read, download        <span class="c">the tap generates one</span>
+<span class="k">subscription</span>, no licence yet   → read, download        <span class="c">the tap borrows</span>
 <span class="k">subscription</span>, licence held    → read, download        <span class="c">checked before we open</span>
-<span class="k">elite</span>, no licence, not queued  → add me to queue       <span class="c">always, even with a seat free</span>
-<span class="k">elite</span>, queued, waiting        → added to queue        <span class="c">same button, spent</span>
+<span class="k">elite</span>, nothing held            → grant access          <span class="c">one button, whatever the queue looks like</span>
+<span class="k">elite</span>, offer waiting          → accept, reject        <span class="c">answered here, or it lapses</span>
+<span class="k">elite</span>, queued and waiting     → <span class="c">nothing tappable — their position, as text</span>
 <span class="k">elite</span>, licence held           → read, revoke licence  <span class="c">no download, ever</span>
 <span class="k">no acquisition link</span>             → nothing at all
+<span class="k">signed out</span>, not open access    → sign in
 
 <span class="k">canPersist: false</span>               → download hidden, whatever the row above says</code></pre>
   <ul>
     <li><strong>session</strong> decides signed-in versus needs-sign-in. Open Access resolves the same either way.</li>
-    <li><strong>licence</strong> decides whether we generate one on the tap or check the one already held. On Elite it is also the whole of the decision: held means read and revoke, absent means the queue.</li>
-    <li><strong>availability</strong> decides <em>nothing</em> as of 13 Aug. Elite queues whether or not a seat is free, so <code>queuePosition</code> is the only field with a job — telling a queued reader where they stand.</li>
+    <li><strong>loan</strong> decides whether the tap borrows or opens something already held. On Elite, loan-plus-hold is the whole of the decision.</li>
+    <li><strong>hold</strong> is the new input — 16 Aug. Three values: none, queued, offered. It is what separates <strong>Grant access</strong> from a queue position from an <strong>Accept / Reject</strong> pair.</li>
+    <li><strong>availability</strong> still decides <em>nothing</em>, and the new flow does not change that. The empty-queue and full-queue paths differ in the <em>hold</em> we get back, not in a seat count we would have to fetch first.</li>
     <li><strong>tier</strong> decides the badge and nothing else.</li>
   </ul>
   <div class="note">
-    <span class="lbl">Changed 13 August — Elite is read-only, and always queues</span>
-    <p>Two decisions, and between them they simplify this page more than the 12 August change did.</p>
-    <p><strong>Elite may not Download.</strong> The question left open below is now answered: no. A limited copy stays on the shelf and never goes home on a device. Screen 18 already printed "No offline copy" under the Elite card, so the design was ahead of the rule.</p>
-    <p><strong>Elite always joins the queue</strong>, whether or not a seat is free. This is the one with consequences. Because the seat count no longer changes a single button, <code>availability</code> stops being an input to <code>resolveAccess</code> — which means <strong>an Elite item now resolves identically on a list and on the detail screen</strong>. The "detail screen only" caveat that used to hang off Add me to queue is gone, and so is the <code>no_seats</code> state. Also gone: the <code>canPersist</code> conflict, since that field maps to <code>CONCURRENT</code>, which is Elite, which no longer offers a Download to hide.</p>
-    <p>What it costs the reader: somebody who wants an Elite title waits even when a seat is sitting empty. Worth re-reading before the demo, because it is a deliberate choice and not a limitation.</p>
+    <span class="lbl">Changed 16 August — Elite starts at Grant access, and the queue answers back</span>
+    <p>Supersedes the 13 August rule that Elite always shows <strong>Add me to queue</strong>. The reader never sees the words "queue" until they have asked for something.</p>
+    <p><strong>One button to start: Grant access.</strong> A reader holding no licence on an Elite title sees exactly that, on every surface. They are not told how long the queue is before they have expressed any interest, because a queue length is a reason not to tap and it is not a number they can do anything about.</p>
+    <p><strong>What the tap does depends on the queue, and the reader is told which happened.</strong> If nobody is waiting, the offer comes straight back: <em>"You're in the reading queue"</em>, with <strong>Accept</strong> and <strong>Reject</strong>. If people are ahead of them, they are placed in the queue and shown <strong>their position</strong> — and the same Accept / Reject pair arrives later, as a notification, when their turn comes.</p>
+    <p><strong>Both paths end in the same two buttons.</strong> That is the point of the shape: one offer component, reached two ways. Accept borrows the copy and opens it; Reject gives up the place and passes it on.</p>
+    <p><strong>Elite may still not Download.</strong> Unchanged from 13 Aug. A limited copy stays on the shelf and never goes home on a device. Screen 18 already printed "No offline copy" under the Elite card.</p>
+    <p><strong>What it does <em>not</em> cost us:</strong> no availability call before rendering. The queue-empty and queue-full cases are distinguished by what comes back from the tap, and after that by the hold's own state — so an Elite item still resolves identically on a list row and on a detail screen, and the <code>no_seats</code> state stays deleted.</p>
   </div>
 
   <h5>The button set barely changes. What sits behind it does.</h5>
-  <p>This is the change that matters most, and it is easy to under-read: <strong>Read and Download are the front door on the two unlimited tiers.</strong> There is no Borrow step and no second screen state to get through first. A reader opens an Open Access or Subscription title and sees the two buttons they expect; the licence work happens behind them. <strong>Elite is the exception on both counts</strong> — it has no Download at all, and it starts at the queue rather than at a button that opens something.</p>
+  <p>This is the change that matters most, and it is easy to under-read: <strong>Read and Download are the front door on the two unlimited tiers.</strong> There is no Borrow step and no second screen state to get through first. A reader opens an Open Access or Subscription title and sees the two buttons they expect; the licence work happens behind them. <strong>Elite is the exception on both counts</strong> — it has no Download at all, and it starts at <strong>Grant access</strong> rather than at a button that opens something.</p>
   <table>
     <thead><tr><th class="nowrap">Tier</th><th class="nowrap">First open</th><th class="nowrap">Every open after</th><th>What we do</th></tr></thead>
     <tbody>
@@ -531,8 +536,8 @@
       </tr>
       <tr>
         <td><span class="tag t-el">ELITE</span> — no licence held</td>
-        <td colspan="2"><strong>Add me to queue</strong> → <strong>Added to queue</strong></td>
-        <td><strong>Always the queue, seat free or not</strong> — 13 Aug. One button, two states: it offers, then it reads "Added to queue" and cannot be tapped again. Every surface, not detail only, because nothing here depends on <code>availability</code>. They are notified in the app when their turn comes.</td>
+        <td colspan="2"><strong>Grant access</strong> → <strong>Accept</strong> · <strong>Reject</strong></td>
+        <td><strong>One button to start, whatever the queue looks like</strong> — 16 Aug. Tapping it either brings the offer straight back, if nobody is ahead of them, or puts them in the queue with a <strong>position</strong> and sends the same Accept / Reject pair later as a notification. Every surface, not detail only, because nothing here depends on <code>availability</code>.</td>
       </tr>
       <tr>
         <td><span class="tag t-el">ELITE</span> — licence held</td>
@@ -546,18 +551,38 @@
     <span class="lbl">Two taps that look identical and are not</span>
     <p>On Subscription, first tap and every tap after it show <strong>the same button, in the same place, with the same label</strong>. The reader is not meant to be able to tell them apart. But one is a write — generate a licence — and the other is a read — check a licence. They fail differently and they take different amounts of time.</p>
     <p>So <strong>which of the two we are about to do is decided in <code>resolveAccess</code>, not at the button</strong>. The button is handed an action to perform and performs it. Keeping that decision in one place is the only reason the same <code>ActionButton</code> can serve all three tiers.</p>
-    <p><strong>Elite splits the two apart rather than hiding them.</strong> Since 13 Aug it never generates on a Read tap — the generate happens when the reader Accepts a queue offer, and from then on Read only ever checks. Which makes Elite the simpler tier to reason about, not the harder one.</p>
+    <p><strong>Elite splits the two apart rather than hiding them.</strong> It never borrows on a Read tap — the borrow happens when the reader taps <strong>Accept</strong> on the offer, and from then on Read only ever opens a reading session. Which makes Elite the simpler tier to reason about, not the harder one.</p>
   </div>
 
-  <h5 id="queue">The queue, and the notification that comes out of it</h5>
-  <p>Elite titles have a fixed number of licences, and as of 13 Aug <strong>the queue is the only way in</strong> — not just when the licences are all out. A reader without one sees <strong>Add me to queue</strong>, taps it once, and the button becomes <strong>Added to queue</strong>. When a licence frees up — somebody reads to the end, revokes, or lets theirs lapse — flambeau works out whose turn it is.</p>
-  <p>The queue being unconditional is what makes it cheap to build: there is no availability call to make first, no <code>no_seats</code> state to distinguish, and the same resolve works on a list row and a detail screen.</p>
-  <p>At that point <strong>a notification appears inside the app</strong>, with two choices: <strong>Accept</strong> and <strong>Reject</strong>.</p>
+  <h5 id="queue">The queue, and the two ways an offer arrives</h5>
+  <p>Elite titles have a fixed number of copies, and the queue is the only way in. A reader holding none sees one button — <strong>Grant access</strong> — on every surface. It says nothing about how busy the title is, deliberately: a queue length shown before the reader has expressed any interest is a reason not to tap, and it is not a number they can do anything about.</p>
+  <p><strong>What the tap finds decides which of two things happens next.</strong> The reader is told which one, and both end in the same place.</p>
+  <table>
+    <thead><tr><th class="nowrap">What the tap finds</th><th>What the reader sees</th><th>Where the offer comes from</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Nobody ahead of them</strong></td>
+        <td><em>"You're in the reading queue"</em>, with <strong>Accept</strong> and <strong>Reject</strong></td>
+        <td>Straight back from the tap. No waiting, no notification.</td>
+      </tr>
+      <tr>
+        <td><strong>People ahead of them</strong></td>
+        <td>Their <strong>position</strong> in the queue, as text. Nothing to tap.</td>
+        <td>Later, when their turn comes — the same Accept / Reject pair, delivered as an in-app notification.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p><strong>Both paths end at the same two buttons</strong>, which is the reason there is one offer component and not two. The only difference is how long the reader waited to see it.</p>
   <ul>
-    <li><strong>Accept</strong> — the licence is generated for them and the title opens as normal. From here it behaves exactly like any other Elite title they hold.</li>
-    <li><strong>Reject</strong> — they give up the place, the licence goes to whoever is next, and the title falls back to <strong>Add me to queue</strong>.</li>
-    <li><strong>Neither</strong> — an offer that is never answered has to expire, or one silent reader stalls the whole queue. <span class="tag t-open">flambeau owns the timeout; we have not been given the length</span></li>
+    <li><strong>Accept</strong> — the copy is borrowed for them and the title opens as normal. From here it behaves exactly like any other Elite title they hold: <strong>Read</strong> · <strong>Revoke licence</strong>.</li>
+    <li><strong>Reject</strong> — they give up the place, the copy goes to whoever is next, and the title falls back to <strong>Grant access</strong>.</li>
+    <li><strong>Neither</strong> — an offer that is never answered has to expire, or one silent reader stalls the whole queue. The offer carries its own <strong>absolute expiry</strong>, server-issued, so the countdown is rendered against the server's clock and never the device's. A reader who misses their turn rejoins at the back rather than keeping their old place.</li>
   </ul>
+  <div class="note">
+    <span class="lbl">Why the position is text and not a button</span>
+    <p>A queued reader has nothing to do until their turn arrives, so there is nothing to tap. Giving them a button there — a second Grant access, or a Cancel dressed up as progress — invites a tap that either does nothing or silently costs them their place. <strong>The queue position is a status, not an action</strong>, which is also why it does not appear in the action vocabulary.</p>
+    <p>Leaving the queue is still possible; it is just not part of this flow. If Design wants it, it is a separate quiet affordance and a separate decision.</p>
+  </div>
   <div class="note warn">
     <span class="lbl">Three things about the notification we do not yet know</span>
     <p><strong>How it reaches us.</strong> Somebody has to tell the app a licence is waiting. Push, a socket, or the app polling flambeau while it is open are all different amounts of work, and only the last one is entirely ours. <strong>Ask flambeau in Week 1</strong> — this is the answer that decides how big the job is.</p>
@@ -658,7 +683,8 @@
     <li><strong>DOI is removed from screen 04.</strong></li>
     <li><strong>TypeScript with <code>strict: true</code></strong>, reversing the earlier JavaScript call. <code>any</code> and <code>as</code> allowed without review pushback in Week 1 — the value is in the contract file and the props, not in purity.</li>
     <li><strong>Borrow is removed as a step the reader has to take.</strong> Read and Download are the front door on Open Access and Subscription. The licence is generated by the first tap and checked on every tap after it, and the reader is never shown the difference.</li>
-    <li><strong>Elite is read-only and always queues</strong> — 13 Aug. No Download at any point, and the queue is the way in even when a seat is free. It cost one branch in <code>resolveAccess</code>, deleted the <code>no_seats</code> state and the availability dependency, and changed no component.</li>
+    <li><strong>Elite is read-only</strong> — 13 Aug. No Download at any point. It cost one branch in <code>resolveAccess</code>, deleted the <code>no_seats</code> state and the availability dependency, and changed no component.</li>
+    <li><strong>Elite starts at Grant access, and the queue answers back</strong> — 16 Aug, superseding the 13 Aug "always shows Add me to queue". One button while nothing is held, on every surface. The tap either returns the offer immediately, when nobody is ahead, or queues the reader and shows <strong>their position</strong> until their turn comes — and both routes end at the same <strong>Accept</strong> / <strong>Reject</strong> pair. A queue position is a status and never a button, which is why <code>addToQueue</code> leaves the vocabulary and <code>grantAccess</code>, <code>acceptOffer</code> and <code>rejectOffer</code> join it. The availability dependency stays deleted: the empty-queue and full-queue cases are told apart by the <em>hold</em>, not by a seat count fetched first.</li>
     <li><strong>Open Access never touches flambeau.</strong> No licence is generated, none is checked, and no call is made — not even a cheap one. It is the only tier where the tap goes straight to the file.</li>
     <li><strong>Revoke licence is Elite only</strong>, and only appears once a licence is actually held. Handing back a seat matters where seats are countable; on Subscription it would be a button that costs the reader something and gains them nothing.</li>
     <li><strong>A queue offer is answered inside the app</strong>, with Accept and Reject. Not an email, not a deep link — the reader is already where the title is.</li>
@@ -759,7 +785,7 @@
       <tr><td><span class="who w-mo">Moktik</span></td><td>Mock fix · <strong>the shared query helper</strong> — search and screen 12 only, since the 16 Aug answer took Prayas's category row off it · B3, B5, B6, B7 filters, sort, result count · <strong>D14 the error-code copy map</strong>, taken from Akriti · the URL audit · the home-feed cache tag, taken from Prayas · B12 recent searches · screen 12</td><td><strong>B5 is answered</strong> — <code>accessTier</code> and <code>contentType</code> are real, frozen filter parameters, and sort has exactly four values. <strong>B4 subject filters are on hold, not cut</strong>: we cannot find a facet endpoint, but wokay promised them in Week 1, so leave the UI in place and wait. Screen 12's mockup also offers Video, a Date Range row, and Relevance and Most Cited sorts, none of which we can find — <strong>build them visibly disabled rather than removing them</strong>, so the sheet survives either answer. <strong>B11 voice is no longer yours</strong> — screen 11 is unclaimed, open to whoever finishes first, you included.</td></tr>
       <tr><td><span class="who w-ke">Keshav</span></td><td><strong>The institution shape rewrite</strong> — blocks Khushi and keeps main red until it lands · C3–C5 selection and persistence · screens 02, 06</td><td><code>crestUrl</code> → <code>branding.logoUrl</code>, add <code>code</code>/<code>city</code>/<code>catalogueUrl</code>, list wraps in page info, and <strong><code>authType</code> leaves the institution entirely</strong> — sign-in method is flambeau's, not wokay's. Khushi's detail test hardcodes the old shape in five places. <span class="tag t-open">Token return after sign-in still unanswered</span> — build the sheet, stub the return. C8 offline cache moved to Week 3; <strong>screen 10 is no longer yours</strong> — it is unclaimed, open to whoever finishes first, you included.</td></tr>
       <tr><td><span class="who w-kh">Khushi</span></td><td><strong>The <code>QueueNotification</code> component</strong> — the 22nd, and Akriti is blocked on it · E1–E4 item detail, shared model first · D3 tier badges · screens 04, 05</td><td><strong><code>FormatSelector</code> — the contract confirms one format per title</strong>, so there is nothing to select between. That is a positive statement in their schema, not an absence, so it is safe to act on: it becomes a single-format display strip rather than a control. <strong>Not deleted</strong> — that call is still open from 12 Aug. Screen 04 has four elements and screen 05 two that we cannot find data for; <strong>leave the space and raise them</strong> rather than removing. <span class="tag t-risk">Work type is the real problem</span> — the published <code>@type</code> enum has only Book and Audiobook, so nothing currently tells us whether to render screen 04 or 05.</td></tr>
-      <tr><td><span class="who w-ak">Akriti</span></td><td><strong>The access rules</strong> — add the new <code>subscribe</code> case, apply the Elite decision · repoint the four calls at the endpoints that actually exist · <strong>D15 the queue offer</strong> — the store, accept and reject, against a fake trigger · screen 03 · <strong>D10, F8 licence state and caching</strong>, taken from Prayas — the invalidation is driven by her four calls, so the two belong together</td><td><strong>Nothing to undo</strong> — her tier names already match the published contract by luck, so her components and <code>resolveAccess</code> survive untouched. The four calls exist under different names: borrow, open a reading session, return, place a hold. <span class="tag t-risk">Blocked until the Elite question is answered</span> — flambeau built borrow-then-queue, our 13 Aug rule says always-queue. D14 moved to Moktik.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td><strong>The access rules</strong> — add the new <code>subscribe</code> case, apply the Elite decision · repoint the four calls at the endpoints that actually exist · <strong>D15 the queue offer</strong> — the store, accept and reject, against a fake trigger · screen 03 · <strong>D10, F8 licence state and caching</strong>, taken from Prayas — the invalidation is driven by her four calls, so the two belong together</td><td><strong>Nothing to undo</strong> — her tier names already match the published contract by luck, so her components survive untouched. The four calls exist under different names: borrow, open a reading session, return, place a hold. <strong>The Elite question is answered, 16 Aug</strong>: one <strong>Grant access</strong> button, then either an immediate Accept / Reject offer or a queue position followed by the same offer. That unblocks <code>resolveAccess</code>, and it costs three new words in the action vocabulary plus a <code>hold</code> input. <span class="tag t-open">One integration detail left for flambeau: whether placing a hold on a title with a free copy comes straight back as an offer, or has to be asked for twice</span> D14 moved to Moktik.</td></tr>
     </tbody>
   </table>
 
@@ -827,7 +853,7 @@
       <tr><td><code>D1</code>–<code>D4</code></td><td><code>resolveAccess</code> as a link interpreter · the right set of actions per item · the tier badge · <strong>Revoke licence on Elite only</strong>, and only once one is held.</td></tr>
       <tr><td><code>D6</code>–<code>D8</code></td><td>Read handoff to the reader team · Download · the not-entitled state renders as no buttons.</td></tr>
       <tr><td><code>D9</code></td><td><strong>Generate a licence on the first tap</strong>, and <strong>check it on every tap after</strong>, both through flambeau. Open Access skips both.</td></tr>
-      <tr><td><code>D10</code>–<code>D12</code></td><td>Licence state joined to each item · the optimistic flip · <strong>no licence held becomes Add me to queue</strong> on Elite — every surface, not detail only, and regardless of free seats (13 Aug).</td></tr>
+      <tr><td><code>D10</code>–<code>D12</code></td><td>Licence state joined to each item · the optimistic flip · <strong>nothing held becomes Grant access</strong> on Elite — every surface, not detail only, and regardless of free copies (16 Aug). Queued shows a position and nothing tappable; offered shows Accept · Reject.</td></tr>
       <tr><td><code>D13</code>–<code>D14</code></td><td>Licence failure handling driven by the error codes — refused, expired, revoked elsewhere, none left · one copy map keyed on code, not status.</td></tr>
       <tr><td><code>D15</code></td><td><strong>The queue offer.</strong> A licence frees up, the reader is notified in the app, and Accept or Reject decides what happens. Accept generates the licence and opens; Reject passes it on. Built against a fake trigger.</td></tr>
       <tr><td><code>D16</code></td><td>Wiring D15 to however flambeau really delivers the offer — push, socket or polling. One adapter behind the same store.</td></tr>
@@ -1683,7 +1709,7 @@ git push origin main</code></pre>
     <li><strong>Skeletons replace spinners.</strong> Rectangular placeholders at the exact dimensions of the final content, so nothing jumps. A hard design rule, not a preference.</li>
     <li><strong>Cards are invariant across scopes.</strong> The card, badge and layout are identical in every scope; only the set of items and the resolved actions change.</li>
     <li><strong>The reader is never shown the licence machinery.</strong> No "generating licence", no "checking licence", no licence id on a screen. They tap Read and the title opens, or it does not and they are told why in plain words. The tier badge is the only place any of this surfaces at all.</li>
-    <li><strong>Every action button has a busy state.</strong> Read, Download, Add me to queue and Revoke licence can all sit waiting on flambeau. A button that looks idle while a request is in flight gets tapped again, and on Revoke that is a second request against something already gone.</li>
+    <li><strong>Every action button has a busy state.</strong> Read, Download, Grant access, Accept, Reject and Revoke licence can all sit waiting on flambeau. A button that looks idle while a request is in flight gets tapped again — on Revoke that is a second request against something already gone, and on Accept it is a second request against an offer that has already become a loan.</li>
     <li><strong>Errors are plain text with Retry or Learn more.</strong> No stack traces, and <code>ErrorState</code> takes a string rather than an <code>Error</code>.</li>
     <li><strong>Offline means degraded but usable.</strong> The library and the institution list keep working behind the banner.</li>
     <li><strong>One fixed palette.</strong> No per-institution theming in the prototype — a runtime-variable primary colour means no token is a constant, and the consistency review would have no fixed baseline to review against.</li>
