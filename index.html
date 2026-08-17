@@ -793,13 +793,29 @@
   <table>
     <thead><tr><th class="nowrap">Person</th><th>Deliverables</th><th>Watch out for</th></tr></thead>
     <tbody>
-      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 — begin the real adapter swap; catalogue and pagination hardening · <strong>F9 items:batch</strong>, moved from Week 2 · finishing A7 against the <em>real</em> session once flambeau answer the token question</td><td>G1 will have almost nothing to swap — flambeau has built two of their calls and wokay's catalogue endpoints arrive this week at the earliest, so expect fixture-parity work instead. F9 landed here because its only consumers are screen 08 and the real Library screen, and neither is built in Week 2. A7 is built in Week 2 against a hand-toggled session; only the real-sign-in half waits.</td></tr>
-      <tr><td><span class="who w-mo">Moktik</span></td><td>Search hardening and query-state depth · <strong>B11 voice input</strong> — only if it is still unclaimed by Friday</td><td><strong>Not</strong> a ranking pass — ranking is wokay's. The real endpoint does not arrive until Week 4, so everything here runs on fixtures. Voice needs a dev build, which is why it slipped; it now sits in the unclaimed pool, so it may already be gone by Week 3.</td></tr>
-      <tr><td><span class="who w-ke">Keshav</span></td><td>Item detail hardening · <strong>C8 offline institution cache</strong>, moved from Week 2 · <strong>screen 10</strong> only if it is still unclaimed by Friday · authentication round-trip hardening</td><td>If flambeau's mock is late, exercise the full round trip against our own placeholder. C8 is small — it was cut because Wednesday's holiday took a day out of Week 2, not because it is hard. Screen 10 is now in the unclaimed pool and may already be gone.</td></tr>
-      <tr><td><span class="who w-kh">Khushi</span></td><td>F5 states everywhere · D8, D12, B10 rendered states · screens 14, 17 · the state-matrix pass — <strong>her largest week</strong></td><td>Scheduled here precisely because it is the one block that cannot slip on somebody else's account. The matrix gained a row: <strong>a tap that is waiting on flambeau</strong>. Read and Download can now sit in flight for a second or two, and a button with no busy state gets tapped four times.</td></tr>
-      <tr><td><span class="who w-ak">Akriti</span></td><td>D13 licence failure handling — borrow refused, read refused, return refused · <strong>D16 wiring the queue offer to whatever flambeau actually sends</strong> · supporting Khushi through the state-matrix pass</td><td>D14 moved to Moktik in Week 2, because the error codes are published now and it is a lookup table rather than logic. D16 sits here rather than Week 2 on purpose: the component and the store are done by then, so this is one adapter, not a feature. <strong>The transport is answered</strong> — it is polling <code>GET /api/v1/loans/changes</code>, not push and not a socket, so this is smaller than we feared.</td></tr>
+      <tr><td><span class="who w-pr">Prayas</span></td><td>G1 — begin the real adapter swap; catalogue and pagination hardening · <strong>F9 items:batch</strong>, moved from Week 2 · finishing A7 against the <em>real</em> session once flambeau answer the token question · <strong>T3 — the navigation tests</strong>: <code>RootNavigator</code> sits at 64% of statements and half its branches, and nothing yet asserts that a card tap lands on the right screen with the right params</td><td>G1 will have almost nothing to swap — flambeau has built two of their calls and wokay's catalogue endpoints arrive this week at the earliest, so expect fixture-parity work instead. F9 landed here because its only consumers are screen 08 and the real Library screen, and neither is built in Week 2. A7 is built in Week 2 against a hand-toggled session; only the real-sign-in half waits.</td></tr>
+      <tr><td><span class="who w-mo">Moktik</span></td><td>Search hardening and query-state depth · <strong>B11 voice input</strong> — only if it is still unclaimed by Friday · <strong>T4 — the search-config tests</strong>: <code>config/search.ts</code> is at 28% of statements and none of its branches, so the filter and sort parameter building is the one part of search running untested</td><td><strong>Not</strong> a ranking pass — ranking is wokay's. The real endpoint does not arrive until Week 4, so everything here runs on fixtures. Voice needs a dev build, which is why it slipped; it now sits in the unclaimed pool, so it may already be gone by Week 3.</td></tr>
+      <tr><td><span class="who w-ke">Keshav</span></td><td>Item detail hardening · <strong>C8 offline institution cache</strong>, moved from Week 2 · <strong>screen 10</strong> only if it is still unclaimed by Friday · authentication round-trip hardening · <strong>T2 — a test file for screen 06</strong>, plus <code>BottomSheet</code> branches, <code>searchInstitutions</code> and the store's restore path</td><td>If flambeau's mock is late, exercise the full round trip against our own placeholder. C8 is small — it was cut because Wednesday's holiday took a day out of Week 2, not because it is hard. Screen 10 is now in the unclaimed pool and may already be gone.</td></tr>
+      <tr><td><span class="who w-kh">Khushi</span></td><td>F5 states everywhere · D8, D12, B10 rendered states · screens 14, 17 · the state-matrix pass — <strong>her largest week</strong> · <strong>T5 — the state matrix arrives as tests, not as a checklist</strong>, plus <code>useNetworkStatus</code>, which has no test and no caller yet</td><td>Scheduled here precisely because it is the one block that cannot slip on somebody else's account. The matrix gained a row: <strong>a tap that is waiting on flambeau</strong>. Read and Download can now sit in flight for a second or two, and a button with no busy state gets tapped four times.</td></tr>
+      <tr><td><span class="who w-ak">Akriti</span></td><td>D13 licence failure handling — borrow refused, read refused, return refused · <strong>D16 wiring the queue offer to whatever flambeau actually sends</strong> · supporting Khushi through the state-matrix pass · <strong>T1 — the coverage gate</strong>, Monday morning, because the other four are measured against it</td><td>D14 moved to Moktik in Week 2, because the error codes are published now and it is a lookup table rather than logic. D16 sits here rather than Week 2 on purpose: the component and the store are done by then, so this is one adapter, not a feature. <strong>The transport is answered</strong> — it is polling <code>GET /api/v1/loans/changes</code>, not push and not a socket, so this is smaller than we feared.</td></tr>
     </tbody>
   </table>
+
+  <div class="note warn">
+    <span class="lbl">Where the tests actually stand — measured 17 August, and why T1–T5 are in this week</span>
+    <p><strong>There is a lot of testing, and it is genuinely good.</strong> 46 test files, 779 tests, the whole suite runs in about five seconds, and every one of the twenty-one components has its own test file with most of them at 100%. The pure logic is in the same shape: the normaliser, <code>resolveAccess</code>, the search state, the contract conformance checks and both adapters are all in the nineties. Nobody needs to be talked into writing tests here, so <strong>Week 3 is not a testing drive</strong>. It is four named holes and one gate.</p>
+    <p>The headline is 82% of statements and 78% of branches, but <strong>functions are at 53%</strong> and that number is the honest one. Two things inflate the headline. Jest has no <code>collectCoverageFrom</code>, so <em>a file no test imports is not counted at all</em> — <code>useNetworkStatus</code> does not appear in the report rather than appearing as a zero. And both test scripts carry <code>--passWithNoTests</code>, which means the suite would go green if the tests vanished.</p>
+    <p>The four real holes, in the order they matter to us:</p>
+    <ul>
+      <li><strong>Screen 06 has no test file at all.</strong> <code>InstitutionListScreen</code> is 193 lines at <strong>3.7%</strong> — the debounce, the recently-used pinning, the loading and error paths, and the tap that selects an institution and navigates. It is <strong>C1 and C3, our own CAP-2 deliverable</strong>, and it is the least-tested file in the repo. Screen 02 and the detail view are both covered; the list itself is not. This is the one to fix first.</li>
+      <li><strong><code>RootNavigator</code> at 64%, half its branches</strong> — the wiring nothing owns, because the shell was built all-hands. Wrong-params bugs are exactly what a navigation test catches and a component test cannot.</li>
+      <li><strong><code>BottomSheet</code> at 70% of statements and 44% of branches</strong> — the only component below the line, and it is the one every sheet in the flow sits inside, including sign-in and screen 12.</li>
+      <li><strong><code>config/search.ts</code> at 28%, no branches, and <code>searchInstitutions</code> at zero.</strong> Both are small, both are parameter building, and both decide what the real endpoint gets asked for in Week 4.</li>
+    </ul>
+    <p>Left alone deliberately: the <code>.gallery.tsx</code> files, which are dev-only demos and drag the function number down on paper, and the <code>ItemDetail</code>, <code>Library</code> and <code>Profile</code> screens, which are still placeholders — testing a stub locks in a shape we have not agreed yet.</p>
+    <p><strong>T1 is Monday morning and takes an hour</strong>: add <code>collectCoverageFrom</code> over <code>src/**</code> excluding galleries and barrels, drop <code>--passWithNoTests</code> from <code>test:ci</code>, and set thresholds at <strong>today's real numbers</strong>, not at an aspiration — a gate that fails on the first honest PR gets deleted by Wednesday. Ratchet it at the end of the week once T2–T5 have landed. The order matters: T1 first, because the other four are measured against it, and because it is what stops Week 4's integration work from quietly lowering the floor.</p>
+    <p><strong>This does not change G4.</strong> The BDD suite in Week 4 tests journeys through the app; T1–T5 test units and wiring. Going into an integration week with screen 06 at 3.7% means a failure there shows up as a broken journey with five candidate causes, which is the expensive way to find it.</p>
+  </div>
 
   <h4 id="week4">Week 4 — integration</h4>
   <table>
@@ -862,6 +878,11 @@
       <tr><td><code>F3</code>–<code>F6</code></td><td>Session and entitlement context · app shell, tabs, tokens and the component library · loading/empty/error/offline everywhere · the pending-intent store.</td></tr>
       <tr><td><code>F7</code>–<code>F10</code></td><td>Profile institution management · licence cache with invalidation · items:batch · a typed error layer over wokay's envelope.</td></tr>
       <tr><td><code>G1</code>–<code>G4</code></td><td>Week 4: the real adapter swap · real session and entitlements · real auth routing and reader launch · BDD suite and accessibility pass.</td></tr>
+      <tr><td><code>T1</code></td><td><strong>The coverage gate.</strong> <code>collectCoverageFrom</code> over <code>src/**</code> minus galleries and barrels, so an untested file counts as a zero instead of disappearing from the report · <code>--passWithNoTests</code> off in <code>test:ci</code> · thresholds set at the current real numbers and ratcheted at the end of the week. Added Week 3.</td></tr>
+      <tr><td><code>T2</code></td><td><strong>Screen 06 gets a test file.</strong> <code>InstitutionListScreen</code> — the debounce, recently-used pinning, loading and error paths, and select-then-navigate. Plus <code>BottomSheet</code>'s untested branches, <code>searchInstitutions</code>, and the store's restore-on-relaunch path.</td></tr>
+      <tr><td><code>T3</code></td><td><strong>Navigation tests.</strong> <code>RootNavigator</code> routes and params — that a tap arrives at the right screen carrying the right thing. Half its branches are unexercised and no component test can reach them.</td></tr>
+      <tr><td><code>T4</code></td><td><strong>Search parameter building.</strong> <code>config/search.ts</code> filter and sort construction, including the frozen <code>accessTier</code> and <code>contentType</code> values and the four sort options — the part Week 4 hands to a real endpoint.</td></tr>
+      <tr><td><code>T5</code></td><td><strong>The state matrix as tests.</strong> Every cell Khushi walks through in the F5 pass becomes an assertion rather than a checklist tick, the in-flight row included. Plus <code>useNetworkStatus</code>, currently untested and uncalled.</td></tr>
     </tbody>
   </table>
 </section>
@@ -1127,6 +1148,20 @@
     <h5><span class="who w-ak">Akriti</span></h5>
     <ol class="taskl">
       <li>
+        <span class="tt">Contract fixes <span class="tag t-done">done 17 Aug</span></span>
+        <p><strong>None of this was on the board, and that is the point of writing it down now.</strong> The rules were here — line 652 and the countdown note below both say render against <code>serverTime</code> — but nothing said our own model was dropping the field, so the rule could not be followed. These were invisible prerequisites sitting under tasks 1 and 3.</p>
+        <ul>
+          <li><code>Loan.loanId</code> and <code>Hold.holdId</code> — Revoke and Accept are addressed by id in flambeau's contract, not by the <code>LicenceRef</code> triple, so without them the buttons resolve correctly and cannot fire</li>
+          <li><code>serverTime</code> on <code>Hold</code> and <code>AccessResult</code> — flambeau send it and mark it required; we were discarding it, which left the countdown nothing to measure against but the device clock</li>
+          <li><code>Hold.offerId</code> — <code>holdId</code> is stable across queued → offered → lapsed, so it cannot tell two successive offers apart</li>
+          <li><code>Hold.state: 'expired'</code> plus <code>isOfferLapsed</code> and <code>lapseOffer</code> — the lapse is decided outside <code>resolveAccess</code>, which reads no clock, and <code>now</code> is a parameter rather than a <code>Date.now()</code> call</li>
+          <li><code>ERROR_CODES</code> was short by nine and claimed to be wokay's alone. Five of the additions still need ratifying at the Contracts Gate</li>
+          <li>Subscribe titles now normalize — <code>Publication.format</code> is optional for that rel only. Until this, <code>resolveAccess</code>'s subscribe case was correct and <em>unreachable</em>: the only titles that could produce it were thrown out at the adapter boundary</li>
+        </ul>
+        <p><strong>The 15-minute offer window is recorded but not computed with.</strong> <code>offerExpiresAt</code> is server-issued and absolute, so it is the only authority on when a given offer ends; deriving one from "placed + 15 minutes" would substitute our arithmetic for theirs. The figure matters for the polling cadence instead — a minute between polls spends a fifteenth of the reader's window.</p>
+        <div class="builds"><span>779 tests, typecheck and lint clean</span></div>
+      </li>
+      <li>
         <span class="tt">Repoint the four calls</span>
         <p>All four exist in flambeau's contract under different names. Use their names in our code and in messages to them.</p>
         <table style="margin:8px 0 10px">
@@ -1150,7 +1185,12 @@
       <li>
         <span class="tt">Queue offer store</span>
         <p>Where a pending offer lives, and what Accept and Reject do.</p>
-        <p>One offer slot only — a second offer must not silently replace the first. Countdowns render against the server's <code>serverTime</code>, never the device clock.</p>
+        <p>One offer slot only — a second offer must not silently replace the first. Countdowns render against the server's <code>serverTime</code>, never the device clock. <strong>Both of those now have a field behind them</strong> — see task 0.</p>
+        <ul>
+          <li><strong>Enforce the one slot on <code>offerId</code>, not <code>holdId</code>.</strong> The same hold legitimately produces offer after offer, so <code>holdId</code> cannot tell a replacement from a repeat.</li>
+          <li><strong>A lapsed offer resolves to Grant access, not back to queued.</strong> flambeau do not restore a missed offer to its old place — the reader rejoins at the back, which is the same button as never having asked. Nothing invalidates it on its own: <code>resolveAccess</code> reads no clock, so the store has to mark it.</li>
+          <li><strong><code>409 OFFER_EXPIRED</code> is an ordinary reply, not an error state.</strong> flambeau are explicit that offers lapse on a schedule and the app is often a few seconds behind. The copy needs to say the window closed <em>and</em> that they are now at the back of the queue — nobody guesses the second half.</li>
+        </ul>
         <p>Wire to a fake trigger in the gallery. flambeau has not built the real one.</p>
         <div class="builds"><span>Drives Khushi's QueueNotification</span></div>
       </li>
@@ -1162,7 +1202,13 @@
         <div class="builds"><img loading="lazy" src="TF_Reader_Design_Package/screens/18-access-tiers.png" alt="Screen 18"><span><b>Screens 04, 05, 18</b> — button state accuracy</span></div>
       </li>
     </ol>
-    <p style="font-size:13px;color:var(--mute);margin:12px 0 0">Most externally blocked block on the board. If the Elite decision or flambeau's answers slip, licence caching is the first item to drop.</p>
+    <p style="font-size:13px;color:var(--mute);margin:12px 0 0">Most externally blocked block on the board. If the Elite decision or flambeau's answers slip, licence caching is the first item to drop. <strong>The Elite decision is no longer one of those risks</strong> — it was settled from the contract on 17 Aug, with nothing asked of flambeau.</p>
+    <div class="note">
+      <span class="lbl">The access badges are unblocked, and they are not Akriti's</span>
+      <p><code>resolveAccess</code> is merged and can be called today: hand it <code>session: null</code> with no loan and no hold and Open Access, Subscription and Elite-with-nothing-held all resolve correctly. That was designed in on purpose so a list could be wired before the session store existed.</p>
+      <p>So the empty <code>badge</code> slots on <strong>screens 01, 02 and 09</strong> are waiting on nobody. They sit in <code>CatalogueScreen</code>, <code>ShelfScreen</code> and <code>SearchScreen</code> — <span class="who w-pr">Prayas</span> and <span class="who w-mo">Moktik</span>'s files, not Akriti's, and both are working in them this week. Call the resolver per row and pass the result into the slot; do not derive a badge in the screen.</p>
+      <p>The comments in all three files used to say <code>resolveAccess</code> did not exist yet, which is how this stayed invisible. They have been corrected, along with one in <code>VoiceOverlay</code> claiming <code>ActionButton</code> was still to come.</p>
+    </div>
   </div>
 
   <!-- ============ Moktik ============ -->
@@ -1303,13 +1349,15 @@
   <p><strong>Nothing is cut.</strong> Subject filters, the disabled screen 12 rows, and the screen 04 and 05 elements are held — the UI stays, the data waits.</p>
   <p>Week 3's G1 will have little to swap: flambeau has built two of their calls, and wokay's catalogue endpoints arrive Week 3 at the earliest. The four items above fill a week that was otherwise thin.</p>
 
-  <h5>Decision required — Elite</h5>
-  <p>Do Elite titles always join a queue, or attempt to borrow first and queue only when refused? flambeau built the second. Our 13 August rule says the first. <span class="tag t-risk">Blocks Akriti</span></p>
-  <p><strong>Recommendation: adopt flambeau's.</strong> It is built and frozen in their contract; ours is a product decision with no endpoint behind it. Changing ours costs one branch in <code>resolveAccess</code>. Changing theirs costs another team their frozen contract in week two of four.</p>
-  <p>Safe to decide from the contract because it rests on something present in it: <code>POST /api/v1/loans</code> answers <code>409 NO_COPIES_AVAILABLE</code> and names the hold endpoint in the message.</p>
+  <h5>Decision required — Elite <span class="tag t-done">settled 17 Aug</span></h5>
+  <p>Do Elite titles always join a queue, or attempt to borrow first and queue only when refused? flambeau built the second. Our 13 August rule says the first. <s>Blocks Akriti</s></p>
+  <p><strong>Resolved: flambeau's, and it needed no answer from them.</strong> The contract settles it twice over. <code>POST /api/v1/loans</code> answers <code>409 NO_COPIES_AVAILABLE</code> and names the hold endpoint so the app can offer the queue as a choice — so a borrow is always attempted first. And <code>POST /api/v1/holds</code> documents exactly two responses, <code>200</code> and <code>201</code>, and <strong>both return <code>status: QUEUED</code></strong>. There is no response shape in which placing a hold hands back an offer.</p>
+  <p><strong>So Grant access is one button with two calls behind it:</strong> borrow, then offer the queue on a 409. An offer always arrives later, by one of the reads — <code>GET /holds</code>, <code>GET /library</code>, or the change feed's <code>HOLD_PROMOTED</code>.</p>
+  <p>This also killed a question that was queued to send. "If a reader places a hold on a title with a free copy, does an offer come straight back?" — the case cannot arise, because a reader only ever holds when there was no free copy to take. <code>resolveAccess</code> carried a comment claiming that route existed; it has been corrected, which matters because the offer store would otherwise have been wired for a response that never comes.</p>
 
-  <h4 id="wk2q">Six questions, ready to send</h4>
+  <h4 id="wk2q">Seven questions, ready to send</h4>
   <p>Send question 1 alone and first — it is the only one that affects this weekend. The rest can go together.</p>
+  <p><strong>7 is new, and it is the only flambeau item still outstanding.</strong> One question that was going to sit beside it was withdrawn on 17 Aug rather than answered: the contract already settled it, and sending it would have cost a round trip to be told what was written down. Worth checking the contract for an answer before adding an eighth.</p>
 
   <div class="qcard">
     <div class="qhead"><span class="to">To wokay · first, alone</span>1 — Are the old samples dead?</div>
@@ -1410,6 +1458,20 @@
         <p><code>POST /api/v1/reading-sessions</code> needs a <code>devicePublicKey</code>, which is the reader team's keystore, not ours.</p>
         <p>So who makes that call? Either we ask t4targaryen for the key and call it ourselves, or we hand them the item and they call it. We've got "hand off to the reader" written down as our step, but that doesn't say which side of this line it falls on.</p>
         <p>Not blocking us this week — flagging it now because right now I think each of us assumes the other has it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qhead"><span class="to">To flambeau · a heads-up, not a question</span>7 — We now depend on your draft hold endpoints</div>
+    <div class="qbody">
+      <p class="why"><strong>Nothing to answer, and that is why it is worth sending.</strong> Accept and Reject are addressed by <code>holdId</code> in the path, so our model now carries it — and every endpoint it comes from is marked <code>x-stability: DRAFT</code>, where the loan endpoints are FROZEN. A shape change there is silent for them and breaks two buttons for us.</p>
+      <p class="why"><strong>A question that was queued here has been withdrawn instead.</strong> "Does placing a hold on a title with a free copy come straight back as an offer?" The case cannot arise: <code>POST /loans</code> refuses with <code>409 NO_COPIES_AVAILABLE</code> and names the hold endpoint, so a reader only ever holds when there was nothing free to take — and <code>POST /holds</code> returns <code>QUEUED</code> in both its documented responses regardless. Answered from the contract; see the Elite decision above.</p>
+      <div class="msg">
+        <p>Not a question, just something to flag so it doesn't bite either of us later.</p>
+        <p>We're now reading <code>holdId</code> out of your hold responses and putting it in the path for Accept and Reject, and we'll likely start using <code>offerId</code> too, to tell one offer from the next on the same hold.</p>
+        <p>All of those come from endpoints you've marked <code>DRAFT</code> — <code>/holds</code>, <code>/holds/{holdId}/accept</code>, <code>/library</code> — whereas the loan ones are FROZEN. So if those shapes are going to move, could you give us a heads-up before they do? We're not asking you to freeze them, just to tell us.</p>
+        <p>While we're here: thanks for putting <code>serverTime</code> on every response and marking it required. We had been dropping it, which meant our offer countdown had nothing to measure against but the device clock. That's fixed.</p>
       </div>
     </div>
   </div>
